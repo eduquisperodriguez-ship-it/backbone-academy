@@ -28,7 +28,8 @@ assets/css/backbone.css    colores, tipografía y piezas comunes
 assets/css/herramientas.css  capa de marca para las calculadoras
 assets/css/fuentes.css     Schibsted Grotesk, Instrument Sans e Instrument Serif (servidas desde el sitio)
 assets/img/                logo, favicon y capturas
-assets/vendor/             Chart.js 4.4.1 y qrcode 1.4.4
+assets/vendor/             Chart.js 4.4.1, qrcode 1.4.4 y Three.js 0.170 (gráficos 3D)
+academia/js/escenas3d.js   logo vertebral en 3D y los gráficos 3D de cada curso
 ```
 
 ## Marca
@@ -55,8 +56,17 @@ El logo es una B hecha con tres vértebras de 30 × 36 (radio 9) y dos arcos, so
 - **Duopolio:** los pagos del árbol salían con todos los decimales; ahora se redondean a dos. Mensaje de error más claro si no carga Python.
 - **Todas:** se quitó `polyfill.io` (dominio comprometido en 2024), Chart.js quedó fijado en la versión 4.4.1 y se agregó la barra de BackBone con regreso al portafolio.
 
+## Gráficos 3D de la web de la academia
+
+| Curso | Gráfico | Control |
+|---|---|---|
+| Matemática para Económicas | superficie f(x, y) = (x² − y²)/2 con plano tangente y derivadas parciales | mueve el punto en x |
+| Microeconomía | utilidad U = x^0,6 · y^0,4, curvas de indiferencia y presupuesto x + y = I | sube el ingreso I |
+| Macroeconomía | planos IS y LM con el gasto público G como tercer eje | aumenta G |
+
+Cada gráfico gira con el mouse o el dedo, solo se dibuja cuando está en pantalla y respeta la opción de reducir movimiento del sistema. Si el navegador no tiene WebGL, se muestra el logo plano y un aviso.
+
 ## Redes
 
-- Instagram: [@backbone.academy](https://www.instagram.com/backbone.academy/)
+- Instagram: [@backbone.academy](https://www.instagram.com/backbone.academy/) (contacto principal; mensajes en [ig.me/m/backbone.academy](https://ig.me/m/backbone.academy))
 - TikTok: [@quantum.cls](https://www.tiktok.com/@quantum.cls)
-- WhatsApp: [967 077 156](https://wa.me/51967077156)

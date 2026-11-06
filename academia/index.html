@@ -4,18 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BackBone Academy · Tutorías de economía y matemática en Trujillo</title>
-  <meta name="description" content="Tutorías de Matemática para Económicas, Microeconomía y Macroeconomía en Trujillo y por videollamada. Calculadoras gratuitas y contenido para aprender desde la base.">
+  <meta name="description" content="Tutorías de Matemática para Económicas, Microeconomía y Macroeconomía en Trujillo y por videollamada. Gráficos 3D, calculadoras gratuitas y contenido para aprender desde la base.">
   <meta name="theme-color" content="#0D1220">
   <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+
   <link rel="preload" href="../assets/fonts/schibsted-grotesk-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../assets/css/fuentes.css">
   <link rel="stylesheet" href="../assets/css/backbone.css">
   <script src="../assets/vendor/qrcode.min.js"></script>
 
+  <script type="importmap">
+    { "imports": {
+        "three": "../assets/vendor/three/three.module.min.js",
+        "three/addons/": "../assets/vendor/three/addons/"
+    } }
+  </script>
+  <link rel="modulepreload" href="../assets/vendor/three/three.module.min.js">
+
   <style>
     /* ── Hero ───────────────────────────────── */
-    .hero { padding: clamp(48px, 7vw, 96px) 0 clamp(72px, 9vw, 112px); }
-    .hero-rejilla { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr); gap: clamp(40px, 6vw, 88px); align-items: center; }
+    .hero { padding: clamp(40px, 6vw, 80px) 0 clamp(64px, 8vw, 104px); }
+    .hero-rejilla { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
     .hero-lugar { color: var(--gris-claro); font-size: .98rem; margin-bottom: 24px; }
     .hero h1 { font-size: clamp(3rem, 7.2vw, 5.8rem); line-height: .95; margin-bottom: 28px; }
     .hero-texto { font-size: 1.16rem; color: #D5D9E2; max-width: 46ch; margin-bottom: 36px; }
@@ -23,28 +32,23 @@
     .hero-precio { margin-top: 28px; color: var(--gris-claro); font-size: .96rem; }
     .hero-precio strong { color: var(--marfil); font-weight: 600; }
 
-    /* Figura de equilibrio */
-    .fig { background: var(--profundo); border-radius: 16px; padding: 22px 22px 18px; }
-    .fig svg { width: 100%; height: auto; }
-    .fig .eje { stroke: var(--marfil); stroke-width: 1.5; }
-    .fig .guia { stroke: var(--gris-claro); stroke-width: 1; stroke-dasharray: 4 4; }
-    .fig .curva { fill: none; stroke-width: 3.2; stroke-linecap: round; }
-    .fig .oferta { stroke: var(--marfil); }
-    .fig .demanda { stroke: var(--acero-vivo); }
-    .fig .etq { font-family: var(--f-serif); font-style: italic; font-size: 21px; fill: var(--marfil); }
-    .fig .etq-d { fill: var(--acero-vivo); }
-    .fig .etq-p { font-size: 17px; fill: var(--gris-claro); }
-    .fig .punto { fill: var(--niebla); }
-    .dibuja { stroke-dasharray: 600; stroke-dashoffset: 600; animation: trazo 1.1s cubic-bezier(.3,.7,.2,1) forwards; }
-    .dibuja.d2 { animation-delay: .3s; }
-    .aparece { opacity: 0; animation: aparece .4s ease forwards 1.2s; }
-    @keyframes trazo { to { stroke-dashoffset: 0; } }
-    @keyframes aparece { to { opacity: 1; } }
-    .fig-control { display: grid; grid-template-columns: 1fr auto; gap: 8px 20px; align-items: center; margin-top: 14px; }
-    .fig-control label { font-size: .92rem; color: var(--gris-claro); }
-    .fig-control input[type=range] { grid-column: 1 / -1; width: 100%; accent-color: var(--acero); height: 28px; }
-    .fig-lectura { font-family: var(--f-serif); font-size: 1.1rem; text-align: right; white-space: nowrap; }
-    .fig figcaption { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--linea); font-size: .9rem; color: var(--gris-claro); }
+    /* Logo vertebral en 3D */
+    .logo3d { position: relative; aspect-ratio: 1; width: 100%; max-width: 560px; justify-self: center; }
+    .logo3d::before {             /* sombra suave bajo el logo */
+      content: ''; position: absolute; left: 22%; right: 22%; bottom: 9%; height: 9%;
+      background: radial-gradient(closest-side, rgba(90,123,176,.32), transparent);
+      filter: blur(6px);
+    }
+    .logo3d canvas { position: relative; display: block; width: 100% !important; height: 100% !important; }
+    .logo3d .respaldo { position: absolute; inset: 22%; display: none; }
+    .sin-3d .logo3d .respaldo { display: block; }
+    .logo3d figcaption { position: absolute; left: 0; right: 0; bottom: -6px; text-align: center; font-size: .88rem; color: var(--gris-claro); }
+
+    /* Capa de etiquetas de Three.js */
+    .capa-etiquetas { position: absolute !important; inset: 0; pointer-events: none; }
+    .etq3d { font-family: var(--f-serif); font-style: italic; font-size: 18px; color: var(--marfil); white-space: nowrap; text-shadow: 0 1px 6px rgba(13,18,32,.9); }
+    .etq3d.eje { color: #C9CEDA; }
+    .etq3d.acero { color: var(--acero-vivo); }
 
     /* ── Cifras ─────────────────────────────── */
     .cifras { border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
@@ -54,20 +58,41 @@
     .cifra b { display: block; font-family: var(--f-titular); font-weight: 800; letter-spacing: -0.04em; font-size: clamp(2.2rem, 4vw, 3rem); line-height: 1; margin-bottom: 8px; }
     .cifra span { color: var(--gris-claro); font-size: .94rem; }
 
-    /* ── Cursos ─────────────────────────────── */
-    .cursos-cabeza { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap; margin-bottom: 24px; }
+    /* ── Cursos con su gráfico ──────────────── */
+    .cursos-cabeza { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap; margin-bottom: 8px; }
     .cursos-cabeza .encabezado { margin-bottom: 0; }
     .tarifa { text-align: right; }
     .tarifa b { display: block; font-family: var(--f-titular); font-weight: 800; letter-spacing: -0.04em; font-size: 3.6rem; line-height: 1; }
     .tarifa span { color: var(--gris-claro); font-size: .95rem; }
-    .curso { display: grid; grid-template-columns: 1.1fr 1.3fr auto; gap: 40px; padding: 40px 0; border-top: 1px solid var(--linea); align-items: start; }
+
+    .curso { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(32px, 5vw, 72px); align-items: center; padding: clamp(48px, 6vw, 72px) 0; border-top: 1px solid var(--linea); }
     .curso:last-child { border-bottom: 1px solid var(--linea); }
-    .curso h3 { font-size: clamp(1.6rem, 2.6vw, 2.1rem); margin-bottom: 10px; }
-    .curso p { color: var(--gris-claro); max-width: 40ch; font-size: .98rem; }
-    .curso ul { list-style: none; columns: 2; column-gap: 32px; }
-    .curso li { padding: 6px 0 6px 20px; position: relative; break-inside: avoid; font-size: .98rem; }
-    .curso li::before { content: ''; position: absolute; left: 0; top: 13px; width: 8px; height: 10px; border-radius: 3px; background: var(--acero); }
-    .curso .enlace { white-space: nowrap; }
+    .curso:nth-child(even) .curso-texto { order: 2; }
+    .curso:nth-child(even) { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); }
+    .curso-num { font-family: var(--f-titular); font-weight: 800; letter-spacing: -0.04em; color: var(--acero-vivo); font-size: 1.05rem; margin-bottom: 14px; }
+    .curso h3 { font-size: clamp(2rem, 3.4vw, 2.8rem); margin-bottom: 14px; }
+    .curso-texto > p { color: #C9CEDA; max-width: 44ch; margin-bottom: 22px; }
+    .curso ul { list-style: none; margin-bottom: 26px; border-top: 1px solid var(--linea); }
+    .curso li { padding: 10px 0 10px 22px; position: relative; border-bottom: 1px solid var(--linea); font-size: .98rem; }
+    .curso li::before { content: ''; position: absolute; left: 0; top: 17px; width: 8px; height: 10px; border-radius: 3px; background: var(--acero); }
+    .curso .enlace { display: inline-block; }
+
+    .fig3d { background: var(--profundo); border: 1px solid var(--linea); border-radius: 18px; padding: 10px 10px 18px; }
+    .lienzo3d { position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; cursor: grab; background: radial-gradient(120% 90% at 50% 40%, #1C2945 0%, #121A2E 70%); }
+    .lienzo3d:active { cursor: grabbing; }
+    .lienzo3d canvas { display: block; width: 100% !important; height: 100% !important; }
+    .pista { position: absolute; top: 12px; right: 14px; font-size: .78rem; color: var(--gris-claro); background: rgba(13,18,32,.6); padding: 4px 10px; border-radius: 999px; pointer-events: none; }
+    .sin-3d .lienzo3d::after, .fig3d.fallo .lienzo3d::after {
+      content: 'Tu navegador no puede mostrar gráficos 3D. Prueba con Chrome, Edge o Safari actualizados.';
+      position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--gris-claro); font-size: .95rem;
+    }
+    .sin-3d .pista { display: none; }
+    .fig3d-control { display: grid; grid-template-columns: 1fr auto; gap: 6px 18px; align-items: center; padding: 14px 10px 0; }
+    .fig3d-control label { font-size: .92rem; color: var(--gris-claro); }
+    .fig3d-control input[type=range] { grid-column: 1 / -1; width: 100%; accent-color: var(--acero); height: 28px; }
+    .fig3d-lectura { font-family: var(--f-serif); font-size: 1.08rem; text-align: right; white-space: nowrap; }
+    .fig3d figcaption { margin: 12px 10px 0; padding-top: 12px; border-top: 1px solid var(--linea); font-size: .9rem; color: var(--gris-claro); }
+    .fig3d figcaption b { color: var(--marfil); font-weight: 600; }
 
     /* ── Calculadoras ───────────────────────── */
     .calcs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--linea); }
@@ -102,8 +127,9 @@
     .contacto-rejilla { display: grid; grid-template-columns: 1.4fr 1fr; gap: 72px; align-items: center; }
     .contacto h2 { font-size: clamp(2.4rem, 5.4vw, 4.4rem); margin-bottom: 18px; }
     .contacto p { color: var(--gris-claro); max-width: 46ch; margin-bottom: 28px; font-size: 1.08rem; }
-    .tel { display: inline-block; font-family: var(--f-titular); font-weight: 800; letter-spacing: -0.04em; font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1; margin-bottom: 28px; text-decoration: none; }
-    .tel:hover { color: var(--niebla); }
+    .usuario { display: inline-block; font-family: var(--f-titular); font-weight: 800; letter-spacing: -0.04em; font-size: clamp(2rem, 4.6vw, 3.4rem); line-height: 1; margin-bottom: 28px; text-decoration: none; overflow-wrap: anywhere; }
+    .usuario:hover { color: var(--niebla); }
+    .contacto-botones { display: flex; gap: 12px; flex-wrap: wrap; }
     .qr { justify-self: end; }
     .qr-caja { background: var(--marfil); padding: 16px; border-radius: 12px; display: inline-block; }
     #qr-canvas { display: block; }
@@ -111,17 +137,20 @@
     .qr .boton { padding: 10px 16px; font-size: .92rem; }
 
     @media (max-width: 960px) {
-      .hero-rejilla, .contacto-rejilla, .redes { grid-template-columns: 1fr; gap: 48px; }
-      .curso { grid-template-columns: 1fr; gap: 18px; }
+      .hero-rejilla, .contacto-rejilla, .redes, .curso, .curso:nth-child(even) { grid-template-columns: 1fr; gap: 40px; }
+      .logo3d { max-width: 380px; }
+      .curso:nth-child(even) .curso-texto { order: 0; }
       .razones { grid-template-columns: 1fr 1fr; }
       .qr { justify-self: start; }
     }
     @media (max-width: 720px) {
+      .logo3d { max-width: 300px; margin-top: -8px; }
       .cifras-fila { grid-template-columns: 1fr 1fr; }
       .cifra { border-left: 0; padding-left: 0; }
       .cifra:nth-child(-n+2) { border-bottom: 1px solid var(--linea); }
-      .curso ul { columns: 1; }
       .tarifa { text-align: left; }
+      .lienzo3d { aspect-ratio: 1; }
+      .fig3d-lectura { font-size: .98rem; }
       .calcs { grid-template-columns: 1fr; }
       .calc, .calc:nth-child(even) { padding: 26px 0 28px; border-left: 0; }
       .razones { grid-template-columns: 1fr; }
@@ -138,7 +167,7 @@
     <g fill="#F3F1EB"><rect width="30" height="36" rx="9"/><rect y="42" width="30" height="36" rx="9"/><rect y="84" width="30" height="36" rx="9"/></g>
     <g fill="#5A7BB0"><path d="M36 0H61.5A28.5 28.5 0 0 1 61.5 57H36V42H61.5A13.5 13.5 0 0 0 61.5 15H36Z"/><path d="M36 63H71.5A28.5 28.5 0 0 1 71.5 120H36V105H71.5A13.5 13.5 0 0 0 71.5 78H36Z"/></g>
   </symbol>
-  <symbol id="wa" viewBox="0 0 24 24"><path fill="currentColor" d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.08-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.91-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.06 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2-1.42.25-.69.25-1.29.18-1.41-.08-.12-.28-.2-.57-.35M12.05 21.79h0a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88a9.82 9.82 0 0 1 6.99 2.9 9.82 9.82 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.89 9.88M20.47 3.49A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.68 1.45h0c6.56 0 11.89-5.34 11.9-11.9a11.82 11.82 0 0 0-3.48-8.41z"/></symbol>
+  <symbol id="ig" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/></g><circle cx="17.4" cy="6.6" r="1.3" fill="currentColor"/></symbol>
 </svg>
 
 <header class="cabecera" id="cabecera">
@@ -153,7 +182,7 @@
         <li><a href="#calculadoras">Calculadoras</a></li>
         <li><a href="#redes">Contenido</a></li>
         <li><a href="../">Portafolio</a></li>
-        <li><a class="boton" href="https://wa.me/51967077156" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>967 077 156</a></li>
+        <li><a class="boton" href="https://ig.me/m/backbone.academy" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ig"/></svg>Escríbenos</a></li>
       </ul>
     </nav>
     <button class="hamburguesa" id="hamburguesa" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil"><span></span></button>
@@ -176,43 +205,14 @@
       <h1>Economía y matemática, desde la <span class="serif">base.</span></h1>
       <p class="hero-texto">Tutorías de Matemática para Económicas, Microeconomía y Macroeconomía. Empezamos por lo que sostiene cada tema, para que entiendas el ejercicio y no solo memorices la fórmula.</p>
       <div class="hero-botones">
-        <a class="boton" href="https://wa.me/51967077156?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20las%20tutor%C3%ADas%20de%20BackBone%20Academy" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Escribir por WhatsApp</a>
+        <a class="boton" href="https://ig.me/m/backbone.academy" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ig"/></svg>Escríbenos por Instagram</a>
         <a class="boton boton-linea" href="#cursos">Ver los cursos</a>
       </div>
       <p class="hero-precio">Tutorías a <strong>$7 la hora</strong>, en cualquiera de los tres cursos.</p>
     </div>
 
-    <figure class="fig" aria-labelledby="fig-pie">
-      <svg viewBox="0 0 420 330" role="img" aria-label="Gráfico de oferta y demanda con el punto de equilibrio">
-        <defs>
-          <pattern id="cuadricula" width="20" height="20" patternUnits="userSpaceOnUse">
-            <path d="M20 0H0V20" fill="none" stroke="rgba(174,191,219,0.08)" stroke-width="1"/>
-          </pattern>
-        </defs>
-        <rect x="50" y="20" width="350" height="260" fill="url(#cuadricula)"/>
-        <line class="eje" x1="50" y1="280" x2="50" y2="20"/>
-        <line class="eje" x1="50" y1="280" x2="400" y2="280"/>
-        <text class="etq" x="26" y="32">P</text>
-        <text class="etq" x="392" y="306">Q</text>
-        <line id="curva-s" class="curva oferta dibuja" x1="50" y1="255" x2="380" y2="55"/>
-        <line id="curva-d" class="curva demanda dibuja d2" x1="50" y1="67.5" x2="380" y2="270"/>
-        <text class="etq aparece" x="384" y="52">S</text>
-        <text id="etq-d" class="etq etq-d aparece" x="384" y="266">D</text>
-        <g class="aparece">
-          <line id="guia-h" class="guia" x1="50" y1="0" x2="0" y2="0"/>
-          <line id="guia-v" class="guia" x1="0" y1="280" x2="0" y2="0"/>
-          <circle id="punto-e" class="punto" r="6.5" cx="0" cy="0"/>
-          <text id="etq-e" class="etq" x="0" y="0">E</text>
-          <text id="etq-p" class="etq etq-p" x="10" y="0">P*</text>
-          <text id="etq-q" class="etq etq-p" x="0" y="302">Q*</text>
-        </g>
-      </svg>
-      <div class="fig-control">
-        <label for="ingreso">Sube el ingreso de los consumidores y mira qué pasa con el equilibrio</label>
-        <input type="range" id="ingreso" min="6" max="11" step="0.1" value="8.5">
-        <output class="fig-lectura" id="lectura" for="ingreso" aria-live="polite"></output>
-      </div>
-      <figcaption id="fig-pie">Equilibrio de mercado: uno de los primeros temas de Microeconomía y de los que más se preguntan en examen.</figcaption>
+    <figure class="logo3d" id="logo-3d" role="img" aria-label="Logo de BackBone en 3D: tres vértebras sostienen los dos arcos de la B">
+      <svg class="respaldo" viewBox="0 0 100 120" aria-hidden="true"><use href="#b"/></svg>
     </figure>
   </div>
 </section>
@@ -231,52 +231,90 @@
     <div class="cursos-cabeza">
       <div class="encabezado">
         <h2>Los <span class="serif">cursos</span></h2>
-        <p>Los tres cursos que más cuestan en Ciencias Económicas, con tutores que los llevaron en la carrera.</p>
+        <p>Cada curso tiene una idea central que lo sostiene. Aquí la puedes ver en 3D: gira cada gráfico con el mouse o el dedo y mueve el control para ver qué cambia.</p>
       </div>
       <div class="tarifa"><b>$7</b><span>por hora, en cualquier curso</span></div>
     </div>
 
-    <article class="curso">
-      <div>
-        <h3>Matemática para Económicas</h3>
-        <p>La matemática que usa el análisis económico, desde el cálculo hasta la optimización dinámica.</p>
-      </div>
-      <ul>
-        <li>Cálculo diferencial e integral</li>
-        <li>Álgebra lineal y matrices</li>
-        <li>Ecuaciones diferenciales</li>
-        <li>Cálculo variacional y control óptimo</li>
-      </ul>
-      <a class="enlace" href="https://wa.me/51967077156?text=Hola%2C%20quiero%20tutor%C3%ADa%20de%20Matem%C3%A1tica%20para%20Econ%C3%B3micas" target="_blank" rel="noopener">Consultar por este curso</a>
-    </article>
+    <div class="cursos-lista">
+      <article class="curso" id="curso-mate">
+        <div class="curso-texto">
+          <p class="curso-num">Curso 1</p>
+          <h3>Matemática para Económicas</h3>
+          <p>La matemática que usa el análisis económico: derivar, optimizar y entender cómo cambia una función cuando mueves una sola variable.</p>
+          <ul>
+            <li>Cálculo diferencial e integral</li>
+            <li>Derivadas parciales y optimización</li>
+            <li>Álgebra lineal y matrices</li>
+            <li>Ecuaciones diferenciales y control óptimo</li>
+          </ul>
+          <a class="enlace" href="https://ig.me/m/backbone.academy" target="_blank" rel="noopener">Preguntar por este curso</a>
+        </div>
+        <figure class="fig3d">
+          <div class="lienzo3d" id="g-mate" role="img" aria-label="Superficie f(x, y) = (x² − y²)/2 con su plano tangente en un punto y las dos derivadas parciales">
+            <span class="pista" aria-hidden="true">Arrastra para girar</span>
+          </div>
+          <div class="fig3d-control">
+            <label for="c-mate">Mueve el punto a lo largo de x</label>
+            <input type="range" id="c-mate" min="-1.6" max="1.6" step="0.05" value="0.9">
+            <output class="fig3d-lectura" id="l-mate" for="c-mate" aria-live="polite"></output>
+          </div>
+          <figcaption><b>Derivada parcial.</b> La línea azul mide cómo cambia f si solo mueves x; la clara, si solo mueves y. El plano tangente reúne las dos pendientes: el <i>ceteris paribus</i> de la matemática.</figcaption>
+        </figure>
+      </article>
 
-    <article class="curso">
-      <div>
-        <h3>Microeconomía</h3>
-        <p>Cómo deciden consumidores y empresas: mercados, precios, estrategia y equilibrio general.</p>
-      </div>
-      <ul>
-        <li>Teoría del consumidor y utilidad</li>
-        <li>Teoría de la empresa y producción</li>
-        <li>Monopolio, oligopolio y juegos</li>
-        <li>Equilibrio general y externalidades</li>
-      </ul>
-      <a class="enlace" href="https://wa.me/51967077156?text=Hola%2C%20quiero%20tutor%C3%ADa%20de%20Microeconom%C3%ADa" target="_blank" rel="noopener">Consultar por este curso</a>
-    </article>
+      <article class="curso" id="curso-micro">
+        <div class="curso-texto">
+          <p class="curso-num">Curso 2</p>
+          <h3>Microeconomía</h3>
+          <p>Cómo deciden consumidores y empresas con recursos limitados: preferencias, presupuesto, costos, mercados y estrategia.</p>
+          <ul>
+            <li>Teoría del consumidor y utilidad</li>
+            <li>Teoría de la empresa y producción</li>
+            <li>Monopolio, oligopolio y teoría de juegos</li>
+            <li>Equilibrio general y externalidades</li>
+          </ul>
+          <a class="enlace" href="https://ig.me/m/backbone.academy" target="_blank" rel="noopener">Preguntar por este curso</a>
+        </div>
+        <figure class="fig3d">
+          <div class="lienzo3d" id="g-micro" role="img" aria-label="Superficie de utilidad Cobb-Douglas con curvas de indiferencia y el plano de la restricción presupuestaria">
+            <span class="pista" aria-hidden="true">Arrastra para girar</span>
+          </div>
+          <div class="fig3d-control">
+            <label for="c-micro">Sube el ingreso del consumidor</label>
+            <input type="range" id="c-micro" min="5" max="15" step="0.1" value="10">
+            <output class="fig3d-lectura" id="l-micro" for="c-micro" aria-live="polite"></output>
+          </div>
+          <figcaption><b>Elección del consumidor.</b> La montaña es la utilidad U = x<sup>0,6</sup>y<sup>0,4</sup>; sus curvas de nivel son las curvas de indiferencia. El plano claro es el presupuesto x + y = I, y el óptimo es el punto más alto que alcanzas sobre él.</figcaption>
+        </figure>
+      </article>
 
-    <article class="curso">
-      <div>
-        <h3>Macroeconomía</h3>
-        <p>La economía completa: PBI, inflación, política fiscal y monetaria, y los modelos que las explican.</p>
-      </div>
-      <ul>
-        <li>Modelo IS-LM y demanda agregada</li>
-        <li>Inflación, desempleo y curva de Phillips</li>
-        <li>Política fiscal y monetaria</li>
-        <li>Crecimiento económico</li>
-      </ul>
-      <a class="enlace" href="https://wa.me/51967077156?text=Hola%2C%20quiero%20tutor%C3%ADa%20de%20Macroeconom%C3%ADa" target="_blank" rel="noopener">Consultar por este curso</a>
-    </article>
+      <article class="curso" id="curso-macro">
+        <div class="curso-texto">
+          <p class="curso-num">Curso 3</p>
+          <h3>Macroeconomía</h3>
+          <p>La economía completa: producción, tasa de interés, inflación y empleo, y cómo responden a la política fiscal y monetaria.</p>
+          <ul>
+            <li>Modelo IS-LM y demanda agregada</li>
+            <li>Inflación, desempleo y curva de Phillips</li>
+            <li>Política fiscal y monetaria</li>
+            <li>Crecimiento económico</li>
+          </ul>
+          <a class="enlace" href="https://ig.me/m/backbone.academy" target="_blank" rel="noopener">Preguntar por este curso</a>
+        </div>
+        <figure class="fig3d">
+          <div class="lienzo3d" id="g-macro" role="img" aria-label="Modelo IS-LM en tres dimensiones con el gasto público como tercer eje">
+            <span class="pista" aria-hidden="true">Arrastra para girar</span>
+          </div>
+          <div class="fig3d-control">
+            <label for="c-macro">Aumenta el gasto público G</label>
+            <input type="range" id="c-macro" min="1" max="10" step="0.1" value="5">
+            <output class="fig3d-lectura" id="l-macro" for="c-macro" aria-live="polite"></output>
+          </div>
+          <figcaption><b>IS-LM con política fiscal.</b> El plano azul es la IS y el claro, la LM. Cada valor de G es un corte donde se cruzan; la línea que une esos cruces muestra cómo más gasto sube la producción Y y también la tasa r.</figcaption>
+        </figure>
+      </article>
+    </div>
   </div>
 </section>
 
@@ -341,10 +379,10 @@
     <div class="razones">
       <div class="razon"><h3>Primero la base</h3><p>Antes de la fórmula, el concepto que la sostiene. Así el siguiente tema se entiende solo.</p></div>
       <div class="razon"><h3>Ejercicios, no solo teoría</h3><p>Resolvemos contigo ejercicios del tipo que toma tu profesor, paso a paso.</p></div>
-      <div class="razon"><h3>Horarios por WhatsApp</h3><p>Coordinamos la hora según tu semana de clases.</p></div>
+      <div class="razon"><h3>Horarios por mensaje</h3><p>Nos escribes por Instagram y coordinamos la hora según tu semana de clases.</p></div>
       <div class="razon"><h3>Presencial o virtual</h3><p>En Trujillo o por videollamada, con la misma pizarra y el mismo ritmo.</p></div>
       <div class="razon"><h3>Precio de estudiante</h3><p>$7 la hora, sin paquetes obligatorios.</p></div>
-      <div class="razon"><h3>Herramientas propias</h3><p>Calculadoras y láminas hechas por nosotros para repasar entre sesiones.</p></div>
+      <div class="razon"><h3>Herramientas propias</h3><p>Gráficos, calculadoras y láminas hechas por nosotros para repasar entre sesiones.</p></div>
     </div>
   </div>
 </section>
@@ -353,15 +391,16 @@
   <div class="envoltura contacto-rejilla">
     <div>
       <h2>Cuéntanos qué curso te <span class="serif">preocupa</span></h2>
-      <p>La primera conversación es sin compromiso. Nos dices qué llevas y cuándo es tu examen, y armamos un plan.</p>
-      <a class="tel" href="https://wa.me/51967077156" target="_blank" rel="noopener">967 077 156</a>
-      <div>
-        <a class="boton" href="https://wa.me/51967077156?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20las%20tutor%C3%ADas%20de%20BackBone%20Academy" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Abrir WhatsApp</a>
+      <p>Escríbenos por mensaje directo en Instagram. Nos dices qué llevas y cuándo es tu examen, y armamos un plan contigo.</p>
+      <a class="usuario" href="https://www.instagram.com/backbone.academy/" target="_blank" rel="noopener">@backbone.academy</a>
+      <div class="contacto-botones">
+        <a class="boton" href="https://ig.me/m/backbone.academy" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ig"/></svg>Enviar un mensaje</a>
+        <a class="boton boton-linea" href="https://www.instagram.com/backbone.academy/" target="_blank" rel="noopener">Ver el perfil</a>
       </div>
     </div>
     <div class="qr">
-      <div class="qr-caja"><canvas id="qr-canvas" role="img" aria-label="Código QR para escribirnos por WhatsApp"></canvas></div>
-      <p>Escanéalo con la cámara del celular para abrir el chat.</p>
+      <div class="qr-caja"><canvas id="qr-canvas" role="img" aria-label="Código QR que abre el Instagram de BackBone Academy"></canvas></div>
+      <p>Escanéalo con la cámara del celular para abrir nuestro Instagram.</p>
       <button class="boton boton-linea" type="button" id="imprimir-qr">Imprimir el QR</button>
     </div>
   </div>
@@ -390,6 +429,7 @@
 
 <canvas id="qr-canvas-print" hidden></canvas>
 
+<script type="module" src="js/escenas3d.js"></script>
 <script>
 /* Cabecera y menú móvil */
 const cabecera = document.getElementById('cabecera');
@@ -406,41 +446,11 @@ menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
   menu.classList.remove('abierto'); btnMenu.setAttribute('aria-expanded', 'false');
 }));
 
-/* Gráfico de equilibrio. Unidades: P y Q de 0 a 10.
-   Oferta P = 1 + 0,8·Q; demanda P = A − 0,9·Q, donde A sube con el ingreso. */
-(function () {
-  const X0 = 50, Y0 = 280, UX = 33, UY = 25;
-  const sx = q => X0 + q * UX, sy = p => Y0 - p * UY;
-  const $ = id => document.getElementById(id);
-  const control = $('ingreso'), lectura = $('lectura');
-  const fmt = n => n.toFixed(2).replace('.', ',');
-  function dibujar() {
-    const A = parseFloat(control.value);
-    const qMax = Math.min(10, A / 0.9);
-    const d = $('curva-d');
-    d.setAttribute('x1', sx(0)); d.setAttribute('y1', sy(A));
-    d.setAttribute('x2', sx(qMax)); d.setAttribute('y2', sy(A - 0.9 * qMax));
-    $('etq-d').setAttribute('x', sx(qMax) + 4);
-    $('etq-d').setAttribute('y', Math.min(sy(A - 0.9 * qMax) - 4, 272));
-    const q = (A - 1) / 1.7, p = 1 + 0.8 * q, ex = sx(q), ey = sy(p);
-    $('punto-e').setAttribute('cx', ex); $('punto-e').setAttribute('cy', ey);
-    $('etq-e').setAttribute('x', ex + 10); $('etq-e').setAttribute('y', ey - 10);
-    $('guia-h').setAttribute('x2', ex); $('guia-h').setAttribute('y1', ey); $('guia-h').setAttribute('y2', ey);
-    $('guia-v').setAttribute('x1', ex); $('guia-v').setAttribute('x2', ex); $('guia-v').setAttribute('y2', ey);
-    $('etq-p').setAttribute('x', 16); $('etq-p').setAttribute('y', ey + 5);
-    $('etq-q').setAttribute('x', ex - 10);
-    lectura.innerHTML = `<em>P*</em> = ${fmt(p)}&nbsp;&nbsp; <em>Q*</em> = ${fmt(q)}`;
-  }
-  control.addEventListener('input', () => { $('curva-d').classList.remove('dibuja'); dibujar(); });
-  dibujar();
-})();
-
-/* Código QR */
-const waUrl = 'https://wa.me/51967077156?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20las%20tutor%C3%ADas%20de%20BackBone%20Academy';
+/* Código QR al perfil de Instagram */
+const igUrl = 'https://www.instagram.com/backbone.academy/';
 if (window.QRCode) {
-  const opts = { color: { dark: '#0D1220', light: '#F3F1EB' }, errorCorrectionLevel: 'H' };
-  QRCode.toCanvas(document.getElementById('qr-canvas'), waUrl, { ...opts, width: 184, margin: 1 }, e => e && console.error(e));
-  QRCode.toCanvas(document.getElementById('qr-canvas-print'), waUrl, { ...opts, color: { dark: '#0D1220', light: '#ffffff' }, width: 320, margin: 3 }, e => e && console.error(e));
+  QRCode.toCanvas(document.getElementById('qr-canvas'), igUrl, { color: { dark: '#0D1220', light: '#F3F1EB' }, errorCorrectionLevel: 'H', width: 184, margin: 1 }, e => e && console.error(e));
+  QRCode.toCanvas(document.getElementById('qr-canvas-print'), igUrl, { color: { dark: '#0D1220', light: '#ffffff' }, errorCorrectionLevel: 'H', width: 320, margin: 3 }, e => e && console.error(e));
 }
 
 /* Hoja imprimible con el QR */
@@ -459,8 +469,8 @@ document.getElementById('imprimir-qr').addEventListener('click', () => {
     .det{color:#4C5468;font-size:.92rem;margin-top:4px}.cursos{margin-top:20px;padding-top:16px;border-top:1px solid #C9CEDA;font-size:.92rem}</style></head>
     <body><div class="hoja"><div class="marca"><svg width="30" viewBox="0 0 100 120"><g fill="#18233A"><rect width="30" height="36" rx="9"/><rect y="42" width="30" height="36" rx="9"/><rect y="84" width="30" height="36" rx="9"/></g><g fill="#5A7BB0"><path d="M36 0H61.5A28.5 28.5 0 0 1 61.5 57H36V42H61.5A13.5 13.5 0 0 0 61.5 15H36Z"/><path d="M36 63H71.5A28.5 28.5 0 0 1 71.5 120H36V105H71.5A13.5 13.5 0 0 0 71.5 78H36Z"/></g></svg><h1>BackBone Academy</h1></div>
     <p class="sub">Aprende desde la base. Trujillo, Perú</p>
-    <img src="${dataUrl}" width="240" height="240" alt="QR de WhatsApp">
-    <div class="num">967 077 156</div><p class="det">Escanea el código para escribirnos por WhatsApp</p>
+    <img src="${dataUrl}" width="240" height="240" alt="QR de Instagram">
+    <div class="num">@backbone.academy</div><p class="det">Escanea el código para abrir nuestro Instagram</p>
     <p class="cursos">Matemática para Económicas, Microeconomía y Macroeconomía.<br>Tutorías a <strong>$7 la hora</strong>.</p></div>
     <script>window.onload=function(){window.print()}<\/script></body></html>`);
   ventana.document.close();
