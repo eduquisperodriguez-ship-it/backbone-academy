@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BackBone Academy · Portafolio</title>
+  <meta name="description" content="Portafolio de BackBone Academy (antes Quantum Economics & Analytics): marca, calculadoras de microeconomía, webs y contenido para aprender economía y matemática desde la base. Trujillo, Perú.">
+  <meta name="theme-color" content="#0D1220">
+  <meta property="og:title" content="BackBone Academy · Portafolio">
+  <meta property="og:description" content="Economía y matemática, explicadas desde la base. Marca, calculadoras, webs y contenido.">
+  <meta property="og:image" content="https://eduquisperodriguez-ship-it.github.io/backbone-academy/assets/img/og.png">
+  <meta property="og:url" content="https://eduquisperodriguez-ship-it.github.io/backbone-academy/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/schibsted-grotesk-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/fuentes.css">
+  <link rel="stylesheet" href="assets/css/backbone.css">
+
+  <style>
+    /* ── Hero ───────────────────────────────── */
+    .hero { padding: clamp(56px, 8vw, 104px) 0 clamp(72px, 10vw, 128px); }
+    .hero-rejilla { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(40px, 6vw, 96px); align-items: center; }
+    .hero-lugar { color: var(--gris-claro); margin-bottom: 28px; font-size: .98rem; }
+    .hero h1 { font-size: clamp(3.4rem, 9vw, 7.4rem); line-height: .94; margin-bottom: 32px; }
+    .hero h1 .serif { letter-spacing: -0.02em; }
+    .hero-texto { font-size: 1.2rem; line-height: 1.55; color: #D5D9E2; max-width: 50ch; margin-bottom: 40px; }
+    .hero-botones { display: flex; flex-wrap: wrap; gap: 12px; }
+
+    /* La B construida: vértebras que se apilan al cargar */
+    .construccion { position: relative; }
+    .construccion svg { width: 100%; height: auto; overflow: visible; }
+    .construccion .reticula line { stroke: rgba(174,191,219,.13); stroke-width: .4; }
+    .construccion .cota { stroke: var(--gris); stroke-width: .5; }
+    .construccion .cota-txt { font-family: var(--f-texto); font-size: 5.2px; fill: var(--gris-claro); }
+    .construccion .vertebra { fill: var(--marfil); opacity: 0; transform-box: fill-box; animation: apilar .55s cubic-bezier(.2,.8,.2,1) forwards; }
+    .construccion .v1 { animation-delay: .55s; }
+    .construccion .v2 { animation-delay: .35s; }
+    .construccion .v3 { animation-delay: .15s; }
+    .construccion .arco { fill: var(--acero); opacity: 0; animation: aparecer .6s ease forwards 1.05s; }
+    .construccion .arco2 { animation-delay: 1.25s; }
+    .construccion .marcas { opacity: 0; animation: aparecer .8s ease forwards 1.6s; }
+    @keyframes apilar { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+    @keyframes aparecer { to { opacity: 1; } }
+    .construccion figcaption { margin-top: 18px; font-size: .92rem; color: var(--gris-claro); max-width: 40ch; }
+
+    /* ── Recorrido: la columna ──────────────── */
+    .columna { list-style: none; position: relative; }
+    .etapa {
+      display: grid; grid-template-columns: 150px 44px minmax(0, 1fr);
+      column-gap: 28px; position: relative; padding-bottom: 52px;
+    }
+    .etapa:last-child { padding-bottom: 0; }
+    .etapa::before {               /* el canal de la columna */
+      content: ''; position: absolute; left: calc(150px + 28px + 21px); top: 40px; bottom: 6px;
+      width: 2px; background: rgba(174,191,219,.16);
+    }
+    .etapa:last-child::before { display: none; }
+    .etapa-fecha { font-size: .95rem; color: var(--gris-claro); padding-top: 3px; text-align: right; }
+    .etapa-marca { width: 22px; height: 27px; border-radius: 7px; background: var(--marfil); margin: 0 auto; position: relative; z-index: 1; }
+    .etapa-quantum .etapa-marca { background: transparent; border: 2px solid rgba(243,241,235,.55); }
+    .etapa-hoy .etapa-marca { background: var(--acero); }
+    .etapa h3 { font-size: clamp(1.45rem, 2.4vw, 1.9rem); letter-spacing: -0.03em; margin-bottom: 10px; }
+    .etapa p { color: #C9CEDA; max-width: 62ch; }
+    .etapa .enlace { display: inline-block; margin-top: 12px; }
+    .leyenda-columna { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--linea); font-size: .9rem; color: var(--gris-claro); }
+    .leyenda-columna span { display: inline-flex; align-items: center; gap: 10px; }
+    .leyenda-columna i { width: 12px; height: 15px; border-radius: 4px; background: var(--marfil); display: inline-block; }
+    .leyenda-columna i.q { background: transparent; border: 1.5px solid rgba(243,241,235,.55); }
+    .leyenda-columna i.h { background: var(--acero); }
+
+    /* ── Herramientas ───────────────────────── */
+    .herramienta {
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(32px, 5vw, 72px); align-items: center;
+      padding: clamp(40px, 5vw, 56px) 0; border-top: 1px solid var(--linea);
+    }
+    .herramienta:last-child { border-bottom: 1px solid var(--linea); }
+    .herramienta h3 { font-size: clamp(1.7rem, 3vw, 2.4rem); margin-bottom: 16px; }
+    .herramienta > div > p { color: #C9CEDA; max-width: 52ch; }
+    .herramienta dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; margin: 22px 0 26px; font-size: .94rem; }
+    .herramienta dt { color: var(--gris-claro); }
+    .herramienta dd { color: var(--marfil); }
+    .lamina {
+      background: var(--medianoche); border-radius: 14px; padding: 22px 22px 14px;
+      border: 1px solid var(--linea);
+    }
+    .lamina svg { width: 100%; height: auto; }
+    .lamina .eje { stroke: var(--marfil); stroke-width: 1.4; fill: none; }
+    .lamina .guia { stroke: var(--gris); stroke-width: 1; stroke-dasharray: 3 4; fill: none; }
+    .lamina .c-acero { stroke: var(--acero); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .lamina .c-niebla { stroke: var(--niebla); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .lamina .c-marfil { stroke: var(--marfil); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .lamina .c-tenue { stroke: rgba(174,191,219,.35); stroke-width: 2; fill: none; stroke-linecap: round; }
+    .lamina .punto { fill: var(--marfil); }
+    .lamina .t { font-family: var(--f-serif); font-style: italic; font-size: 17px; fill: var(--marfil); }
+    .lamina .t-acero { fill: var(--acero-vivo); }
+    .lamina .t-niebla { fill: var(--niebla); }
+    .lamina .t-gris { fill: var(--gris-claro); font-size: 14px; }
+    .lamina .t-sans { font-family: var(--f-texto); font-style: normal; font-size: 12.5px; fill: var(--gris-claro); }
+    .lamina .nodo { fill: var(--profundo); stroke: rgba(174,191,219,.45); stroke-width: 1.2; }
+    .lamina .nodo-on { fill: var(--acero); stroke: none; }
+    .lamina figcaption { font-size: .85rem; color: var(--gris-claro); margin-top: 8px; }
+
+    /* ── Marca (fondo piedra) ───────────────── */
+    .marca-rejilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(28px, 4vw, 48px) clamp(20px, 3vw, 40px); }
+    .bloque-logo { grid-column: span 7; background: var(--medianoche); color: var(--marfil); border-radius: 18px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; justify-content: space-between; gap: 40px; }
+    .bloque-logo .lockup { display: flex; align-items: center; gap: clamp(18px, 3vw, 30px); }
+    .bloque-logo .lockup svg { width: clamp(64px, 9vw, 104px); height: auto; }
+    .bloque-logo .lockup .logo-nombre { font-size: clamp(2.6rem, 6.2vw, 4.6rem); letter-spacing: -0.035em; line-height: .9; }
+    .bloque-logo .lockup .logo-academy { font-size: clamp(.8rem, 1.6vw, 1.15rem); letter-spacing: .62em; margin-top: 12px; color: var(--niebla); }
+    .bloque-logo p { color: var(--gris-claro); font-size: .95rem; max-width: 52ch; }
+    .bloque-antes { grid-column: span 5; display: flex; flex-direction: column; gap: 18px; }
+    .antes-despues { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .antes-despues figure { display: flex; flex-direction: column; gap: 10px; }
+    .antes-despues .marco { aspect-ratio: 1; border-radius: 14px; overflow: hidden; background: var(--medianoche); display: grid; place-items: center; }
+    .antes-despues .marco img { width: 100%; height: 100%; object-fit: cover; }
+    .antes-despues .marco svg { width: 38%; }
+    .antes-despues figcaption { font-size: .88rem; color: var(--gris-oscuro); line-height: 1.45; }
+    .antes-despues figcaption strong { color: var(--pizarra); font-weight: 600; display: block; }
+    .bloque-antes > p { font-size: .98rem; color: var(--gris-oscuro); }
+
+    .paleta { grid-column: span 12; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); border-radius: 14px; overflow: hidden; border: 1px solid var(--linea-clara); }
+    .muestra { aspect-ratio: 3 / 4; padding: 14px; display: flex; flex-direction: column; justify-content: flex-end; font-size: .82rem; line-height: 1.35; }
+    .muestra strong { display: block; font-weight: 600; font-size: .9rem; overflow-wrap: anywhere; }
+    .muestra code { font-family: var(--f-texto); opacity: .8; }
+
+    .tipos { grid-column: span 7; }
+    .tipos .specimen { font-family: var(--f-titular); font-weight: 800; letter-spacing: -0.04em; font-size: clamp(2.4rem, 5.2vw, 4.2rem); line-height: .98; color: var(--pizarra); margin-bottom: 26px; }
+    .tipos ul { list-style: none; border-top: 1px solid var(--linea-clara); }
+    .tipos li { display: grid; grid-template-columns: 200px 1fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--linea-clara); font-size: .95rem; color: var(--gris-oscuro); }
+    .tipos li b { color: var(--pizarra); font-weight: 600; }
+    .tipos .f1 { font-family: var(--f-titular); font-weight: 800; letter-spacing: -0.03em; }
+    .tipos .f2 { font-family: var(--f-serif); font-style: italic; font-size: 1.15rem; font-weight: 400; }
+    .voz { grid-column: span 5; }
+    .voz h3 { font-size: 1.5rem; letter-spacing: -0.03em; margin-bottom: 16px; color: var(--pizarra); }
+    .voz table { width: 100%; border-collapse: collapse; font-size: .94rem; }
+    .voz th { text-align: left; font-weight: 600; color: var(--gris-oscuro); padding: 0 0 10px; font-size: .85rem; }
+    .voz td { padding: 12px 12px 12px 0; border-top: 1px solid var(--linea-clara); vertical-align: top; }
+    .voz td:first-child { color: var(--gris-oscuro); text-decoration: line-through; text-decoration-color: rgba(76,84,104,.5); }
+    .voz td:last-child { color: var(--pizarra); font-weight: 500; }
+
+    /* ── Contenido ──────────────────────────── */
+    .portadas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2vw, 24px); margin-bottom: 18px; }
+    .portada {
+      aspect-ratio: 4 / 5; border-radius: 10px; background: var(--medianoche);
+      border: 1px solid var(--linea);
+      padding: clamp(16px, 2.2vw, 26px); display: flex; flex-direction: column; justify-content: space-between;
+      container-type: inline-size;
+    }
+    .portada-arriba { display: flex; justify-content: space-between; align-items: center; font-size: clamp(.62rem, 3.6cqi, .8rem); color: var(--gris-claro); }
+    .portada-arriba .logo svg { width: 12px; }
+    .portada-arriba .logo-nombre { font-size: clamp(.7rem, 4.4cqi, .95rem); }
+    .portada h3 { font-size: clamp(1.3rem, 10.5cqi, 2.4rem); line-height: 1; letter-spacing: -0.04em; }
+    .portada-abajo { display: flex; justify-content: space-between; align-items: flex-end; font-size: clamp(.6rem, 3.4cqi, .78rem); color: var(--gris-claro); border-top: 1px solid var(--linea); padding-top: 10px; }
+    .portada-abajo b { color: var(--niebla); font-weight: 500; }
+    .nota { font-size: .9rem; color: var(--gris-claro); margin-bottom: clamp(56px, 7vw, 88px); }
+
+    .ruta { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--linea); }
+    .modulo { padding: 24px 20px 8px 0; border-right: 1px solid var(--linea); }
+    .modulo + .modulo { padding-left: 20px; }
+    .modulo:last-child { border-right: 0; }
+    .modulo-num { font-family: var(--f-titular); font-weight: 800; font-size: 2.2rem; letter-spacing: -0.04em; line-height: 1; color: var(--acero-vivo); margin-bottom: 8px; }
+    .modulo h3 { font-size: 1.12rem; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 16px; min-height: 2.3em; }
+    .modulo ul { list-style: none; }
+    .modulo li { display: grid; grid-template-columns: 12px 1fr; gap: 10px; align-items: start; font-size: .9rem; line-height: 1.35; padding: 6px 0; color: #C9CEDA; }
+    .modulo li::before { content: ''; width: 9px; height: 11px; border-radius: 3px; margin-top: 3px; border: 1.5px solid rgba(174,191,219,.5); }
+    .modulo li.hecho::before { background: var(--marfil); border-color: var(--marfil); }
+    .modulo li.hecho { color: var(--marfil); }
+    .ruta-leyenda { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 22px; font-size: .88rem; color: var(--gris-claro); }
+    .ruta-leyenda span { display: inline-flex; align-items: center; gap: 8px; }
+    .ruta-leyenda i { width: 9px; height: 11px; border-radius: 3px; border: 1.5px solid rgba(174,191,219,.5); display: inline-block; }
+    .ruta-leyenda i.h { background: var(--marfil); border-color: var(--marfil); }
+
+    .lineas { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 56px); margin-top: clamp(56px, 7vw, 88px); padding-top: 32px; border-top: 1px solid var(--linea); }
+    .lineas h3 { font-size: 1.5rem; letter-spacing: -0.03em; margin-bottom: 10px; }
+    .lineas p { color: #C9CEDA; max-width: 52ch; }
+    .lineas .peso { font-family: var(--f-titular); font-weight: 800; font-size: 3.2rem; letter-spacing: -0.04em; line-height: 1; margin-bottom: 14px; color: var(--niebla); }
+
+    /* ── Webs ───────────────────────────────── */
+    .webs { display: grid; grid-template-columns: 1.3fr 1fr; grid-template-rows: auto auto; gap: clamp(20px, 3vw, 36px); }
+    .web { display: flex; flex-direction: column; gap: 14px; text-decoration: none; }
+    .web:first-child { grid-row: span 2; }
+    .web-captura { border-radius: 12px; overflow: hidden; border: 1px solid var(--linea); background: var(--medianoche); aspect-ratio: 16 / 10; }
+    .web:first-child .web-captura { aspect-ratio: auto; flex: 1; min-height: 320px; }
+    .web-captura img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform .5s cubic-bezier(.2,.8,.2,1); }
+    .web:hover .web-captura img { transform: scale(1.015); }
+    .web h3 { font-size: 1.35rem; letter-spacing: -0.03em; }
+    .web p { font-size: .95rem; color: var(--gris-claro); max-width: 56ch; }
+    .web:hover h3 { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 2px; text-decoration-color: var(--acero); }
+
+    /* ── Contacto ───────────────────────────── */
+    .contacto-rejilla { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 96px); align-items: end; }
+    .contacto h2 { font-size: clamp(2.6rem, 6.5vw, 5.4rem); margin-bottom: 24px; }
+    .contacto-texto { color: #C9CEDA; font-size: 1.12rem; max-width: 48ch; margin-bottom: 32px; }
+    .canales { list-style: none; border-top: 1px solid var(--linea); }
+    .canales li { border-bottom: 1px solid var(--linea); }
+    .canales a { display: grid; grid-template-columns: 110px 1fr; gap: 16px; align-items: baseline; padding: 20px 0; text-decoration: none; }
+    .canales span { color: var(--gris-claro); font-size: .92rem; }
+    .canales strong { font-family: var(--f-titular); font-weight: 800; letter-spacing: -0.03em; font-size: clamp(1.3rem, 2.6vw, 1.9rem); transition: color .15s; }
+    .canales a:hover strong { color: var(--niebla); }
+
+    /* ── Responsive ─────────────────────────── */
+    @media (max-width: 1020px) {
+      .hero-rejilla, .herramienta, .contacto-rejilla { grid-template-columns: 1fr; }
+      .construccion { max-width: 440px; }
+      .bloque-logo, .bloque-antes, .tipos, .voz { grid-column: span 12; }
+      .paleta { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .ruta { grid-template-columns: 1fr 1fr; }
+      .modulo, .modulo + .modulo { padding: 24px 20px 16px 0; border-right: 0; border-bottom: 1px solid var(--linea); }
+      .modulo:nth-child(odd) { border-right: 1px solid var(--linea); }
+      .modulo:nth-child(even) { padding-left: 20px; }
+      .modulo h3 { min-height: 0; }
+      .webs { grid-template-columns: 1fr; }
+      .web:first-child { grid-row: auto; }
+      .web:first-child .web-captura { aspect-ratio: 16 / 10; min-height: 0; }
+    }
+    @media (max-width: 720px) {
+      .etapa { grid-template-columns: 30px minmax(0, 1fr); column-gap: 18px; }
+      .etapa::before { left: 14px; top: 34px; }
+      .etapa-fecha { grid-column: 2; grid-row: 1; text-align: left; padding: 0 0 4px; }
+      .etapa > div:last-child { grid-column: 2; grid-row: 2; }
+      .etapa > .etapa-marca { grid-column: 1; grid-row: 1 / span 2; margin: 0 auto; }
+      .portadas { grid-template-columns: 1fr 1fr; }
+      .portada:last-child { display: none; }
+      .ruta { grid-template-columns: 1fr; }
+      .modulo, .modulo + .modulo, .modulo:nth-child(even) { padding: 22px 0 14px; border-right: 0; }
+      .modulo:nth-child(odd) { border-right: 0; }
+      .lineas { grid-template-columns: 1fr; }
+      .tipos li { grid-template-columns: 1fr; gap: 2px; }
+      .canales a { grid-template-columns: 1fr; gap: 2px; }
+      .antes-despues { gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="b" viewBox="0 0 100 120">
+    <g fill="#F3F1EB"><rect width="30" height="36" rx="9"/><rect y="42" width="30" height="36" rx="9"/><rect y="84" width="30" height="36" rx="9"/></g>
+    <g fill="#5A7BB0"><path d="M36 0H61.5A28.5 28.5 0 0 1 61.5 57H36V42H61.5A13.5 13.5 0 0 0 61.5 15H36Z"/><path d="M36 63H71.5A28.5 28.5 0 0 1 71.5 120H36V105H71.5A13.5 13.5 0 0 0 71.5 78H36Z"/></g>
+  </symbol>
+  <symbol id="wa" viewBox="0 0 24 24"><path fill="currentColor" d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.08-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.91-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.06 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2-1.42.25-.69.25-1.29.18-1.41-.08-.12-.28-.2-.57-.35M12.05 21.79h0a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88a9.82 9.82 0 0 1 6.99 2.9 9.82 9.82 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.89 9.88M20.47 3.49A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.68 1.45h0c6.56 0 11.89-5.34 11.9-11.9a11.82 11.82 0 0 0-3.48-8.41z"/></symbol>
+</svg>
+
+<header class="cabecera" id="cabecera">
+  <div class="envoltura cabecera-fila">
+    <a class="logo" href="#" aria-label="BackBone Academy, inicio">
+      <svg viewBox="0 0 100 120" aria-hidden="true"><use href="#b"/></svg>
+      <span class="logo-texto"><span class="logo-nombre">BackBone</span><span class="logo-academy">ACADEMY</span></span>
+    </a>
+    <nav aria-label="Principal">
+      <ul class="menu">
+        <li><a href="#recorrido">Recorrido</a></li>
+        <li><a href="#herramientas">Calculadoras</a></li>
+        <li><a href="#marca">Marca</a></li>
+        <li><a href="#contenido-redes">Contenido</a></li>
+        <li><a href="#webs">Webs</a></li>
+        <li><a class="boton" href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+    <button class="hamburguesa" id="hamburguesa" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil"><span></span></button>
+  </div>
+  <nav class="menu-movil" id="menu-movil" aria-label="Menú móvil">
+    <a href="#recorrido">Recorrido</a>
+    <a href="#herramientas">Calculadoras</a>
+    <a href="#marca">Marca</a>
+    <a href="#contenido-redes">Contenido</a>
+    <a href="#webs">Webs</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+</header>
+
+<main id="contenido">
+
+<!-- ── Hero ─────────────────────────────────────────── -->
+<section class="hero">
+  <div class="envoltura hero-rejilla">
+    <div>
+      <p class="hero-lugar">Portafolio de BackBone Academy, Trujillo, Perú</p>
+      <h1>Aprende desde la <span class="serif">base.</span></h1>
+      <p class="hero-texto">
+        BackBone Academy enseña economía y matemática desde lo esencial. Empezó como
+        Quantum Economics &amp; Analytics, un grupo de tutorías para estudiantes de Economía.
+        Aquí está lo que construimos hasta hoy: la marca, cuatro calculadoras, las webs
+        y las primeras series de contenido.
+      </p>
+      <div class="hero-botones">
+        <a class="boton" href="#herramientas">Probar las calculadoras</a>
+        <a class="boton boton-linea" href="#recorrido">Ver el recorrido</a>
+      </div>
+    </div>
+
+    <figure class="construccion">
+      <svg viewBox="-34 -22 172 168" role="img" aria-label="Construcción del logo: tres vértebras y dos arcos forman una B">
+        <g class="reticula">
+          <line x1="0" y1="-12" x2="0" y2="132"/><line x1="30" y1="-12" x2="30" y2="132"/>
+          <line x1="36" y1="-12" x2="36" y2="132"/><line x1="100" y1="-12" x2="100" y2="132"/>
+          <line x1="-12" y1="0" x2="112" y2="0"/><line x1="-12" y1="36" x2="112" y2="36"/>
+          <line x1="-12" y1="42" x2="112" y2="42"/><line x1="-12" y1="57" x2="112" y2="57"/>
+          <line x1="-12" y1="63" x2="112" y2="63"/><line x1="-12" y1="78" x2="112" y2="78"/>
+          <line x1="-12" y1="84" x2="112" y2="84"/><line x1="-12" y1="120" x2="112" y2="120"/>
+        </g>
+        <rect class="vertebra v1" x="0" y="0" width="30" height="36" rx="9"/>
+        <rect class="vertebra v2" x="0" y="42" width="30" height="36" rx="9"/>
+        <rect class="vertebra v3" x="0" y="84" width="30" height="36" rx="9"/>
+        <path class="arco" d="M36 0H61.5A28.5 28.5 0 0 1 61.5 57H36V42H61.5A13.5 13.5 0 0 0 61.5 15H36Z"/>
+        <path class="arco arco2" d="M36 63H71.5A28.5 28.5 0 0 1 71.5 120H36V105H71.5A13.5 13.5 0 0 0 71.5 78H36Z"/>
+        <g class="marcas">
+          <line class="cota" x1="0" y1="-8" x2="30" y2="-8"/><text class="cota-txt" x="15" y="-11" text-anchor="middle">30</text>
+          <line class="cota" x1="-8" y1="0" x2="-8" y2="36"/><text class="cota-txt" x="-11" y="20" text-anchor="end">36</text>
+          <text class="cota-txt" x="-11" y="61.5" text-anchor="end">6</text>
+          <line class="cota" x1="108" y1="0" x2="108" y2="57"/><text class="cota-txt" x="111" y="31">57</text>
+          <line class="cota" x1="0" y1="128" x2="100" y2="128"/><text class="cota-txt" x="50" y="137" text-anchor="middle">100 × 120</text>
+        </g>
+      </svg>
+      <figcaption>La B vertebral: tres vértebras sostienen dos arcos. Cada concepto se apoya en el anterior.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ── Recorrido ────────────────────────────────────── -->
+<section class="seccion seccion-alterna" id="recorrido">
+  <div class="envoltura">
+    <div class="encabezado">
+      <h2>De Quantum a <span class="serif">BackBone</span></h2>
+      <p>Cada etapa se apoya en la anterior, como las vértebras del logo. Las primeras son de Quantum; desde octubre de 2026 todo sale con la marca nueva.</p>
+    </div>
+
+    <ol class="columna">
+      <li class="etapa etapa-quantum">
+        <div class="etapa-fecha">Quantum</div>
+        <div class="etapa-marca" aria-hidden="true"></div>
+        <div>
+          <h3>Tutorías en Ciencias Económicas</h3>
+          <p>Clases de Matemática para Económicas, Microeconomía y Macroeconomía, en Trujillo o por videollamada, a $7 la hora. El primer logo era una Q rodeada por una órbita, con barras de crecimiento adentro.</p>
+          <a class="enlace" href="archivo/quantum-v1/">Ver la primera web</a>
+        </div>
+      </li>
+      <li class="etapa etapa-quantum">
+        <div class="etapa-fecha">Quantum</div>
+        <div class="etapa-marca" aria-hidden="true"></div>
+        <div>
+          <h3>Segunda versión de la web</h3>
+          <p>Más sobria y más rápida. Abre con un gráfico de oferta y demanda que el visitante mueve con el ingreso, y cierra con un código QR que se imprime y lleva directo a WhatsApp.</p>
+          <a class="enlace" href="archivo/quantum-v2/">Ver la segunda web</a>
+        </div>
+      </li>
+      <li class="etapa etapa-quantum">
+        <div class="etapa-fecha">Quantum</div>
+        <div class="etapa-marca" aria-hidden="true"></div>
+        <div>
+          <h3>Cuatro calculadoras de Microeconomía</h3>
+          <p>Para los temas que más se preguntan en examen: monopolio y discriminación de precios, monopolio con varias plantas, duopolio con teoría de juegos y oligopolio de Cournot, Bertrand y Stackelberg.</p>
+          <a class="enlace" href="#herramientas">Ver las calculadoras</a>
+        </div>
+      </li>
+      <li class="etapa">
+        <div class="etapa-fecha">7 de octubre de 2026</div>
+        <div class="etapa-marca" aria-hidden="true"></div>
+        <div>
+          <h3>Manual de marca de BackBone Academy</h3>
+          <p>Paleta oscura y sobria, la B vertebral, Schibsted Grotesk con una palabra en Instrument Serif y una promesa: aprende desde la base. “Academy” dice que es educación; “BackBone” queda como marca madre si la empresa crece.</p>
+          <a class="enlace" href="#marca">Ver la marca</a>
+        </div>
+      </li>
+      <li class="etapa">
+        <div class="etapa-fecha">12 al 19 de octubre</div>
+        <div class="etapa-marca" aria-hidden="true"></div>
+        <div>
+          <h3>Lanzamiento en Instagram y TikTok</h3>
+          <p>Dos avances sin mostrar el logo, “Todo lo que sabes se apoya en algo” y “Primero, la base”, y luego la revelación en video vertical y el carrusel del manifiesto.</p>
+        </div>
+      </li>
+      <li class="etapa">
+        <div class="etapa-fecha">18 al 30 de octubre</div>
+        <div class="etapa-marca" aria-hidden="true"></div>
+        <div>
+          <h3>Primeras series de Desde la base</h3>
+          <p>Escasez y costo de oportunidad, oferta y demanda, el error de desplazar la curva, y las tres primeras series numeradas: elasticidad, tasa real y la derivada como costo marginal.</p>
+          <a class="enlace" href="#contenido-redes">Ver el contenido</a>
+        </div>
+      </li>
+      <li class="etapa">
+        <div class="etapa-fecha">Noviembre de 2026</div>
+        <div class="etapa-marca" aria-hidden="true"></div>
+        <div>
+          <h3>Calendario de noviembre</h3>
+          <p>Doce publicaciones los lunes, miércoles y viernes a las 7:00 p. m. Diez son de Desde la base; dos son de Perú explicado, siempre después del concepto que explican.</p>
+        </div>
+      </li>
+      <li class="etapa etapa-hoy">
+        <div class="etapa-fecha">Hoy</div>
+        <div class="etapa-marca" aria-hidden="true"></div>
+        <div>
+          <h3>Web nueva y calculadoras con la marca</h3>
+          <p>La web de tutorías pasa a BackBone Academy y las cuatro calculadoras se ven y se navegan igual. Este portafolio junta todo en un solo lugar.</p>
+          <a class="enlace" href="academia/">Abrir la web de BackBone Academy</a>
+        </div>
+      </li>
+    </ol>
+
+    <div class="leyenda-columna" aria-hidden="true">
+      <span><i class="q"></i>Etapa Quantum</span>
+      <span><i></i>BackBone Academy</span>
+      <span><i class="h"></i>Lo más reciente</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Calculadoras ─────────────────────────────────── -->
+<section class="seccion" id="herramientas">
+  <div class="envoltura">
+    <div class="encabezado">
+      <h2>Calculadoras para <span class="serif">practicar</span></h2>
+      <p>Las hicimos para resolver ejercicios de clase y revisar el procedimiento, no solo el resultado. Funcionan en el navegador, sin instalar nada y sin cuenta.</p>
+    </div>
+
+    <article class="herramienta">
+      <div>
+        <h3>Monopolio y discriminación de precios</h3>
+        <p>Escribe la demanda y el costo total como los da el ejercicio. Calcula el monopolio simple y la discriminación de primer, segundo y tercer grado, con el gráfico y cada paso de la derivación.</p>
+        <dl>
+          <dt>Resuelve</dt><dd>Óptimo IMg = CMg, pérdida de eficiencia, tarifa en dos tramos con hasta tres segmentos</dd>
+          <dt>Hecha con</dt><dd>Nerdamer, MathJax y Chart.js</dd>
+        </dl>
+        <a class="boton" href="herramientas/monopolio/">Abrir la calculadora</a>
+      </div>
+      <figure class="lamina">
+        <svg viewBox="0 0 400 280" role="img" aria-label="Gráfico de monopolio: la demanda, el ingreso marginal y el costo marginal">
+          <path class="eje" d="M50 20V240H385"/>
+          <path class="c-niebla" d="M52 40L370 236"/>
+          <path class="c-acero" d="M52 40L211 236"/>
+          <path class="c-marfil" d="M70 214Q180 175 330 70"/>
+          <path class="guia" d="M156 168V240M156 168H50"/>
+          <path class="guia" d="M156 105H50"/>
+          <circle class="punto" cx="156" cy="168" r="5"/>
+          <circle class="punto" cx="156" cy="105" r="5"/>
+          <text class="t t-niebla" x="350" y="222">D</text>
+          <text class="t t-acero" x="214" y="232">IMg</text>
+          <text class="t" x="334" y="66">CMg</text>
+          <text class="t t-gris" x="18" y="110">Pm</text>
+          <text class="t t-gris" x="146" y="262">Qm</text>
+        </svg>
+        <figcaption>El monopolista produce donde IMg corta a CMg y cobra lo que dice la demanda.</figcaption>
+      </figure>
+    </article>
+
+    <article class="herramienta">
+      <div>
+        <h3>Monopolio de tercer grado con varias plantas</h3>
+        <p>Suma horizontalmente el ingreso marginal de hasta tres segmentos y el costo marginal de hasta tres plantas. Encuentra el punto Ñ donde se cruzan y reparte la producción entre plantas.</p>
+        <dl>
+          <dt>Resuelve</dt><dd>Precio por segmento, cantidad por planta, funciones por tramos y beneficio total</dd>
+          <dt>Modo extra</dt><dd>Cantidad total fija: el CMg óptimo para producir Q al menor costo</dd>
+        </dl>
+        <a class="boton" href="herramientas/monopolio-tercer-grado/">Abrir la calculadora</a>
+      </div>
+      <figure class="lamina">
+        <svg viewBox="0 0 400 280" role="img" aria-label="Ingreso marginal y costo marginal agregados, con quiebres">
+          <path class="eje" d="M50 20V240H385"/>
+          <path class="c-acero" d="M52 36L118 92L214 150L360 214"/>
+          <path class="c-marfil" d="M52 196L104 168L190 132L360 70"/>
+          <path class="guia" d="M200 140V240M200 140H50"/>
+          <circle class="punto" cx="200" cy="140" r="5"/>
+          <circle cx="118" cy="92" r="3" fill="#5A7BB0"/><circle cx="214" cy="150" r="3" fill="#5A7BB0"/>
+          <circle cx="104" cy="168" r="3" fill="#F3F1EB"/><circle cx="190" cy="132" r="3" fill="#F3F1EB"/>
+          <text class="t t-acero" x="300" y="222">IMg total</text>
+          <text class="t" x="296" y="70">CMg total</text>
+          <text class="t t-gris" x="22" y="145">Ñ</text>
+          <text class="t t-gris" x="190" y="262">Q total</text>
+        </svg>
+        <figcaption>Cada quiebre es un segmento o una planta que entra al mercado.</figcaption>
+      </figure>
+    </article>
+
+    <article class="herramienta">
+      <div>
+        <h3>Duopolio y teoría de juegos</h3>
+        <p>Dos empresas eligen entre dos productos y pagan una penalidad si producen lo mismo. La calculadora deriva cada óptimo con SymPy, arma la matriz de pagos y resuelve el juego secuencial por inducción hacia atrás.</p>
+        <dl>
+          <dt>Resuelve</dt><dd>Matriz en forma normal, árbol del juego y equilibrio de Nash perfecto en subjuegos</dd>
+          <dt>Hecha con</dt><dd>Python y SymPy dentro del navegador (Pyodide)</dd>
+        </dl>
+        <a class="boton" href="herramientas/duopolio/">Abrir la calculadora</a>
+      </div>
+      <figure class="lamina">
+        <svg viewBox="0 0 400 280" role="img" aria-label="Árbol de un juego secuencial con el camino de equilibrio resaltado">
+          <path class="c-tenue" d="M200 46L110 128M110 128L62 214M110 128L158 214M290 128L242 214M290 128L338 214"/>
+          <path class="c-acero" d="M200 46L290 128L242 214"/>
+          <path class="c-tenue" d="M200 46L290 128" style="display:none"/>
+          <circle class="nodo-on" cx="200" cy="46" r="13"/>
+          <circle class="nodo" cx="110" cy="128" r="11"/>
+          <circle class="nodo-on" cx="290" cy="128" r="11"/>
+          <circle class="nodo" cx="62" cy="214" r="7"/><circle class="nodo" cx="158" cy="214" r="7"/>
+          <circle class="nodo-on" cx="242" cy="214" r="8"/><circle class="nodo" cx="338" cy="214" r="7"/>
+          <text class="t" x="222" y="40">Empresa 1</text>
+          <text class="t t-gris" x="40" y="124">P1</text><text class="t t-gris" x="312" y="124">P2</text>
+          <text class="t-sans" x="62" y="244" text-anchor="middle">(−270, −285)</text>
+          <text class="t-sans" x="158" y="244" text-anchor="middle">(865, 712)</text>
+          <text class="t-sans" x="242" y="244" text-anchor="middle" style="fill:#F3F1EB">(205, 1218)</text>
+          <text class="t-sans" x="338" y="244" text-anchor="middle">(−270, −285)</text>
+        </svg>
+        <figcaption>Ejemplo ilustrativo: el camino resaltado es el que eligen ambas empresas.</figcaption>
+      </figure>
+    </article>
+
+    <article class="herramienta">
+      <div>
+        <h3>Oligopolio: Cournot, Bertrand y Stackelberg</h3>
+        <p>Compara la guerra en cantidades con la guerra en precios. Cruza estrategias de Cournot, colusión, líder y seguidor en una matriz de 2 × 2 o 3 × 3 y marca el equilibrio de Nash y las mejores respuestas.</p>
+        <dl>
+          <dt>Resuelve</dt><dd>Funciones de reacción, curva de contrato, árbol en forma extensiva y reporte final</dd>
+          <dt>Hecha con</dt><dd>React y Recharts</dd>
+        </dl>
+        <a class="boton" href="herramientas/oligopolios/">Abrir la calculadora</a>
+      </div>
+      <figure class="lamina">
+        <svg viewBox="0 0 400 280" role="img" aria-label="Funciones de reacción de Cournot, punto de Stackelberg y curva de contrato">
+          <path class="eje" d="M50 20V240H385"/>
+          <path class="c-tenue" d="M52 178L114 240" stroke-dasharray="6 6"/>
+          <path class="c-acero" d="M52 40L236 238"/>
+          <path class="c-niebla" d="M52 132L370 236"/>
+          <path class="guia" d="M175 172V240M175 172H50"/>
+          <circle class="punto" cx="175" cy="172" r="5"/>
+          <circle cx="250" cy="196.7" r="5" fill="#7D9CCF"/>
+          <text class="t t-acero" x="72" y="52">R₁</text>
+          <text class="t t-niebla" x="338" y="214">R₂</text>
+          <text class="t" x="178" y="160">C</text>
+          <text class="t t-acero" x="252" y="186">S</text>
+          <text class="t-sans" x="60" y="170">colusión</text>
+          <text class="t t-gris" x="360" y="262">q₁</text>
+          <text class="t t-gris" x="26" y="34">q₂</text>
+        </svg>
+        <figcaption>C es el equilibrio de Cournot; S, el de Stackelberg con la firma 1 como líder. La línea punteada reúne los repartos de colusión.</figcaption>
+      </figure>
+    </article>
+  </div>
+</section>
+
+<!-- ── Marca ────────────────────────────────────────── -->
+<section class="seccion seccion-clara" id="marca">
+  <div class="envoltura">
+    <div class="encabezado">
+      <h2>Una marca para <span class="serif">décadas</span></h2>
+      <p>BackBone Academy tenía que verse seria y durar. Por eso dejamos el verde de Quantum, bajamos el contraste del color y construimos todo alrededor de una sola idea: la columna.</p>
+    </div>
+
+    <div class="marca-rejilla">
+      <div class="bloque-logo">
+        <div class="lockup" role="img" aria-label="Logo de BackBone Academy">
+          <svg viewBox="0 0 100 120" aria-hidden="true"><use href="#b"/></svg>
+          <div class="logo-texto"><span class="logo-nombre">BackBone</span><span class="logo-academy">ACADEMY</span></div>
+        </div>
+        <p>Isotipo sobre retícula de 100 × 120: vértebras de 30 × 36 con radio 9 y una separación constante de 6. El arco de abajo es más ancho, como en una B tipográfica, para que el símbolo se apoye con peso. Tamaño mínimo: 24 px de alto.</p>
+      </div>
+
+      <div class="bloque-antes">
+        <div class="antes-despues">
+          <figure>
+            <div class="marco"><img src="assets/img/quantum-logo.jpg" alt="Logo de Quantum Economics & Analytics: una Q en órbita con barras de crecimiento" loading="lazy"></div>
+            <figcaption><strong>Antes</strong>Quantum Economics &amp; Analytics. Verde y azul, una Q en órbita.</figcaption>
+          </figure>
+          <figure>
+            <div class="marco"><svg viewBox="0 0 100 120" role="img" aria-label="Isotipo de BackBone"><use href="#b"/></svg></div>
+            <figcaption><strong>Ahora</strong>BackBone Academy. Azules profundos, una sola columna.</figcaption>
+          </figure>
+        </div>
+        <p>Quantum hablaba de crecimiento. BackBone habla de estructura: primero se arma la base y recién después se sube.</p>
+      </div>
+
+      <div class="paleta" role="list" aria-label="Paleta de color">
+        <div class="muestra" role="listitem" style="background:#0D1220;color:#F3F1EB"><strong>Medianoche</strong><code>#0D1220</code></div>
+        <div class="muestra" role="listitem" style="background:#16213A;color:#F3F1EB"><strong>Azul profundo</strong><code>#16213A</code></div>
+        <div class="muestra" role="listitem" style="background:#18233A;color:#F3F1EB;box-shadow:inset 1px 0 0 rgba(243,241,235,.08)"><strong>Azul pizarra</strong><code>#18233A</code></div>
+        <div class="muestra" role="listitem" style="background:#5A7BB0;color:#0D1220"><strong>Azul acero</strong><code>#5A7BB0</code></div>
+        <div class="muestra" role="listitem" style="background:#AEBFDB;color:#18233A"><strong>Azul niebla</strong><code>#AEBFDB</code></div>
+        <div class="muestra" role="listitem" style="background:#6B7385;color:#F3F1EB"><strong>Gris pizarra</strong><code>#6B7385</code></div>
+        <div class="muestra" role="listitem" style="background:#E7E3DA;color:#18233A;box-shadow:inset 1px 0 0 rgba(24,35,58,.1)"><strong>Piedra clara</strong><code>#E7E3DA</code></div>
+        <div class="muestra" role="listitem" style="background:#F3F1EB;color:#18233A;box-shadow:inset 1px 0 0 rgba(24,35,58,.1)"><strong>Marfil</strong><code>#F3F1EB</code></div>
+      </div>
+
+      <div class="tipos">
+        <p class="specimen">No vinimos a darte <span class="serif">atajos.</span></p>
+        <ul>
+          <li><b class="f1">Schibsted Grotesk</b><span>ExtraBold, tracking −4 %. Titulares y logo.</span></li>
+          <li><b class="f2">Instrument Serif</b><span>Cursiva. Solo para la palabra que importa dentro del titular.</span></li>
+          <li><b>Instrument Sans</b><span>Regular, Medium y SemiBold. Todo el texto.</span></li>
+        </ul>
+      </div>
+
+      <div class="voz">
+        <h3>Cómo hablamos</h3>
+        <table>
+          <thead><tr><th scope="col">En vez de</th><th scope="col">Decimos</th></tr></thead>
+          <tbody>
+            <tr><td>¡¡Aprende economía ya!!</td><td>La elasticidad, explicada en cuatro láminas.</td></tr>
+            <tr><td>El truco que tu profe no te cuenta</td><td>Por qué el costo fijo desaparece al derivar.</td></tr>
+            <tr><td>Es súper fácil</td><td>Es más simple de lo que parece. Vamos paso a paso.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Contenido ────────────────────────────────────── -->
+<section class="seccion" id="contenido-redes">
+  <div class="envoltura">
+    <div class="encabezado">
+      <h2>Desde la <span class="serif">base,</span> un tema a la vez</h2>
+      <p>Un concepto por publicación, con ejemplos de aquí: soles, el mercado de tu ciudad, el BCRP, el cobre peruano. Los temas siguen el orden de un curso para que quien nos sigue aprenda en secuencia.</p>
+    </div>
+
+    <div class="portadas">
+      <div class="portada">
+        <div class="portada-arriba"><span class="logo"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#b"/></svg><span class="logo-nombre">BackBone</span></span><span>Micro N.º 01</span></div>
+        <h3>¿Por qué subir el precio no siempre <span class="serif">conviene?</span></h3>
+        <div class="portada-abajo"><span>Elasticidad precio</span><b>Desde la base</b></div>
+      </div>
+      <div class="portada">
+        <div class="portada-arriba"><span class="logo"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#b"/></svg><span class="logo-nombre">BackBone</span></span><span>Macro N.º 02</span></div>
+        <h3>Tu ahorro gana 5&nbsp;%. ¿<span class="serif">Ganas</span> 5&nbsp;%?</h3>
+        <div class="portada-abajo"><span>Tasa nominal y real</span><b>Desde la base</b></div>
+      </div>
+      <div class="portada">
+        <div class="portada-arriba"><span class="logo"><svg viewBox="0 0 100 120" aria-hidden="true"><use href="#b"/></svg><span class="logo-nombre">BackBone</span></span><span>Mate N.º 03</span></div>
+        <h3>La derivada que sí <span class="serif">usarás</span> en economía</h3>
+        <div class="portada-abajo"><span>Costo marginal</span><b>Desde la base</b></div>
+      </div>
+    </div>
+    <p class="nota">Portadas de las tres primeras series numeradas. Las láminas completas están en <a class="enlace" href="https://www.instagram.com/backbone.academy/" target="_blank" rel="noopener">Instagram</a>.</p>
+
+    <div class="encabezado" style="margin-bottom:28px">
+      <h2 style="font-size:clamp(1.8rem,3.4vw,2.6rem)">La ruta en cinco módulos</h2>
+    </div>
+    <div class="ruta">
+      <div class="modulo">
+        <div class="modulo-num">1</div>
+        <h3>Fundamentos</h3>
+        <ul>
+          <li class="hecho">Escasez y costo de oportunidad</li>
+          <li class="hecho">Oferta y demanda</li>
+          <li class="hecho">Desplazar la curva o moverse sobre ella</li>
+          <li class="hecho">Elasticidad precio</li>
+          <li>El precio como señal</li>
+          <li>Sustitutos y complementarios</li>
+          <li>Excedente del consumidor</li>
+        </ul>
+      </div>
+      <div class="modulo">
+        <div class="modulo-num">2</div>
+        <h3>Producción y costos</h3>
+        <ul>
+          <li class="hecho">Costo marginal</li>
+          <li>Costo medio y costo marginal</li>
+          <li>Costo hundido</li>
+          <li>Corto y largo plazo</li>
+          <li>Rendimientos decrecientes</li>
+        </ul>
+      </div>
+      <div class="modulo">
+        <div class="modulo-num">3</div>
+        <h3>Mercados y sus límites</h3>
+        <ul>
+          <li>Competencia y monopolio</li>
+          <li>Externalidades</li>
+          <li>Conocimiento disperso</li>
+          <li>Bienes públicos</li>
+        </ul>
+      </div>
+      <div class="modulo">
+        <div class="modulo-num">4</div>
+        <h3>Macro base</h3>
+        <ul>
+          <li class="hecho">Tasa nominal y tasa real</li>
+          <li>Inflación y cómo se mide</li>
+          <li>Tasa de referencia y tu préstamo</li>
+          <li>PBI nominal y real</li>
+          <li>Tipo de cambio</li>
+        </ul>
+      </div>
+      <div class="modulo">
+        <div class="modulo-num">5</div>
+        <h3>Mate para economistas</h3>
+        <ul>
+          <li>Derivada parcial</li>
+          <li>Elasticidad como derivada</li>
+          <li>Optimización con Lagrange</li>
+          <li>Interés compuesto y VAN</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ruta-leyenda" aria-hidden="true">
+      <span><i class="h"></i>Publicado</span>
+      <span><i></i>En calendario o en el banco de temas</span>
+    </div>
+
+    <div class="lineas">
+      <div>
+        <div class="peso">5 de 6</div>
+        <h3>Desde la base</h3>
+        <p>Carruseles de cuatro láminas y videos de 45 a 60 segundos. Es lo que más se guarda, y los guardados son la métrica que seguimos: dicen que el contenido sirve para estudiar.</p>
+      </div>
+      <div>
+        <div class="peso">1 de 6</div>
+        <h3>Perú explicado</h3>
+        <p>La noticia entra solo después del concepto. Primero publicamos qué es un choque de oferta; luego, por qué subió la inflación. Cifras del INEI, BCRP o MEF con fuente y fecha.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Webs ─────────────────────────────────────────── -->
+<section class="seccion seccion-alterna" id="webs">
+  <div class="envoltura">
+    <div class="encabezado">
+      <h2>Tres webs, una <span class="serif">línea</span></h2>
+      <p>La web de tutorías pasó por tres versiones. Guardamos las dos de Quantum tal como quedaron.</p>
+    </div>
+    <div class="webs">
+      <a class="web" href="academia/">
+        <div class="web-captura"><img src="assets/img/web-backbone.jpg" alt="Captura de la web de BackBone Academy" loading="lazy"></div>
+        <h3>BackBone Academy</h3>
+        <p>La versión actual. Tutorías, calculadoras y contenido con la marca nueva, y el gráfico de equilibrio que reacciona al ingreso.</p>
+      </a>
+      <a class="web" href="archivo/quantum-v2/">
+        <div class="web-captura"><img src="assets/img/web-quantum-v2.jpg" alt="Captura de la segunda web de Quantum" loading="lazy"></div>
+        <h3>Quantum, segunda versión</h3>
+        <p>Tipografía de libro de texto, figura interactiva y QR imprimible.</p>
+      </a>
+      <a class="web" href="archivo/quantum-v1/">
+        <div class="web-captura"><img src="assets/img/web-quantum-v1.jpg" alt="Captura de la primera web de Quantum" loading="lazy"></div>
+        <h3>Quantum, primera versión</h3>
+        <p>La primera presencia en internet: cursos, precios y contacto por WhatsApp.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Contacto ─────────────────────────────────────── -->
+<section class="seccion contacto" id="contacto">
+  <div class="envoltura contacto-rejilla">
+    <div>
+      <h2>Empieza por la <span class="serif">base</span></h2>
+      <p class="contacto-texto">Tutorías de Matemática para Económicas, Microeconomía y Macroeconomía, en Trujillo o por videollamada. Cuéntanos qué curso llevas y armamos el plan contigo.</p>
+      <a class="boton" href="https://wa.me/51967077156?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20las%20tutor%C3%ADas%20de%20BackBone%20Academy" target="_blank" rel="noopener">
+        <svg aria-hidden="true"><use href="#wa"/></svg>Escribir por WhatsApp
+      </a>
+    </div>
+    <ul class="canales">
+      <li><a href="https://wa.me/51967077156" target="_blank" rel="noopener"><span>WhatsApp</span><strong>967 077 156</strong></a></li>
+      <li><a href="https://www.instagram.com/backbone.academy/" target="_blank" rel="noopener"><span>Instagram</span><strong>@backbone.academy</strong></a></li>
+      <li><a href="https://www.tiktok.com/@quantum.cls" target="_blank" rel="noopener"><span>TikTok</span><strong>@quantum.cls</strong></a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <div class="envoltura pie-fila">
+    <div>
+      <a class="logo" href="#" aria-label="BackBone Academy, volver arriba">
+        <svg viewBox="0 0 100 120" aria-hidden="true"><use href="#b"/></svg>
+        <span class="logo-texto"><span class="logo-nombre">BackBone</span><span class="logo-academy">ACADEMY</span></span>
+      </a>
+      <p>© 2026 BackBone Academy, antes Quantum Economics &amp; Analytics. Trujillo, Perú.</p>
+    </div>
+    <nav aria-label="Pie de página">
+      <a href="academia/">Web de la academia</a>
+      <a href="#herramientas">Calculadoras</a>
+      <a href="https://www.instagram.com/backbone.academy/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.tiktok.com/@quantum.cls" target="_blank" rel="noopener">TikTok</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  const cabecera = document.getElementById('cabecera');
+  const marcar = () => cabecera.classList.toggle('con-borde', window.scrollY > 8);
+  window.addEventListener('scroll', marcar, { passive: true }); marcar();
+
+  const boton = document.getElementById('hamburguesa');
+  const menu = document.getElementById('menu-movil');
+  boton.addEventListener('click', () => {
+    const abierto = menu.classList.toggle('abierto');
+    boton.setAttribute('aria-expanded', abierto);
+    boton.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
+  });
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    menu.classList.remove('abierto'); boton.setAttribute('aria-expanded', 'false');
+  }));
+</script>
+</body>
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duopolio y teoría de juegos · BackBone Academy</title>
+    
+    
+    <!-- Pyodide para ejecutar Python en el navegador -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+    
+    <!-- MathJax para fórmulas LaTeX -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-dark: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --accent: #10b981;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Instrument Sans', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; overflow-x: hidden; position: relative; }
+
+        /* Background Animated Shapes */
+        .background-shapes { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; }
+        .shape { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; animation: float 20s infinite ease-in-out; }
+        .shape-1 { width: 400px; height: 400px; background: #6366f1; top: -100px; left: -100px; }
+        .shape-2 { width: 500px; height: 500px; background: #c026d3; bottom: -150px; right: -100px; animation-delay: -10s; }
+        @keyframes float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(50px, 50px); } }
+
+        .container-fluid { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+        header { text-align: center; margin-bottom: 2rem; }
+        header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; background: linear-gradient(to right, #6366f1, #c026d3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        header p { color: var(--text-muted); font-size: 1.1rem; }
+
+        .main-layout { display: grid; grid-template-columns: 35% 65%; gap: 2rem; align-items: start; }
+        .glass-effect { background: var(--bg-card); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .card { padding: 1.5rem; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+        h2 { font-size: 1.3rem; margin-bottom: 1.5rem; color: var(--text-main); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+        h3 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-main); }
+        
+        .input-group { margin-bottom: 1.2rem; }
+        .input-group label { display: block; margin-bottom: 0.4rem; font-size: 0.9rem; color: var(--text-muted); }
+        .input-group input, .input-group select { width: 100%; padding: 0.75rem 1rem; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-size: 1rem; transition: all 0.2s ease; }
+        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        
+        .mt-1 { margin-top: 1rem; } .mt-2 { margin-top: 2rem; } .mb-2 { margin-bottom: 2rem; } .text-center { text-align: center; }
+
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 1rem 3rem; font-size: 1.1rem; font-weight: 600; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem; width: 100%; justify-content: center; }
+        .btn-primary:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .hidden { display: none !important; }
+        .results-container { padding: 2rem; animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .result-box { background: rgba(0, 0, 0, 0.2); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); }
+        .result-box h3 { margin-bottom: 1rem; color: var(--accent); }
+        
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .tab-btn { background: transparent; color: var(--text-muted); border: none; padding: 1rem 1.5rem; font-size: 1rem; cursor: pointer; font-weight: 600; transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .tab-btn:hover { color: var(--text-main); }
+        .tab-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+
+        .game-matrix { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .game-matrix th, .game-matrix td { padding: 1rem; text-align: center; border: 1px solid var(--border); }
+        .game-matrix th { background: rgba(0, 0, 0, 0.3); color: var(--text-muted); }
+        .game-matrix td { background: rgba(0, 0, 0, 0.1); font-weight: 600; }
+        .game-matrix td:hover { background: rgba(99, 102, 241, 0.1); }
+
+        .nash-container { background: rgba(0, 0, 0, 0.2); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); }
+        .nash-results { display: flex; gap: 1.5rem; margin-top: 1rem; }
+        .nash-card { flex: 1; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); padding: 1.5rem; border-radius: 12px; text-align: center; }
+        .nash-card .choice { font-size: 1.5rem; font-weight: 700; color: var(--accent); margin: 0.5rem 0; }
+        
+        /* Tree Visualization */
+        .tree { display: flex; flex-direction: column; align-items: center; margin: 2rem 0; }
+        .tree-root { background: var(--primary); padding: 0.5rem 1.5rem; border-radius: 20px; font-weight: bold; margin-bottom: 2rem; position: relative; }
+        .tree-branches { display: flex; gap: 4rem; position: relative; }
+        .tree-branches::before { content: ''; position: absolute; top: -2rem; left: 25%; right: 25%; height: 2px; background: var(--border); }
+        .tree-branch { display: flex; flex-direction: column; align-items: center; position: relative; }
+        .tree-branch::before { content: ''; position: absolute; top: -2rem; width: 2px; height: 2rem; background: var(--border); }
+        .decision-node { background: rgba(16, 185, 129, 0.2); border: 1px solid var(--accent); padding: 0.5rem 1rem; border-radius: 8px; margin-bottom: 2rem; }
+        .sub-branches { display: flex; gap: 1rem; position: relative; }
+        .sub-branches::before { content: ''; position: absolute; top: -2rem; left: 25%; right: 25%; height: 2px; background: var(--border); }
+        .sub-branch { display: flex; flex-direction: column; align-items: center; position: relative; }
+        .sub-branch::before { content: ''; position: absolute; top: -2rem; width: 2px; height: 2rem; background: var(--border); }
+        .leaf-node { background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border); padding: 0.5rem; border-radius: 6px; font-size: 0.9rem; text-align: center; transition: all 0.3s ease; }
+        .leaf-node.optimal { background: rgba(99, 102, 241, 0.2); border-color: var(--primary); box-shadow: 0 0 10px rgba(99, 102, 241, 0.5); font-weight: bold; }
+
+        .math-steps { background: rgba(0, 0, 0, 0.2); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); font-size: 1.1rem; line-height: 1.6; }
+        .math-step { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px dashed var(--border); }
+        .math-step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        
+        .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s ease-in-out infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Loader Overlay */
+        #loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #loader-overlay h2 { font-size: 2rem; margin-bottom: 1rem; }
+        #loader-overlay p { color: var(--text-muted); }
+        .loader-spinner { width: 50px; height: 50px; border: 5px solid rgba(99,102,241,0.3); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s ease-in-out infinite; margin-bottom: 1rem; }
+
+        @media (max-width: 1024px) { .main-layout { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .grid-2-col, .nash-results, .tree-branches { flex-direction: column; grid-template-columns: 1fr; } .tree-branches { gap: 2rem; } .tree-branches::before, .sub-branches::before { display: none; } }
+    </style>
+    <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../../assets/css/fuentes.css">
+    <link rel="stylesheet" href="../../assets/css/herramientas.css">
+</head>
+<body>
+<nav class="bb-barra" aria-label="BackBone Academy"><a class="bb-marca" href="../../"><svg viewBox="0 0 100 120" aria-hidden="true"><g fill="#F3F1EB"><rect width="30" height="36" rx="9"/><rect y="42" width="30" height="36" rx="9"/><rect y="84" width="30" height="36" rx="9"/></g><g fill="#5A7BB0"><path d="M36 0H61.5A28.5 28.5 0 0 1 61.5 57H36V42H61.5A13.5 13.5 0 0 0 61.5 15H36Z"/><path d="M36 63H71.5A28.5 28.5 0 0 1 71.5 120H36V105H71.5A13.5 13.5 0 0 0 71.5 78H36Z"/></g></svg><b>BackBone</b><span>Calculadoras</span></a><a class="bb-volver" href="../../#herramientas">Todas las calculadoras</a></nav>
+
+    <div id="loader-overlay">
+        <div class="loader-spinner"></div>
+        <h2>Cargando el motor matemático</h2>
+        <p>Estamos cargando Python y SymPy en tu navegador. Tarda unos segundos la primera vez.</p>
+    </div>
+
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+
+    <div class="container-fluid" style="display: none;" id="main-content">
+        <header>
+            <h1>Duopolio & Teoría de Juegos</h1>
+            <p>Funciona en tu navegador, sin servidor</p>
+        </header>
+
+        <div class="main-layout">
+            <aside class="form-section">
+                <form id="calc-form">
+                    <div class="card glass-effect mb-2">
+                        <h2>Producto 1</h2>
+                        <div class="input-group">
+                            <label>Nombre del Producto</label>
+                            <input type="text" id="nombre_p1" required value="Dulces">
+                        </div>
+                        <div class="input-group">
+                            <label>Demanda (P = ...)</label>
+                            <input type="text" id="demanda_p1" required value="18 - 0.04*Q">
+                        </div>
+                        <div class="input-group">
+                            <label>Costo Marginal (CMg = ...)</label>
+                            <input type="text" id="cmg_p1" required value="0.02*Q + 4">
+                        </div>
+                        <div class="input-group">
+                            <label>Penalidad si ambas producen <span class="p1" style="font-weight:bold;">P1</span> (ej. 0.75)</label>
+                            <input type="number" step="0.01" id="penalidad_p1" required value="0.75">
+                        </div>
+                    </div>
+
+                    <div class="card glass-effect mb-2">
+                        <h2>Producto 2</h2>
+                        <div class="input-group">
+                            <label>Nombre del Producto</label>
+                            <input type="text" id="nombre_p2" required value="Saladas">
+                        </div>
+                        <div class="input-group">
+                            <label>Demanda (P = ...)</label>
+                            <input type="text" id="demanda_p2" required value="12 - 0.04*Q">
+                        </div>
+                        <div class="input-group">
+                            <label>Costo Marginal (CMg = ...)</label>
+                            <input type="text" id="cmg_p2" required value="0.02*Q + 3">
+                        </div>
+                        <div class="input-group">
+                            <label>Penalidad si ambas producen <span class="p2" style="font-weight:bold;">P2</span> (ej. 0.75)</label>
+                            <input type="number" step="0.01" id="penalidad_p2" required value="0.75">
+                        </div>
+                    </div>
+
+                    <div class="card glass-effect mb-2">
+                        <h2>Empresas</h2>
+                        <div class="grid-2-col">
+                            <div>
+                                <h3>Empresa 1 (Filas)</h3>
+                                <div class="input-group">
+                                    <label>Nombre</label>
+                                    <input type="text" id="jugador_filas" required value="Claudia">
+                                </div>
+                                <div class="input-group">
+                                    <label>Costo Fijo</label>
+                                    <input type="number" step="0.01" id="cf_filas" required value="360">
+                                </div>
+                            </div>
+                            <div>
+                                <h3>Empresa 2 (Columnas)</h3>
+                                <div class="input-group">
+                                    <label>Nombre</label>
+                                    <input type="text" id="jugador_columnas" required value="Roxana">
+                                </div>
+                                <div class="input-group">
+                                    <label>Costo Fijo</label>
+                                    <input type="number" step="0.01" id="cf_columnas" required value="380">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mt-1">
+                            <label>¿Quién Inicia el Juego Secuencial?</label>
+                            <select id="inicia_juego">
+                                <option value="filas">Empresa 1 (Filas)</option>
+                                <option value="columnas">Empresa 2 (Columnas)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="action-bar">
+                        <button type="submit" class="btn-primary" id="calculate-btn">
+                            <span>Calcular Resultados</span>
+                            <div class="spinner" id="btn-spinner" style="display: none;"></div>
+                        </button>
+                    </div>
+                    <div id="error-message" class="error-message hidden mt-2 glass-effect" style="color: #fca5a5; background: rgba(239,68,68,0.1); padding: 1rem; border-radius: 8px;"></div>
+                </form>
+            </aside>
+
+            <section class="results-section">
+                <div id="results-container" class="results-container hidden glass-effect">
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="openTab(event, 'tab-resumen')">Resultados y Árbol</button>
+                        <button class="tab-btn" onclick="openTab(event, 'tab-pasos')">Paso a Paso Matemático</button>
+                    </div>
+
+                    <div id="tab-resumen" class="tab-content active">
+                        <div class="grid-2-col mb-2">
+                            <div class="result-box">
+                                <h3 id="res-nombre-p1">Óptimos P1</h3>
+                                <p><strong>Q*:</strong> <span id="res-q1"></span></p>
+                                <p><strong>Beneficio Bruto:</strong> <span id="res-b1"></span></p>
+                            </div>
+                            <div class="result-box">
+                                <h3 id="res-nombre-p2">Óptimos P2</h3>
+                                <p><strong>Q*:</strong> <span id="res-q2"></span></p>
+                                <p><strong>Beneficio Bruto:</strong> <span id="res-b2"></span></p>
+                            </div>
+                        </div>
+
+                        <div class="matrix-container mb-2">
+                            <h3>Matriz de Juego Normal</h3>
+                            <table class="game-matrix">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th><span class="j-col">Col</span> (<span class="p1">P1</span>)</th>
+                                        <th><span class="j-col">Col</span> (<span class="p2">P2</span>)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th><span class="j-fil">Fil</span> (<span class="p1">P1</span>)</th>
+                                        <td><span id="m-ff_p1"></span>, <span id="m-fc_p1"></span></td>
+                                        <td><span id="m-fp1"></span>, <span id="m-cp2"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <th><span class="j-fil">Fil</span> (<span class="p2">P2</span>)</th>
+                                        <td><span id="m-fp2"></span>, <span id="m-cp1"></span></td>
+                                        <td><span id="m-ff_p2"></span>, <span id="m-fc_p2"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="nash-container">
+                            <h3>Árbol de Juego Secuencial (Inicia <span id="arbol-raiz"></span>)</h3>
+                            <div class="tree" id="tree-container"></div>
+                            <h4 class="mt-2 text-center">Equilibrio de Nash Perfecto en Subjuegos:</h4>
+                            <div class="nash-results">
+                                <div class="nash-card">
+                                    <h4><span class="j-fil"></span> elige</h4>
+                                    <div class="choice" id="nash-filas-eleccion"></div>
+                                    <div class="payoff">Pago: <span id="nash-filas-pago"></span></div>
+                                </div>
+                                <div class="nash-card">
+                                    <h4><span class="j-col"></span> elige</h4>
+                                    <div class="choice" id="nash-col-eleccion"></div>
+                                    <div class="payoff">Pago: <span id="nash-col-pago"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-pasos" class="tab-content" style="display: none;">
+                        <h3>Procedimiento para <span class="p1">P1</span></h3>
+                        <div id="pasos-p1" class="math-steps"></div>
+                        <h3 class="mt-2">Procedimiento para <span class="p2">P2</span></h3>
+                        <div id="pasos-p2" class="math-steps"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Python Logic Script via Pyodide -->
+    <script type="text/python" id="python_logic">
+import sympy as sp
+import json
+
+def get_math_steps(nombre, demanda_str, cmg_str, Q, IT, IMg, CV, eq, Q_opt, beneficio):
+    return {
+        "nombre": nombre,
+        "demanda": f"P = {sp.latex(sp.sympify(demanda_str, locals={'Q': Q}))}",
+        "cmg": f"CMg = {sp.latex(sp.sympify(cmg_str, locals={'Q': Q}))}",
+        "it": f"IT = P \\cdot Q = {sp.latex(IT)}",
+        "img": f"IMg = \\frac{{\\partial IT}}{{\\partial Q}} = {sp.latex(IMg)}",
+        "cv": f"CV = \\int CMg \\, dQ = {sp.latex(CV)}",
+        "eq": f"{sp.latex(IMg)} = {sp.latex(sp.sympify(cmg_str, locals={'Q': Q}))}",
+        "q_opt": f"Q^* = {sp.latex(Q_opt)}",
+        "beneficio": f"\\pi = IT - CV = {sp.latex(IT.subs(Q, Q_opt))} - {sp.latex(CV.subs(Q, Q_opt))} = {float(beneficio):.2f}"
+    }
+
+def calcular_duopolio_py(data_str):
+    try:
+        data = json.loads(data_str)
+        Q = sp.Symbol('Q')
+        
+        nombre_p1 = data.get('nombre_p1', 'Producto 1')
+        demanda_p1_str = data.get('demanda_p1', '')
+        cmg_p1_str = data.get('cmg_p1', '')
+        penalidad_p1 = float(data.get('penalidad_p1', 0))
+        
+        nombre_p2 = data.get('nombre_p2', 'Producto 2')
+        demanda_p2_str = data.get('demanda_p2', '')
+        cmg_p2_str = data.get('cmg_p2', '')
+        penalidad_p2 = float(data.get('penalidad_p2', 0))
+        
+        jugador_filas = data.get('jugador_filas', 'Empresa 1')
+        cf_filas = float(data.get('cf_filas', 0))
+        
+        jugador_columnas = data.get('jugador_columnas', 'Empresa 2')
+        cf_columnas = float(data.get('cf_columnas', 0))
+        
+        inicia_juego = data.get('inicia_juego', 'filas')
+        
+        # Procesamiento P1
+        demanda_p1 = sp.sympify(demanda_p1_str, locals={'Q': Q})
+        cmg_p1 = sp.sympify(cmg_p1_str, locals={'Q': Q})
+        IT1 = demanda_p1 * Q
+        IMg1 = sp.diff(IT1, Q)
+        CV1 = sp.integrate(cmg_p1, Q)
+        eq1 = sp.Eq(IMg1, cmg_p1)
+        Q1_opt = sp.solve(eq1, Q)[0]
+        beneficio_bruto_p1 = (IT1.subs(Q, Q1_opt) - CV1.subs(Q, Q1_opt)).evalf()
+        pasos_p1 = get_math_steps(nombre_p1, demanda_p1_str, cmg_p1_str, Q, IT1, IMg1, CV1, eq1, Q1_opt, beneficio_bruto_p1)
+        
+        # Procesamiento P2
+        demanda_p2 = sp.sympify(demanda_p2_str, locals={'Q': Q})
+        cmg_p2 = sp.sympify(cmg_p2_str, locals={'Q': Q})
+        IT2 = demanda_p2 * Q
+        IMg2 = sp.diff(IT2, Q)
+        CV2 = sp.integrate(cmg_p2, Q)
+        eq2 = sp.Eq(IMg2, cmg_p2)
+        Q2_opt = sp.solve(eq2, Q)[0]
+        beneficio_bruto_p2 = (IT2.subs(Q, Q2_opt) - CV2.subs(Q, Q2_opt)).evalf()
+        pasos_p2 = get_math_steps(nombre_p2, demanda_p2_str, cmg_p2_str, Q, IT2, IMg2, CV2, eq2, Q2_opt, beneficio_bruto_p2)
+
+        # Cálculo de Pagos Choque según Producto
+        pago_choque_p1_filas = -penalidad_p1 * cf_filas
+        pago_choque_p1_columnas = -penalidad_p1 * cf_columnas
+        
+        pago_choque_p2_filas = -penalidad_p2 * cf_filas
+        pago_choque_p2_columnas = -penalidad_p2 * cf_columnas
+        
+        # Pagos Mixtos
+        pago_F_p1 = beneficio_bruto_p1 - cf_filas
+        pago_C_p2 = beneficio_bruto_p2 - cf_columnas
+        
+        pago_F_p2 = beneficio_bruto_p2 - cf_filas
+        pago_C_p1 = beneficio_bruto_p1 - cf_columnas
+        
+        if inicia_juego == 'filas':
+            mejor_resp_col_si_F_p1 = nombre_p2 if pago_C_p2 > pago_choque_p1_columnas else nombre_p1
+            pago_F_si_elige_p1 = pago_F_p1 if mejor_resp_col_si_F_p1 == nombre_p2 else pago_choque_p1_filas
+            
+            mejor_resp_col_si_F_p2 = nombre_p1 if pago_C_p1 > pago_choque_p2_columnas else nombre_p2
+            pago_F_si_elige_p2 = pago_F_p2 if mejor_resp_col_si_F_p2 == nombre_p1 else pago_choque_p2_filas
+            
+            if pago_F_si_elige_p1 > pago_F_si_elige_p2:
+                en_F = nombre_p1; en_C = mejor_resp_col_si_F_p1
+                pago_final_F = pago_F_si_elige_p1; pago_final_C = pago_C_p2 if en_C == nombre_p2 else pago_choque_p1_columnas
+            else:
+                en_F = nombre_p2; en_C = mejor_resp_col_si_F_p2
+                pago_final_F = pago_F_si_elige_p2; pago_final_C = pago_C_p1 if en_C == nombre_p1 else pago_choque_p2_columnas
+                
+            arbol = {
+                "raiz": jugador_filas,
+                "rama1": {"decision": nombre_p1, "jugador2": jugador_columnas, "respuestas": [
+                    {"decision": nombre_p1, "pagos": [float(pago_choque_p1_filas), float(pago_choque_p1_columnas)], "optima": mejor_resp_col_si_F_p1 == nombre_p1},
+                    {"decision": nombre_p2, "pagos": [float(pago_F_p1), float(pago_C_p2)], "optima": mejor_resp_col_si_F_p1 == nombre_p2}
+                ]},
+                "rama2": {"decision": nombre_p2, "jugador2": jugador_columnas, "respuestas": [
+                    {"decision": nombre_p1, "pagos": [float(pago_F_p2), float(pago_C_p1)], "optima": mejor_resp_col_si_F_p2 == nombre_p1},
+                    {"decision": nombre_p2, "pagos": [float(pago_choque_p2_filas), float(pago_choque_p2_columnas)], "optima": mejor_resp_col_si_F_p2 == nombre_p2}
+                ]}
+            }
+        else:
+            mejor_resp_fil_si_C_p1 = nombre_p2 if pago_F_p2 > pago_choque_p1_filas else nombre_p1
+            pago_C_si_elige_p1 = pago_C_p1 if mejor_resp_fil_si_C_p1 == nombre_p2 else pago_choque_p1_columnas
+            
+            mejor_resp_fil_si_C_p2 = nombre_p1 if pago_F_p1 > pago_choque_p2_filas else nombre_p2
+            pago_C_si_elige_p2 = pago_C_p2 if mejor_resp_fil_si_C_p2 == nombre_p1 else pago_choque_p2_columnas
+            
+            if pago_C_si_elige_p1 > pago_C_si_elige_p2:
+                en_C = nombre_p1; en_F = mejor_resp_fil_si_C_p1
+                pago_final_C = pago_C_si_elige_p1; pago_final_F = pago_F_p2 if en_F == nombre_p2 else pago_choque_p1_filas
+            else:
+                en_C = nombre_p2; en_F = mejor_resp_fil_si_C_p2
+                pago_final_C = pago_C_si_elige_p2; pago_final_F = pago_F_p1 if en_F == nombre_p1 else pago_choque_p2_filas
+
+            arbol = {
+                "raiz": jugador_columnas,
+                "rama1": {"decision": nombre_p1, "jugador2": jugador_filas, "respuestas": [
+                    {"decision": nombre_p1, "pagos": [float(pago_choque_p1_filas), float(pago_choque_p1_columnas)], "optima": mejor_resp_fil_si_C_p1 == nombre_p1},
+                    {"decision": nombre_p2, "pagos": [float(pago_F_p2), float(pago_C_p1)], "optima": mejor_resp_fil_si_C_p1 == nombre_p2}
+                ]},
+                "rama2": {"decision": nombre_p2, "jugador2": jugador_filas, "respuestas": [
+                    {"decision": nombre_p1, "pagos": [float(pago_F_p1), float(pago_C_p2)], "optima": mejor_resp_fil_si_C_p2 == nombre_p1},
+                    {"decision": nombre_p2, "pagos": [float(pago_choque_p2_filas), float(pago_choque_p2_columnas)], "optima": mejor_resp_fil_si_C_p2 == nombre_p2}
+                ]}
+            }
+
+        return json.dumps({
+            'success': True,
+            'optimos_p1': {'Q': float(Q1_opt), 'beneficio_bruto': float(beneficio_bruto_p1)},
+            'optimos_p2': {'Q': float(Q2_opt), 'beneficio_bruto': float(beneficio_bruto_p2)},
+            'matriz': {
+                'choque_ff_p1': float(pago_choque_p1_filas), 'choque_fc_p1': float(pago_choque_p1_columnas),
+                'choque_ff_p2': float(pago_choque_p2_filas), 'choque_fc_p2': float(pago_choque_p2_columnas),
+                'f_p1': float(pago_F_p1), 'c_p2': float(pago_C_p2),
+                'f_p2': float(pago_F_p2), 'c_p1': float(pago_C_p1)
+            },
+            'nash': {'eleccion_f': en_F, 'eleccion_c': en_C, 'pago_f': float(pago_final_F), 'pago_c': float(pago_final_C)},
+            'pasos': [pasos_p1, pasos_p2],
+            'arbol': arbol
+        })
+    except Exception as e:
+        return json.dumps({'success': False, 'error': str(e)})
+    </script>
+
+    <!-- UI Logic Script -->
+    <script>
+        let pyodide = null;
+
+        async function initPyodide() {
+            try {
+                pyodide = await loadPyodide();
+                await pyodide.loadPackage("sympy");
+                
+                const pythonCode = document.getElementById("python_logic").textContent;
+                await pyodide.runPythonAsync(pythonCode);
+                
+                document.getElementById('loader-overlay').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            } catch (err) {
+                document.getElementById('loader-overlay').innerHTML = `
+                    <h2 style="color:var(--danger)">No se pudo cargar el motor matemático</h2>
+                    <p>Revisa tu conexión a internet y recarga la página. La calculadora descarga Python y SymPy la primera vez que la abres.</p>
+                    <p style="margin-top:12px;font-size:.85rem;opacity:.7">Detalle técnico: ${err}</p>
+                `;
+            }
+        }
+
+        window.onload = initPyodide;
+
+        function openTab(evt, tabName) {
+            const tabcontent = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabcontent.length; i++) tabcontent[i].style.display = "none";
+            const tablinks = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tablinks.length; i++) tablinks[i].className = tablinks[i].className.replace(" active", "");
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        document.getElementById('calc-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('calculate-btn');
+            const spinner = document.getElementById('btn-spinner');
+            const btnText = btn.querySelector('span');
+            const resultsContainer = document.getElementById('results-container');
+            const errorContainer = document.getElementById('error-message');
+            
+            btn.disabled = true; spinner.style.display = 'block'; btnText.textContent = 'Calculando...';
+            resultsContainer.classList.add('hidden'); errorContainer.classList.add('hidden');
+            
+            const data = {
+                nombre_p1: document.getElementById('nombre_p1').value,
+                demanda_p1: document.getElementById('demanda_p1').value,
+                cmg_p1: document.getElementById('cmg_p1').value,
+                penalidad_p1: document.getElementById('penalidad_p1').value,
+                
+                nombre_p2: document.getElementById('nombre_p2').value,
+                demanda_p2: document.getElementById('demanda_p2').value,
+                cmg_p2: document.getElementById('cmg_p2').value,
+                penalidad_p2: document.getElementById('penalidad_p2').value,
+                
+                jugador_filas: document.getElementById('jugador_filas').value,
+                cf_filas: document.getElementById('cf_filas').value,
+                jugador_columnas: document.getElementById('jugador_columnas').value,
+                cf_columnas: document.getElementById('cf_columnas').value,
+                
+                inicia_juego: document.getElementById('inicia_juego').value
+            };
+            
+            // Re-label dynamic text
+            document.querySelectorAll('.p1').forEach(el => el.textContent = data.nombre_p1);
+            document.querySelectorAll('.p2').forEach(el => el.textContent = data.nombre_p2);
+            
+            try {
+                const pyFunc = pyodide.globals.get('calcular_duopolio_py');
+                const jsonStrResult = pyFunc(JSON.stringify(data));
+                const result = JSON.parse(jsonStrResult);
+                
+                if (result.success) {
+                    document.querySelectorAll('.j-fil').forEach(el => el.textContent = data.jugador_filas);
+                    document.querySelectorAll('.j-col').forEach(el => el.textContent = data.jugador_columnas);
+                    
+                    document.getElementById('res-nombre-p1').textContent = `Óptimos ${data.nombre_p1}`;
+                    document.getElementById('res-nombre-p2').textContent = `Óptimos ${data.nombre_p2}`;
+                    
+                    document.getElementById('res-q1').textContent = result.optimos_p1.Q.toFixed(2);
+                    document.getElementById('res-b1').textContent = result.optimos_p1.beneficio_bruto.toFixed(2);
+                    document.getElementById('res-q2').textContent = result.optimos_p2.Q.toFixed(2);
+                    document.getElementById('res-b2').textContent = result.optimos_p2.beneficio_bruto.toFixed(2);
+                    
+                    document.getElementById('m-ff_p1').textContent = result.matriz.choque_ff_p1.toFixed(2);
+                    document.getElementById('m-fc_p1').textContent = result.matriz.choque_fc_p1.toFixed(2);
+                    document.getElementById('m-fp1').textContent = result.matriz.f_p1.toFixed(2);
+                    document.getElementById('m-cp2').textContent = result.matriz.c_p2.toFixed(2);
+                    document.getElementById('m-fp2').textContent = result.matriz.f_p2.toFixed(2);
+                    document.getElementById('m-cp1').textContent = result.matriz.c_p1.toFixed(2);
+                    document.getElementById('m-ff_p2').textContent = result.matriz.choque_ff_p2.toFixed(2);
+                    document.getElementById('m-fc_p2').textContent = result.matriz.choque_fc_p2.toFixed(2);
+                    
+                    document.getElementById('nash-filas-eleccion').textContent = result.nash.eleccion_f;
+                    document.getElementById('nash-filas-pago').textContent = result.nash.pago_f.toFixed(2);
+                    document.getElementById('nash-col-eleccion').textContent = result.nash.eleccion_c;
+                    document.getElementById('nash-col-pago').textContent = result.nash.pago_c.toFixed(2);
+                    
+                    renderMathSteps('pasos-p1', result.pasos[0]);
+                    renderMathSteps('pasos-p2', result.pasos[1]);
+                    renderTree(result.arbol, data);
+                    
+                    if(window.MathJax) MathJax.typesetPromise();
+                    resultsContainer.classList.remove('hidden');
+                } else {
+                    errorContainer.textContent = "Error matemático: " + result.error;
+                    errorContainer.classList.remove('hidden');
+                }
+            } catch (err) {
+                errorContainer.textContent = "Error de Sistema: " + err.message;
+                errorContainer.classList.remove('hidden');
+            } finally {
+                btn.disabled = false; spinner.style.display = 'none'; btnText.textContent = 'Calcular Resultados';
+            }
+        });
+
+        function renderMathSteps(containerId, pasos) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <div class="math-step">\\[ ${pasos.demanda} \\]</div>
+                <div class="math-step">\\[ ${pasos.it} \\]</div>
+                <div class="math-step">\\[ ${pasos.img} \\]</div>
+                <div class="math-step">\\[ ${pasos.cmg} \\]</div>
+                <div class="math-step">\\[ ${pasos.cv} \\]</div>
+                <div class="math-step"><strong>Igualando IMg = CMg:</strong> \\[ ${pasos.eq} \\]</div>
+                <div class="math-step">\\[ ${pasos.q_opt} \\]</div>
+                <div class="math-step"><strong>Beneficio Bruto:</strong> \\[ ${pasos.beneficio} \\]</div>
+            `;
+        }
+
+        function renderTree(arbol, data) {
+            const container = document.getElementById('tree-container');
+            document.getElementById('arbol-raiz').textContent = arbol.raiz;
+            let getLeafHtml = (respuesta, isFilaPrimero) => `
+                <div class="sub-branch">
+                    <div class="leaf-node ${respuesta.optima ? 'optimal' : ''}">
+                        Resp: <strong>${respuesta.decision}</strong><br>
+                        Pagos: (${respuesta.pagos[0].toFixed(2)}, ${respuesta.pagos[1].toFixed(2)})
+                    </div>
+                </div>`;
+            const isFilaPrimero = data.inicia_juego === 'filas';
+            container.innerHTML = `
+                <div class="tree-root">${arbol.raiz} inicia</div>
+                <div class="tree-branches">
+                    <div class="tree-branch">
+                        <div class="decision-node">Elige <strong>${arbol.rama1.decision}</strong></div>
+                        <div class="sub-branches">${getLeafHtml(arbol.rama1.respuestas[0], isFilaPrimero)}${getLeafHtml(arbol.rama1.respuestas[1], isFilaPrimero)}</div>
+                    </div>
+                    <div class="tree-branch">
+                        <div class="decision-node">Elige <strong>${arbol.rama2.decision}</strong></div>
+                        <div class="sub-branches">${getLeafHtml(arbol.rama2.respuestas[0], isFilaPrimero)}${getLeafHtml(arbol.rama2.respuestas[1], isFilaPrimero)}</div>
+                    </div>
+                </div>`;
+        }
+    </script>
+</body>
+</html>

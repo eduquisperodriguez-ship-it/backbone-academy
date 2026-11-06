@@ -1,0 +1,154 @@
+/* BackBone Academy: base compartida del portafolio y la web.
+   Colores y tipografías tomados del manual de marca (7 de octubre de 2026). */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --medianoche: #0D1220;   /* fondo principal */
+  --profundo:   #16213A;   /* fondo alterno */
+  --pizarra:    #18233A;   /* columna del logo, texto sobre claro */
+  --acero:      #5A7BB0;   /* acento: arcos de la B, énfasis */
+  --niebla:     #AEBFDB;   /* cursiva sobre oscuro */
+  --piedra:     #E7E3DA;   /* fondo claro */
+  --marfil:     #F3F1EB;   /* blanco de marca */
+  --gris:       #6B7385;   /* gris pizarra del manual */
+
+  /* derivados para contraste AA */
+  --gris-claro: #949CB0;   /* texto secundario sobre medianoche */
+  --gris-oscuro:#4C5468;   /* texto secundario sobre piedra */
+  --linea:      rgba(243, 241, 235, 0.11);
+  --linea-clara:rgba(24, 35, 58, 0.16);
+  --acero-vivo: #7D9CCF;   /* acero aclarado para texto pequeño sobre oscuro */
+
+  --f-titular: 'Schibsted Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --f-serif:   'Instrument Serif', Georgia, serif;
+  --f-texto:   'Instrument Sans', 'Helvetica Neue', Arial, sans-serif;
+
+  --ancho: 1200px;
+  --margen: clamp(20px, 4vw, 48px);
+}
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--f-texto);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  background: var(--medianoche);
+  color: var(--marfil);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+h1, h2, h3 {
+  font-family: var(--f-titular);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+/* La firma de la marca: una sola palabra en serif cursiva dentro del titular */
+.serif {
+  font-family: var(--f-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--niebla);
+}
+p { text-wrap: pretty; }
+
+:focus-visible { outline: 2px solid var(--niebla); outline-offset: 3px; border-radius: 3px; }
+
+.envoltura { max-width: var(--ancho); margin: 0 auto; padding: 0 var(--margen); }
+
+.saltar {
+  position: absolute; left: 12px; top: -60px; z-index: 100;
+  background: var(--marfil); color: var(--medianoche);
+  padding: 10px 16px; border-radius: 6px; font-weight: 600; text-decoration: none;
+}
+.saltar:focus { top: 12px; }
+
+/* ── Logo ─────────────────────────────── */
+.logo { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+.logo svg { width: 26px; height: auto; flex-shrink: 0; }
+.logo-texto { display: flex; flex-direction: column; line-height: 1; }
+.logo-nombre {
+  font-family: var(--f-titular); font-weight: 800; font-size: 1.28rem;
+  letter-spacing: -0.035em;
+}
+.logo-academy {
+  font-family: var(--f-texto); font-weight: 600; font-size: .58rem;
+  letter-spacing: .47em; margin-top: 4px; color: var(--gris-claro);
+}
+
+/* ── Cabecera ─────────────────────────── */
+.cabecera {
+  position: sticky; top: 0; z-index: 40;
+  background: rgba(13, 18, 32, .92);
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .2s;
+}
+.cabecera.con-borde { border-bottom-color: var(--linea); }
+.cabecera-fila { display: flex; align-items: center; justify-content: space-between; height: 76px; gap: 24px; }
+.menu { display: flex; align-items: center; gap: 30px; list-style: none; }
+.menu a { text-decoration: none; font-size: .95rem; color: var(--gris-claro); transition: color .15s; }
+.menu a:hover, .menu a[aria-current="true"] { color: var(--marfil); }
+.menu .boton { color: var(--medianoche); }
+.menu .boton:hover { color: var(--medianoche); }
+.hamburguesa { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; }
+.hamburguesa span { display: block; width: 22px; height: 2px; background: var(--marfil); box-shadow: 0 7px 0 var(--marfil), 0 -7px 0 var(--marfil); }
+.menu-movil { display: none; flex-direction: column; padding: 4px var(--margen) 20px; border-top: 1px solid var(--linea); }
+.menu-movil a { padding: 14px 0; text-decoration: none; border-bottom: 1px solid var(--linea); }
+.menu-movil a:last-child { border-bottom: 0; }
+.menu-movil.abierto { display: flex; }
+
+/* ── Botones y enlaces ─────────────────── */
+.boton {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 13px 20px; border-radius: 8px;
+  font-weight: 600; font-size: .98rem; text-decoration: none;
+  background: var(--marfil); color: var(--medianoche);
+  transition: background-color .15s, color .15s, border-color .15s;
+}
+.boton:hover { background: #fff; }
+.boton svg { width: 18px; height: 18px; flex-shrink: 0; }
+.boton-linea { background: transparent; color: var(--marfil); border: 1px solid rgba(243,241,235,.28); }
+.boton-linea:hover { background: transparent; border-color: var(--marfil); }
+.enlace {
+  color: var(--niebla); font-weight: 600; text-decoration: underline;
+  text-decoration-color: rgba(174,191,219,.4); text-underline-offset: 4px; text-decoration-thickness: 1px;
+}
+.enlace:hover { text-decoration-color: currentColor; }
+
+/* ── Secciones ─────────────────────────── */
+.seccion { padding: clamp(80px, 11vw, 136px) 0; }
+.seccion-alterna { background: var(--profundo); }
+.seccion-clara { background: var(--piedra); color: var(--pizarra); }
+.seccion-clara .serif { color: var(--acero); }
+.seccion-clara .enlace { color: var(--pizarra); text-decoration-color: rgba(24,35,58,.35); }
+.encabezado { max-width: 680px; margin-bottom: clamp(44px, 6vw, 72px); }
+.encabezado h2 { font-size: clamp(2.3rem, 5.4vw, 4rem); margin-bottom: 20px; }
+.encabezado p { color: var(--gris-claro); font-size: 1.125rem; max-width: 58ch; }
+.seccion-clara .encabezado p { color: var(--gris-oscuro); }
+
+/* ── Pie ───────────────────────────────── */
+.pie { padding: 48px 0 56px; border-top: 1px solid var(--linea); }
+.pie-fila { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap; }
+.pie p { font-size: .9rem; color: var(--gris-claro); margin-top: 14px; max-width: 46ch; }
+.pie nav { display: flex; gap: 22px; flex-wrap: wrap; font-size: .92rem; }
+.pie nav a { color: var(--gris-claro); text-decoration: none; }
+.pie nav a:hover { color: var(--marfil); }
+
+@media (max-width: 860px) {
+  .menu { display: none; }
+  .hamburguesa { display: inline-flex; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0ms !important; transition: none !important; }
+}

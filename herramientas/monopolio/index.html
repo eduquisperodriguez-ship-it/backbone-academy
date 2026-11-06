@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monopolio y discriminación de precios · BackBone Academy</title>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Solve.js"></script>
+    <script src="../../assets/vendor/chart.umd.js"></script>
+
+    <style>
+        
+        :root { 
+            --primary: #00f2fe; 
+            --primary-hover: #4facfe; 
+            --secondary: #f093fb;
+            --secondary-hover: #f5576c;
+            --bg-color: #09090b; 
+            --card-bg: rgba(24, 24, 27, 0.6); 
+            --text-main: #f8fafc; 
+            --text-muted: #a1a1aa; 
+            --border: rgba(255, 255, 255, 0.08); 
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background: linear-gradient(-45deg, #09090b, #16102b, #0a1b2a, #09090b);
+            background-size: 400% 400%;
+            animation: moveGradient 15s ease infinite;
+            color: var(--text-main); 
+            min-height: 100vh; 
+            padding: 2rem; 
+            position: relative;
+            overflow-x: hidden;
+        }
+        @keyframes moveGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* Animated background blobs */
+        body::before, body::after {
+            content: ''; position: fixed; width: 400px; height: 400px;
+            border-radius: 50%; z-index: -1; filter: blur(90px);
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        body::before { background: rgba(0, 242, 254, 0.15); top: 5%; left: 10%; }
+        body::after { background: rgba(240, 147, 251, 0.15); bottom: 5%; right: 10%; animation-delay: -5s; }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, -50px) scale(1.2); }
+        }
+
+        .container { max-width: 1050px; margin: 0 auto; position: relative; z-index: 1; }
+        header { text-align: center; margin-bottom: 3rem; animation: slideDown 0.8s ease-out; }
+        
+        header h1 { 
+            font-size: 3rem; font-weight: 800; 
+            background: linear-gradient(to right, #00f2fe, #4facfe, #f093fb, #f5576c); 
+            background-size: 300% 300%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            margin-bottom: 0.5rem; animation: gradientShift 8s ease infinite;
+        }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        header p { color: var(--text-muted); font-size: 1.2rem; letter-spacing: 0.5px; }
+        
+        .glass { 
+            background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
+            border: 1px solid var(--border); border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .glass:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0, 242, 254, 0.08); border-color: rgba(255, 255, 255, 0.15); }
+        .card { padding: 2.5rem; margin-bottom: 2rem; animation: fadeIn 1s ease-out; }
+        
+        .tabs { display: flex; gap: 1rem; margin-bottom: 2.5rem; justify-content: center; animation: fadeIn 1.2s ease-out; }
+        .tab-btn { 
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); color: var(--text-muted); 
+            padding: 0.8rem 2rem; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 1.05rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        .tab-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-main); transform: scale(1.05); }
+        .tab-btn.active { 
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.1), rgba(79, 172, 254, 0.1)); 
+            border-color: var(--primary); color: var(--primary); box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+        }
+        
+        h2 { font-size: 1.6rem; margin-bottom: 1.8rem; color: #fff; display: flex; align-items: center; gap: 10px; }
+        h2::before { content: ''; display: inline-block; width: 8px; height: 8px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary); }
+        
+        .input-group { margin-bottom: 1.8rem; position: relative; }
+        .input-group label { display: block; margin-bottom: 0.8rem; font-size: 0.95rem; font-weight: 600; color: var(--text-muted); transition: color 0.3s; }
+        .input-group input { 
+            width: 100%; padding: 1rem 1.2rem; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border); 
+            border-radius: 12px; color: white; font-size: 1.1rem; font-family: 'Instrument Sans', sans-serif; font-variant-numeric: tabular-nums; transition: all 0.3s ease; 
+        }
+        .input-group input:focus { outline: none; border-color: var(--primary); background: rgba(0, 242, 254, 0.05); box-shadow: 0 0 0 4px rgba(0, 242, 254, 0.1); }
+        .input-group input:focus + label { color: var(--primary); }
+        
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #000; border: none; 
+            padding: 1rem 2.5rem; border-radius: 12px; font-size: 1.2rem; font-weight: 800; cursor: pointer; 
+            transition: all 0.3s ease; width: 100%; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 10px 20px rgba(0, 242, 254, 0.2); position: relative; overflow: hidden;
+        }
+        .btn-primary::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transition: left 0.5s ease;
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(0, 242, 254, 0.4); }
+        .btn-primary:hover::after { left: 100%; }
+        
+        .results-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .results-container.hidden { display: none; }
+        
+        .result-card { padding: 2rem; }
+        .result-card.highlight { 
+            grid-column: span 2; background: linear-gradient(135deg, rgba(240, 147, 251, 0.08) 0%, rgba(79, 172, 254, 0.08) 100%); 
+            border-color: rgba(240, 147, 251, 0.3); position: relative; overflow: hidden;
+        }
+        .result-card.highlight::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+        }
+        
+        .step-card { grid-column: span 2; padding: 2rem; }
+        
+        h3 { font-size: 1.3rem; margin-bottom: 1.2rem; color: #fff; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; display: flex; align-items: center; gap: 8px;}
+        h4 { color: var(--primary); margin-top: 1.5rem; margin-bottom: 0.8rem; font-size: 1.1rem; }
+        .steps-content p { margin-bottom: 0.8rem; line-height: 1.6; color: #cbd5e1; font-size: 1.05rem; }
+        
+        .interpretation { 
+            margin-top: 1.5rem; background: rgba(0, 0, 0, 0.4); padding: 1.2rem; 
+            border-left: 4px solid var(--secondary); border-radius: 0 8px 8px 0;
+            color: #e2e8f0; font-size: 1.05rem; line-height: 1.6; animation: pulseBorder 2s infinite;
+        }
+        
+        @keyframes pulseBorder { 0% { border-left-color: var(--secondary); } 50% { border-left-color: var(--secondary-hover); } 100% { border-left-color: var(--secondary); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .tremendo-signature { text-align: center; margin-top: 4rem; padding-bottom: 2rem; animation: fadeIn 2s ease-out 1s both; }
+        .tremendo-signature p { font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
+        .tremendo-brand {
+            display: inline-block; font-size: 2.5rem; font-weight: 800; font-style: italic; color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+            background: linear-gradient(90deg, #00f2fe, #f093fb, #f5576c); background-size: 200% auto; -webkit-background-clip: text;
+            margin-top: 0.5rem; text-shadow: 0 0 15px rgba(0, 242, 254, 0.4), 0 0 30px rgba(240, 147, 251, 0.2);
+            transition: all 0.4s ease; animation: shine 3s linear infinite; cursor: crosshair;
+        }
+        .tremendo-brand:hover { text-shadow: 0 0 25px rgba(0, 242, 254, 0.8), 0 0 50px rgba(240, 147, 251, 0.6); transform: scale(1.05) translateY(-5px); }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        @media (max-width: 768px) { .results-container { grid-template-columns: 1fr; } .result-card.highlight, .step-card { grid-column: span 1; } header h1 { font-size: 2.2rem; } }
+    </style>
+    <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../../assets/css/fuentes.css">
+    <link rel="stylesheet" href="../../assets/css/herramientas.css">
+    <style>body{padding:0 !important}.container{padding:2rem clamp(16px,4vw,32px)}.tremendo-signature p{text-transform:none !important;letter-spacing:0 !important}</style>
+</head>
+<body>
+<nav class="bb-barra" aria-label="BackBone Academy"><a class="bb-marca" href="../../"><svg viewBox="0 0 100 120" aria-hidden="true"><g fill="#F3F1EB"><rect width="30" height="36" rx="9"/><rect y="42" width="30" height="36" rx="9"/><rect y="84" width="30" height="36" rx="9"/></g><g fill="#5A7BB0"><path d="M36 0H61.5A28.5 28.5 0 0 1 61.5 57H36V42H61.5A13.5 13.5 0 0 0 61.5 15H36Z"/><path d="M36 63H71.5A28.5 28.5 0 0 1 71.5 120H36V105H71.5A13.5 13.5 0 0 0 71.5 78H36Z"/></g></svg><b>BackBone</b><span>Calculadoras</span></a><a class="bb-volver" href="../../#herramientas">Todas las calculadoras</a></nav>
+
+    <div class="container">
+        <header>
+            <h1>Monopolio y Discriminación de Precios</h1>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'tab1')">1er Grado (y Monopolio Normal)</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab2')">2do Grado (Tarifa de 2 tramos)</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab3')">3er Grado (Segmentación / Plantas)</button>
+        </nav>
+
+        <main id="tab1" class="tab-content" style="display: block;">
+            <div class="card glass">
+                <h2>Parámetros del Mercado</h2>
+                <div class="input-group">
+                    <label>Función de Demanda (ej: P = 100 - 2*Q o Q=(57600-100*P)^(1/2))</label>
+                    <input type="text" id="demand-func" placeholder="Q=(57600-100*P)^(1/2)">
+                </div>
+                <div class="input-group">
+                    <label>Costo Total (CT) en función de Q (ej: CT = 380*Q + 8293.33)</label>
+                    <input type="text" id="cost-func" placeholder="CT=380*Q+8293.33">
+                </div>
+                <button class="btn-primary" onclick="calculateFirstDegree()">Calcular</button>
+            </div>
+
+            <div id="result1" class="results-container hidden">
+                <div class="result-card glass">
+                    <h3>Monopolio Normal</h3>
+                    <div id="res-normal"></div>
+                </div>
+                <div class="result-card glass">
+                    <h3>Discriminación de 1er Grado</h3>
+                    <div id="res-first-degree"></div>
+                </div>
+                <div class="result-card glass highlight">
+                    <h3>Análisis de Eficiencia (PES y Coima)</h3>
+                    <div id="res-analysis"></div>
+                </div>
+                <div class="step-card glass" style="grid-column: span 2;">
+                    <h3>Gráfico (Monopolio Normal y 1er Grado)</h3>
+                    <div style="height: 400px; width: 100%;">
+                        <canvas id="chart1"></canvas>
+                    </div>
+                </div>
+                <div class="step-card glass">
+                    <h3>Proceso Matemático Detallado</h3>
+                    <div id="steps1" class="steps-content"></div>
+                </div>
+            </div>
+        </main>
+
+        <main id="tab2" class="tab-content" style="display: none;">
+            <div class="card glass">
+                <h2>Parámetros de los Segmentos (Tarifa 2 Tramos)</h2>
+                <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 1rem;">Puedes llenar 2 o 3 demandas según lo necesites. Deja en blanco la que no uses.</p>
+                <div class="segment-group" style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 0.8rem;">
+                        <input type="checkbox" id="active1" checked style="width: auto; margin-right: 0.5rem; cursor: pointer;">
+                        <label for="active1" style="margin: 0; font-weight: 600; color: #AEBFDB; font-size: 1rem; cursor: pointer;">Incluir Segmento 1</label>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0.8rem;">
+                        <label>Demanda individual del segmento</label>
+                        <input type="text" id="demand1" placeholder="P = 100 - Q">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Cantidad de consumidores en este segmento</label>
+                        <input type="number" id="num_cons1" value="1" min="1">
+                    </div>
+                </div>
+
+                <div class="segment-group" style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 0.8rem;">
+                        <input type="checkbox" id="active2" checked style="width: auto; margin-right: 0.5rem; cursor: pointer;">
+                        <label for="active2" style="margin: 0; font-weight: 600; color: #AEBFDB; font-size: 1rem; cursor: pointer;">Incluir Segmento 2</label>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0.8rem;">
+                        <label>Demanda individual del segmento</label>
+                        <input type="text" id="demand2" placeholder="P = 80 - 2*Q">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Cantidad de consumidores en este segmento</label>
+                        <input type="number" id="num_cons2" value="1" min="1">
+                    </div>
+                </div>
+
+                <div class="segment-group" style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 0.8rem;">
+                        <input type="checkbox" id="active3" style="width: auto; margin-right: 0.5rem; cursor: pointer;">
+                        <label for="active3" style="margin: 0; font-weight: 600; color: #AEBFDB; font-size: 1rem; cursor: pointer;">Incluir Segmento 3</label>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0.8rem;">
+                        <label>Demanda individual del segmento</label>
+                        <input type="text" id="demand3" placeholder="P = 60 - 3*Q">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Cantidad de consumidores en este segmento</label>
+                        <input type="number" id="num_cons3" value="1" min="1">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Costo Total (CT) en función de Q (ej: CT = 20*Q)</label>
+                    <input type="text" id="cost2" placeholder="CT = 20*Q">
+                </div>
+                <button class="btn-primary" onclick="calculateSecondDegree()">Calcular Tarifa</button>
+            </div>
+
+            <div id="result2" class="results-container hidden">
+                <div class="result-card glass highlight">
+                    <h3>Resultados y Análisis: Tarifa de 2 Tramos</h3>
+                    <div id="res-tariff"></div>
+                </div>
+                <div class="step-card glass" style="grid-column: span 2;">
+                    <h3>Gráfico de Demanda y Costos</h3>
+                    <div style="height: 400px; width: 100%;">
+                        <canvas id="chart2"></canvas>
+                    </div>
+                </div>
+                <div class="step-card glass">
+                    <h3>Proceso Matemático Detallado</h3>
+                    <div id="steps2" class="steps-content"></div>
+                </div>
+            </div>
+        </main>
+        
+        <main id="tab3" class="tab-content" style="display: none;">
+            <div class="card glass">
+                <div style="margin-bottom: 1.5rem; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 12px; border: 1px solid var(--border);">
+                    <h3 style="border: none; margin-bottom: 0.5rem;">Modo de Cálculo</h3>
+                    <div style="display: flex; gap: 1rem;">
+                        <label style="flex-direction: row; align-items: center; gap: 0.5rem; cursor: pointer; color: white;">
+                            <input type="radio" name="calcMode" id="modeMonopoly" value="monopoly" checked>
+                            <span>Monopolio (Demandas y Plantas)</span>
+                        </label>
+                        <label style="flex-direction: row; align-items: center; gap: 0.5rem; cursor: pointer; color: white;">
+                            <input type="radio" name="calcMode" id="modeFixedQ" value="fixedQ">
+                            <span>Q Total Fijo (Solo Plantas)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="demandSection">
+                    <h2>Parámetros de Demanda (Segmentos)</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 1rem;">Ecuación: P = A - aQ</p>
+                
+                    <div class="input-group" style="padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px;">
+                        <h3 style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem;">
+                            <input type="checkbox" id="enableS1" checked style="width: auto;"> Segmento 1
+                        </h3>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <label style="flex:1">A1 (Const): <input type="text" id="A1" value="100"></label>
+                            <label style="flex:1">a1 (Pend): <input type="text" id="a1" value="2"></label>
+                        </div>
+                    </div>
+                    <div class="input-group" style="padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px;">
+                        <h3 style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem;">
+                            <input type="checkbox" id="enableS2" checked style="width: auto;"> Segmento 2
+                        </h3>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <label style="flex:1">A2 (Const): <input type="text" id="A2" value="80"></label>
+                            <label style="flex:1">a2 (Pend): <input type="text" id="a2" value="1.5"></label>
+                        </div>
+                    </div>
+                    <div class="input-group" style="padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px;">
+                        <h3 style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem;">
+                            <input type="checkbox" id="enableS3" checked style="width: auto;"> Segmento 3
+                        </h3>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <label style="flex:1">A3 (Const): <input type="text" id="A3" value="60"></label>
+                            <label style="flex:1">a3 (Pend): <input type="text" id="a3" value="1"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="fixedQSection" style="display: none; margin-bottom: 2rem;">
+                    <h2>Parámetro de Producción</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 1rem;">Determina el Cmg óptimo para una cantidad fija</p>
+                    <div class="input-group">
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <label style="flex:1">Q Total Fijo (Q^T): <input type="text" id="Q_fixed" value="100"></label>
+                            <label style="flex:1">Precio Venta (Opcional): <input type="text" id="P_fixed" value="0"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Parámetros de Costos (Plantas)</h2>
+                <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 1rem;">Ecuación: CT = DQ + dQ² + CF</p>
+                <div class="input-group" style="padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px;">
+                    <h3 style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem;">
+                        <input type="checkbox" id="enableP4" checked style="width: auto;"> Planta 4
+                    </h3>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <label style="flex:1">D4 (Const): <input type="text" id="D4" value="30"></label>
+                        <label style="flex:1">d4 (Pend): <input type="text" id="d4" value="1"></label>
+                        <label style="flex:1">CF4: <input type="text" id="CF4" value="100"></label>
+                    </div>
+                </div>
+                <div class="input-group" style="padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px;">
+                    <h3 style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem;">
+                        <input type="checkbox" id="enableP5" checked style="width: auto;"> Planta 5
+                    </h3>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <label style="flex:1">D5 (Const): <input type="text" id="D5" value="20"></label>
+                        <label style="flex:1">d5 (Pend): <input type="text" id="d5" value="1.5"></label>
+                        <label style="flex:1">CF5: <input type="text" id="CF5" value="150"></label>
+                    </div>
+                </div>
+                <div class="input-group" style="padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px;">
+                    <h3 style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem;">
+                        <input type="checkbox" id="enableP6" checked style="width: auto;"> Planta 6
+                    </h3>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <label style="flex:1">D6 (Const): <input type="text" id="D6" value="10"></label>
+                        <label style="flex:1">d6 (Pend): <input type="text" id="d6" value="2"></label>
+                        <label style="flex:1">CF6: <input type="text" id="CF6" value="50"></label>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="calculateThirdDegree()">Calcular y Graficar 3er Grado</button>
+            </div>
+            
+            <div id="result3" class="results-container hidden">
+                <div class="step-card glass" style="grid-column: span 2;">
+                    <h3>Gráfica Img y Cmg Agregados</h3>
+                    <div style="height: 400px; width: 100%;">
+                        <canvas id="mainChart3"></canvas>
+                    </div>
+                </div>
+                <div class="step-card glass" style="grid-column: span 2;">
+                    <h3>Resultados Óptimos</h3>
+                    <div id="resultsContent3" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                        <p>Presiona calcular para ver los resultados.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="tremendo-signature">
+            <p>Calculadora desarrollada por</p>
+            <div class="tremendo-brand">EL TREMENDO</div>
+        </footer>
+    </div>
+
+    <script>
+        let chart1Instance = null;
+        let chart2Instance = null;
+        let chart3Instance = null;
+
+        function openTab(evt, tabName) {
+            let tabcontent = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabcontent.length; i++) tabcontent[i].style.display = "none";
+            let tablinks = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tablinks.length; i++) tablinks[i].className = tablinks[i].className.replace(" active", "");
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function extractPositiveRoot(solutions) {
+            let numeric_sols = [];
+            const addSol = (item) => {
+                try {
+                    let evaluated = nerdamer(item).evaluate().text(); 
+                    if (!evaluated.includes('i')) { 
+                        numeric_sols.push(eval(evaluated));
+                    }
+                } catch(e) {}
+            };
+
+            if (solutions.elements) {
+                solutions.elements.forEach(e => addSol(e.text()));
+            } else {
+                let str = solutions.text();
+                if (str.startsWith('[')) {
+                    let inner = str.substring(1, str.length - 1).split(',');
+                    inner.forEach(item => addSol(item));
+                } else {
+                    addSol(str);
+                }
+            }
+            
+            let pos = numeric_sols.find(v => v > 0);
+            return pos !== undefined ? pos : (numeric_sols[0] || 0);
+        }
+
+        function parseEquation(eqStr, targetVar) {
+            eqStr = eqStr.trim().replace(/q/g, 'Q').replace(/p/g, 'P');
+            eqStr = eqStr.replace(/(\d)([a-zA-Z])/g, '$1*$2');
+            
+            let parts = eqStr.split('=');
+            if (parts.length !== 2) return eqStr;
+
+            let left = parts[0].trim();
+            let right = parts[1].trim();
+
+            if (left === targetVar) return right;
+            if (right === targetVar) return left;
+
+            let otherVar;
+            if (targetVar === 'P') otherVar = 'Q';
+            else if (targetVar === 'Q') otherVar = 'P';
+            else if (targetVar === 'CT' || targetVar === 'C') otherVar = 'Q';
+
+            if (right.includes('^(1/2)') && left === otherVar) {
+                right = right.replace('^(1/2)', '');
+                left = left + '^2';
+            } else if (left.includes('^(1/2)') && right === otherVar) {
+                left = left.replace('^(1/2)', '');
+                right = right + '^2';
+            }
+
+            let expr = `(${left}) - (${right})`;
+            try {
+                let solutions = nerdamer.solve(expr, targetVar);
+                if (solutions.elements && solutions.elements.length > 0) {
+                    return solutions.elements[0].text();
+                } else {
+                    let str = solutions.text();
+                    if(str.startsWith('[')) {
+                        let inner = str.substring(1, str.length - 1);
+                        return inner.split(',')[0];
+                    }
+                    return str;
+                }
+            } catch (e) {
+                console.error("Error solving equation:", eqStr, e);
+                throw e;
+            }
+        }
+
+        function renderMath() {
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        // Definimos un integrador seguro
+        function safeDefiniteIntegral(exprStr, varName, lowerBound, upperBound) {
+            // Evitamos defint porque falla evaluando decimales grandes. En su lugar:
+            // 1. Integramos indefinidamente
+            // 2. Evaluamos superior e inferior.
+            let indefinite = nerdamer(`integrate(${exprStr}, ${varName})`);
+            let upper = nerdamer(indefinite).evaluate({[varName]: upperBound}).text();
+            let lower = nerdamer(indefinite).evaluate({[varName]: lowerBound}).text();
+            let resultStr = nerdamer(`(${upper}) - (${lower})`).evaluate().text();
+            return eval(resultStr);
+        }
+
+        // Gráfico del primer grado. La versión anterior llamaba a esta función sin definirla,
+        // así que el gráfico nunca aparecía y las fórmulas se quedaban sin formato.
+        function generateUniversalChart(canvasId, P_expr_str, Img_str, Cmg_str, Q_star, P_star, etiqueta) {
+            if (typeof Chart === 'undefined') return;
+            const evaluar = (expr, q) => {
+                try { const v = Number(eval(nerdamer(expr).evaluate({Q: q}).text())); return isFinite(v) ? v : NaN; }
+                catch (e) { return NaN; }
+            };
+            const qStar = Number(Q_star), pStar = Number(eval(P_star));
+            // Hasta dónde dibujar: donde la demanda llega a cero, o 2,2 veces el óptimo
+            let qMax = qStar * 2.2 || 10;
+            for (let q = qStar; q < qStar * 6 + 10; q += Math.max(qStar / 40, 0.05)) {
+                if (evaluar(P_expr_str, q) <= 0) { qMax = q; break; }
+            }
+            const paso = qMax / 80, dem = [], img = [], cmg = [];
+            for (let q = 0; q <= qMax + 1e-9; q += paso) {
+                const p = evaluar(P_expr_str, q), r = evaluar(Img_str, q), c = evaluar(Cmg_str, q);
+                if (!isNaN(p) && p >= 0) dem.push({x: q, y: p});
+                if (!isNaN(r) && r >= 0) img.push({x: q, y: r});
+                if (!isNaN(c)) cmg.push({x: q, y: c});
+            }
+            if (chart1Instance) chart1Instance.destroy();
+            const lineas = { borderWidth: 2, fill: false, pointRadius: 0, tension: 0 };
+            chart1Instance = new Chart(document.getElementById(canvasId).getContext('2d'), {
+                type: 'line',
+                data: { datasets: [
+                    { label: 'Demanda (Ime)', data: dem, borderColor: '#AEBFDB', ...lineas },
+                    { label: 'Ingreso marginal (Img)', data: img, borderColor: '#7D9CCF', ...lineas },
+                    { label: 'Costo marginal (Cmg)', data: cmg, borderColor: '#F3F1EB', ...lineas },
+                    { label: etiqueta, data: [{x: qStar, y: pStar}], backgroundColor: '#F3F1EB', borderColor: '#0D1220', borderWidth: 2, pointRadius: 6, pointHoverRadius: 8, showLine: false }
+                ]},
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { type: 'linear', min: 0, title: { display: true, text: 'Cantidad (Q)', color: '#F3F1EB' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { min: 0, title: { display: true, text: 'Precio / Costo', color: '#F3F1EB' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#F3F1EB' } },
+                        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: (${ctx.raw.x.toFixed(2)}, ${ctx.raw.y.toFixed(2)})` } }
+                    }
+                }
+            });
+        }
+
+        function calculateFirstDegree() {
+            try {
+                let demandStr = document.getElementById('demand-func').value;
+                let costStr = document.getElementById('cost-func').value;
+                if (!demandStr || !costStr) return alert("Por favor ingrese ambas funciones.");
+
+                const P_expr_str = parseEquation(demandStr, 'P');
+                const CT_expr_str = parseEquation(costStr, 'CT') || parseEquation(costStr, 'C');
+
+                let steps = `<h4>1. Funciones Iniciales</h4>`;
+                steps += `<p>Demanda Inversa (Ime): \\( P = ${nerdamer(P_expr_str).toTeX()} \\)</p>`;
+                steps += `<p>Costo Total (CT): \\( CT = ${nerdamer(CT_expr_str).toTeX()} \\)</p>`;
+
+                const IT_expr = nerdamer(`expand((${P_expr_str}) * Q)`);
+                const Img_expr = nerdamer(`diff(${IT_expr.text()}, Q)`);
+                const CT_expanded = nerdamer(`expand(${CT_expr_str})`);
+                const Cmg_expr = nerdamer(`diff(${CT_expanded.text()}, Q)`);
+
+                steps += `<h4>2. Monopolio Normal</h4>`;
+                steps += `<p>Ingreso Total (IT = P * Q): \\( IT = ${IT_expr.toTeX()} \\)</p>`;
+                steps += `<p>Ingreso Marginal (Img): \\( Img = ${Img_expr.toTeX()} \\)</p>`;
+                steps += `<p>Costo Marginal (Cmg): \\( Cmg = ${Cmg_expr.toTeX()} \\)</p>`;
+
+                const opt_eq = `${Img_expr.text()} = ${Cmg_expr.text()}`;
+                steps += `<p>Igualamos Img = Cmg: \\( ${Img_expr.toTeX()} = ${Cmg_expr.toTeX()} \\)</p>`;
+                
+                let q_solutions = nerdamer.solve(opt_eq, 'Q');
+                let Q_star = extractPositiveRoot(q_solutions);
+                
+                const P_star = nerdamer(P_expr_str).evaluate({Q: Q_star}).text();
+                const CT_star = nerdamer(CT_expr_str).evaluate({Q: Q_star}).text();
+                const BT_star = nerdamer(`${P_star} * ${Q_star} - ${CT_star}`).evaluate().text();
+
+                steps += `<p>Resolviendo Q: \\( Q^* = ${Number(Q_star).toFixed(2)} \\)</p>`;
+
+                const comp_eq = `${P_expr_str} = ${Cmg_expr.text()}`;
+                let q_comp_sols = nerdamer.solve(comp_eq, 'Q');
+                let Q_comp = extractPositiveRoot(q_comp_sols);
+                
+                steps += `<h4>3. Discriminación de 1er Grado</h4>`;
+                steps += `<p>Igualamos Ime = Cmg: \\( ${nerdamer(P_expr_str).toTeX()} = ${Cmg_expr.toTeX()} \\)</p>`;
+                steps += `<p>Cantidad (1er Grado): \\( Q_c = ${Number(Q_comp).toFixed(2)} \\)</p>`;
+
+                const integrand_str = `(${P_expr_str}) - (${Cmg_expr.text()})`;
+                const PES_val = safeDefiniteIntegral(integrand_str, 'Q', Q_star, Q_comp);
+                
+                const CF = eval(nerdamer(CT_expr_str).evaluate({Q: 0}).text());
+                const profit_val = safeDefiniteIntegral(integrand_str, 'Q', 0, Q_comp) - CF;
+
+                steps += `<h4>4. PES y Coima</h4>`;
+                steps += `<p>PES: \\( \\int_{Q^*}^{Q_c} (Ime - Cmg) dQ = ${Number(PES_val).toFixed(2)} \\)</p>`;
+                steps += `<p>Beneficio 1er Grado: \\( \\int_{0}^{Q_c} (Ime - Cmg) dQ - CF = ${Number(profit_val).toFixed(2)} \\)</p>`;
+
+                const P_max_val = eval(nerdamer(P_expr_str).evaluate({Q: 0}).text());
+                const P_c_val = eval(nerdamer(P_expr_str).evaluate({Q: Q_comp}).text());
+
+                document.getElementById('res-normal').innerHTML = `
+                    <p><strong>Cantidad (\\( Q^* \\)):</strong> ${Number(Q_star).toFixed(2)} unidades</p>
+                    <p><strong>Precio (\\( P^* \\)):</strong> $${Number(eval(P_star)).toFixed(2)}</p>
+                    <p><strong>Beneficios:</strong> $${Number(eval(BT_star)).toFixed(2)}</p>
+                    <div class="interpretation">
+                        <strong>Respuesta:</strong> El monopolista maximizará sus beneficios produciendo ${Number(Q_star).toFixed(2)} unidades y fijando un precio único de $${Number(eval(P_star)).toFixed(2)}. Esto le genera unas ganancias totales de $${Number(eval(BT_star)).toFixed(2)}.
+                    </div>
+                `;
+
+                document.getElementById('res-first-degree').innerHTML = `
+                    <p><strong>Cantidad (\\( Q_c \\)):</strong> ${Number(Q_comp).toFixed(2)} unidades</p>
+                    <p><strong>Rango de Precios:</strong> De $${Number(P_c_val).toFixed(2)} hasta $${Number(P_max_val).toFixed(2)}.</p>
+                    <p><strong>Beneficios:</strong> $${Number(profit_val).toFixed(2)}</p>
+                    <div class="interpretation">
+                        <strong>Respuesta:</strong> Al discriminar en 1er Grado, cobra el precio de reserva exacto a cada consumidor. Venderá un total de ${Number(Q_comp).toFixed(2)} unidades a precios escalonados desde $${Number(P_max_val).toFixed(2)} por la primera unidad hasta $${Number(P_c_val).toFixed(2)} por la última, obteniendo un beneficio total de $${Number(profit_val).toFixed(2)}.
+                    </div>
+                `;
+
+                document.getElementById('res-analysis').innerHTML = `
+                    <p><strong>Pérdida de Eficiencia Social (PES):</strong> ${Number(PES_val).toFixed(2)}</p>
+                    <p><strong>Coima (Excedente extraído):</strong> Todo el excedente ($${(Number(profit_val) - Number(eval(BT_star))).toFixed(2)} extra sobre monopolio normal).</p>
+                    <div class="interpretation">
+                        <strong>Respuesta:</strong> El monopolio normal genera una PES de ${Number(PES_val).toFixed(2)}. Bajo 1er grado, la PES desaparece y todo el excedente pasa a ser la 'Coima' extraída.
+                    </div>
+                `;
+
+                document.getElementById('steps1').innerHTML = steps;
+                document.getElementById('result1').classList.remove('hidden');
+                
+                // Generar Gráfico 1
+                generateUniversalChart('chart1', P_expr_str, Img_expr.text(), Cmg_expr.text(), Q_star, P_star, 'Óptimo Monopolio Normal');
+                
+                renderMath();
+
+            } catch (e) {
+                alert("Error matemático: No se pudo resolver la función. Revise que la ecuación tenga solución en los números reales.");
+                console.error(e);
+            }
+        }
+
+        function calculateSecondDegree() {
+            try {
+                let initialSegments = [];
+                for (let i = 1; i <= 3; i++) {
+                    let isActive = document.getElementById('active' + i).checked;
+                    let eq = document.getElementById('demand' + i).value;
+                    let nCons = parseInt(document.getElementById('num_cons' + i).value) || 0;
+                    if (isActive && eq && eq.trim() !== '' && nCons > 0) {
+                        let qExpr = parseEquation(eq, 'Q');
+                        let sol = nerdamer.solve(`${qExpr}=0`, 'P');
+                        let pMax = extractPositiveRoot(sol);
+                        initialSegments.push({ eq: eq, qExpr: qExpr, n: nCons, id: i, pMax: pMax });
+                    }
+                }
+
+                if (initialSegments.length === 0) return alert("Debe habilitar e ingresar al menos un segmento de demanda.");
+                const cStr = document.getElementById('cost2').value;
+                if (!cStr) return alert("Por favor ingrese la función de Costo.");
+
+                const CT_expr = parseEquation(cStr, 'CT') || parseEquation(cStr, 'C');
+                const Cmg_expr = nerdamer(`diff(${CT_expr}, Q)`); 
+                const Cmg_val = Number(eval(nerdamer(Cmg_expr).evaluate({Q:0}).text())); 
+                const CF_val = Number(eval(nerdamer(CT_expr).evaluate({Q: 0}).text()));
+
+                let activeSegments = [...initialSegments];
+                let steps = `<h4>1. Datos Iniciales</h4>`;
+                steps += `<p>Costo Marginal (Cmg) = $${Cmg_val.toFixed(2)} | Costo Fijo (CF) = $${CF_val.toFixed(2)}</p>`;
+                
+                let final_P_star = 0;
+                let final_A_star = 0;
+                let final_BT = 0;
+                let final_Q_total_val = 0;
+                let least_willing_seg = null;
+                let q_vals = [];
+
+                // Función auxiliar segura para evaluar con variables
+                const safeEval = (expr, scope) => {
+                    try {
+                        let res = nerdamer(expr).evaluate(scope).text();
+                        return Number(eval(res));
+                    } catch(e) { return NaN; }
+                };
+
+                while (activeSegments.length > 0) {
+                    const numSegments = activeSegments.length;
+                    let iterationSteps = `<div style="border-left: 3px solid #00f2fe; padding-left: 1rem; margin-top: 1rem;">`;
+                    iterationSteps += `<h5>Analizando con ${numSegments} segmento(s) activo(s)</h5>`;
+
+                    let P_maxes = activeSegments.map(s => s.pMax);
+                    let min_P_max = Math.min(...P_maxes);
+                    let least_willing_idx = P_maxes.indexOf(min_P_max);
+                    least_willing_seg = activeSegments[least_willing_idx];
+
+                    iterationSteps += `<p>La demanda con menor disposición a pagar es el <strong>Segmento ${least_willing_seg.id}</strong> (Precio Máximo = $${Number(min_P_max).toFixed(2)}). Fijamos la Tarifa de Entrada (A) en base a su excedente.</p>`;
+                    
+                    let indef_A = nerdamer(`integrate(${least_willing_seg.qExpr}, P)`);
+                    let upper_A = nerdamer(indef_A).evaluate({P: min_P_max}).text();
+                    let lower_A = indef_A.text();
+                    const A_expr = `(${upper_A}) - (${lower_A})`;
+                    
+                    iterationSteps += `<p>Resolución de A (Tarifa de Entrada):<br> \\( A = ${nerdamer(A_expr).toTeX()} \\)</p>`;
+
+                    let n_demandas = activeSegments.length; // n = número de demandas
+                    let Q_sum_expr = activeSegments.map(seg => `(${seg.qExpr})`).join(' + ');
+                    let BT_expr_for_P = nerdamer(`expand(${n_demandas} * (${A_expr}) + (P - ${Cmg_val}) * (${Q_sum_expr}) - ${CF_val})`).text();
+                    
+                    iterationSteps += `<p>Función de Beneficio para optimizar P* (usando n = ${n_demandas} demandas y suma simple de cantidades):<br> \\( BT_{opt} = ${nerdamer(BT_expr_for_P).toTeX()} \\)</p>`;
+
+                    const dBT_dP = nerdamer(`diff(${BT_expr_for_P}, P)`);
+                    iterationSteps += `<p>Derivada de BT respecto a P e igualada a 0:<br> \\( \\frac{d(BT_{opt})}{dP} = ${nerdamer(dBT_dP).toTeX()} = 0 \\)</p>`;
+
+                    let p_sols;
+                    try {
+                        p_sols = nerdamer.solve(`${dBT_dP.text()} = 0`, 'P');
+                    } catch(e) {
+                        p_sols = { text: () => "[]", elements: [] };
+                    }
+                    
+                    let numeric_ps = [];
+                    try {
+                        if (p_sols.elements && p_sols.elements.length > 0) {
+                            p_sols.elements.forEach(e => {
+                                let val = Number(eval(nerdamer(e.text()).evaluate().text()));
+                                if (!isNaN(val)) numeric_ps.push(val);
+                            });
+                        } else {
+                            let str = p_sols.text();
+                            if (str.startsWith('[')) {
+                                str.substring(1, str.length - 1).split(',').forEach(item => {
+                                    if(item.trim() !== '') {
+                                        let val = Number(eval(nerdamer(item).evaluate().text()));
+                                        if(!isNaN(val)) numeric_ps.push(val);
+                                    }
+                                });
+                            } else if (str.trim() !== '') {
+                                let val = Number(eval(nerdamer(str).evaluate().text()));
+                                if(!isNaN(val)) numeric_ps.push(val);
+                            }
+                        }
+                    } catch(e) {
+                        console.error("Error extrayendo raíces:", e);
+                    }
+                    
+                    if (numeric_ps.length === 0) {
+                        iterationSteps += `<p style="color: #E08A8A;"><strong>¡Atención!</strong> No se encontró un Precio de Uso resoluble. Se excluirá el Segmento ${least_willing_seg.id}.</p></div>`;
+                        steps += iterationSteps;
+                        activeSegments.splice(least_willing_idx, 1);
+                        continue;
+                    }
+
+                    let P_star = numeric_ps.find(val => val >= Cmg_val && val < min_P_max);
+                    if (P_star === undefined) P_star = numeric_ps[0];
+                    
+                    iterationSteps += `<p>El Precio de Uso candidato hallado es <strong>P* = $${Number(P_star).toFixed(2)}</strong>.</p>`;
+
+                    if (P_star >= min_P_max || P_star < Cmg_val) {
+                        iterationSteps += `<p style="color: #E08A8A;"><strong>¡Atención!</strong> El precio de uso P* ($${Number(P_star).toFixed(2)}) sale fuera del rango aceptable (Cmg=$${Cmg_val.toFixed(2)} a P_max=$${Number(min_P_max).toFixed(2)}). Esto significa que no es rentable incluir al Segmento ${least_willing_seg.id}. Lo excluimos del mercado y recalculamos.</p>`;
+                        iterationSteps += `</div>`;
+                        steps += iterationSteps;
+                        activeSegments.splice(least_willing_idx, 1);
+                        continue;
+                    }
+
+                    // Si pasamos la validación, hemos encontrado el P* correcto
+                    iterationSteps += `<p style="color: #AEBFDB;"><strong>¡Precio Válido!</strong> P* ($${Number(P_star).toFixed(4)}) se encuentra dentro del rango rentable.</p>`;
+                    
+                    final_P_star = Number(P_star);
+                    final_A_star = safeEval(A_expr, {P: final_P_star});
+                    
+                    let total_N = activeSegments.reduce((sum, seg) => sum + seg.n, 0);
+                    const Q_market_expr = activeSegments.map(seg => `(${seg.n} * (${seg.qExpr}))`).join(' + ');
+                    const BT_expr_final = `${total_N} * (${A_expr}) + (P - ${Cmg_val}) * (${Q_market_expr}) - ${CF_val}`;
+                    
+                    iterationSteps += `<p>Reemplazando P* en la ecuación de Tarifa de Entrada: <strong>A = $${final_A_star.toFixed(4)}</strong></p>`;
+                    
+                    final_BT = safeEval(BT_expr_final, {P: final_P_star});
+                    final_Q_total_val = safeEval(Q_market_expr, {P: final_P_star}); // Cantidad total del mercado agregada con todos los individuos
+
+                    q_vals = activeSegments.map(seg => {
+                        let q_indiv = safeEval(seg.qExpr, {P: final_P_star});
+                        return { id: seg.id, n: seg.n, q_indiv: q_indiv, q_group: q_indiv * seg.n };
+                    });
+
+                    iterationSteps += `<p>Usando N = ${total_N} usuarios para el Beneficio Final con sumatoria de cantidades escaladas por usuarios (N1·q1 + N2·q2):<br> \\( BT_{final} = N \\times A + (P - Cmg)(N_1 q_1 + N_2 q_2) - CF \\)</p>`;
+                    iterationSteps += `<p><strong>Beneficio Total Evaluado = $${final_BT.toFixed(4)}</strong>.</p>`;
+                    iterationSteps += `</div>`;
+                    steps += iterationSteps;
+                    break;
+                }
+
+                if (activeSegments.length === 0) {
+                    document.getElementById('steps2').innerHTML = steps + `<div style="color:#E08A8A; font-weight:bold; margin-top:1rem;">Todos los segmentos fueron excluidos. Ninguno era rentable.</div>`;
+                    document.getElementById('result2').classList.remove('hidden');
+                    return;
+                }
+
+                document.getElementById('steps2').innerHTML = steps;
+
+                let q_text = q_vals.map(qv => `Segmento ${qv.id} (Grupo total): ${qv.q_group.toFixed(2)} unidades (${qv.q_indiv.toFixed(2)} c/u)`).join('<br>');
+
+                document.getElementById('res-tariff').innerHTML = `
+                    <p><strong>Tarifa de Entrada (A):</strong> $${final_A_star.toFixed(2)}</p>
+                    <p><strong>Tarifa de Uso (P*):</strong> $${final_P_star.toFixed(2)}</p>
+                    <p><strong>Beneficio Total:</strong> $${final_BT.toFixed(2)}</p>
+                    <p><strong>Cantidades Totales por Grupo:</strong><br>${q_text}</p>
+                    <div class="interpretation">
+                        <strong>Respuesta:</strong> Tras la validación matemática, la empresa atenderá a ${activeSegments.length} tipo(s) de demanda. Establecerá una cuota de Entrada (A) de $${final_A_star.toFixed(2)} que extrae todo el excedente del consumidor individual del Segmento ${least_willing_seg.id} (el menos dispuesto). Se cobrará una Tarifa de Uso (P*) de $${final_P_star.toFixed(2)} por unidad, alcanzando un Beneficio Total global de $${final_BT.toFixed(2)}.
+                    </div>
+                `;
+
+                document.getElementById('result2').classList.remove('hidden');
+                
+                // Generar Gráfico 2: Trazamos la demanda agregada simple
+                let Q_total_expr = activeSegments.map(seg => `(${seg.n} * (${seg.qExpr}))`).join(' + ');
+                const ctx2 = document.getElementById('chart2').getContext('2d');
+                if (chart2Instance) chart2Instance.destroy();
+
+                let max_P = Math.max(...activeSegments.map(s => s.pMax));
+                let step = max_P / 50;
+                let d_data = [];
+                for(let p = 0; p <= max_P; p += step) {
+                    try {
+                        let q = Number(eval(nerdamer(Q_total_expr).evaluate({P: p}).text()));
+                        if (!isNaN(q) && q >= 0) d_data.push({x: q, y: p});
+                    } catch(e) {}
+                }
+                
+                let cmg_data = [];
+                for(let p = 0; p <= max_P; p += step) {
+                    cmg_data.push({x: (final_Q_total_val * 1.5 || 100), y: Cmg_val});
+                    cmg_data.push({x: 0, y: Cmg_val});
+                }
+                cmg_data.sort((a,b) => a.x - b.x);
+
+                Chart.defaults.color = '#9AA2B5';
+                Chart.defaults.font.family = "'Instrument Sans', sans-serif";
+                
+                chart2Instance = new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Demanda Agregada (ΣQ)',
+                                data: d_data,
+                                borderColor: '#7D9CCF',
+                                backgroundColor: 'rgba(125,156,207,0.1)',
+                                borderWidth: 2,
+                                fill: false,
+                                pointRadius: 0,
+                                tension: 0
+                            },
+                            {
+                                label: 'Costo Marginal (Cmg)',
+                                data: cmg_data,
+                                borderColor: '#F3F1EB',
+                                borderWidth: 2,
+                                fill: false,
+                                pointRadius: 0,
+                                tension: 0
+                            },
+                            {
+                                label: 'Tarifa de Uso (P*)',
+                                data: [{x: final_Q_total_val, y: final_P_star}],
+                                backgroundColor: '#AEBFDB',
+                                borderColor: '#AEBFDB',
+                                pointRadius: 6,
+                                pointHoverRadius: 8,
+                                showLine: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                title: { display: true, text: 'Cantidad Total (Q)', color: '#F3F1EB' },
+                                grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                            },
+                            y: {
+                                title: { display: true, text: 'Precio (P) / Costo', color: '#F3F1EB' },
+                                grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                            }
+                        },
+                        plugins: {
+                            legend: { labels: { color: '#F3F1EB' } },
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => `${ctx.dataset.label}: (${ctx.raw.x.toFixed(2)}, $${ctx.raw.y.toFixed(2)})`
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                renderMath();
+
+            } catch (e) {
+                alert("Error en el cálculo. Asegúrese de ingresar funciones numéricamente resolubles.");
+                console.error(e);
+            }
+        }
+
+        // ================= LOGICA 3ER GRADO =================
+        document.getElementById('modeMonopoly').addEventListener('change', toggleMode3);
+        document.getElementById('modeFixedQ').addEventListener('change', toggleMode3);
+
+        function toggleMode3() {
+            if (document.getElementById('modeFixedQ').checked) {
+                document.getElementById('demandSection').style.display = 'none';
+                document.getElementById('fixedQSection').style.display = 'block';
+            } else {
+                document.getElementById('demandSection').style.display = 'block';
+                document.getElementById('fixedQSection').style.display = 'none';
+            }
+        }
+
+        function parseFraction(val) {
+            if (typeof val !== 'string') return parseFloat(val);
+            if (val.includes('/')) {
+                const parts = val.split('/');
+                return parseFloat(parts[0]) / parseFloat(parts[1]);
+            }
+            return parseFloat(val);
+        }
+
+        function calculateThirdDegree() {
+            const A = parseFraction(document.getElementById('A1').value);
+            const a = parseFraction(document.getElementById('a1').value);
+            const B = parseFraction(document.getElementById('A2').value);
+            const b = parseFraction(document.getElementById('a2').value);
+            const C = parseFraction(document.getElementById('A3').value);
+            const c = parseFraction(document.getElementById('a3').value);
+
+            const D = parseFraction(document.getElementById('D4').value);
+            const d = parseFraction(document.getElementById('d4').value);
+            const CF4 = parseFraction(document.getElementById('CF4').value);
+            
+            const F = parseFraction(document.getElementById('D5').value);
+            const f = parseFraction(document.getElementById('d5').value);
+            const CF5 = parseFraction(document.getElementById('CF5').value);
+            
+            const G = parseFraction(document.getElementById('D6').value);
+            const g = parseFraction(document.getElementById('d6').value);
+            const CF6 = parseFraction(document.getElementById('CF6').value);
+
+            const enS1 = document.getElementById('enableS1').checked;
+            const enS2 = document.getElementById('enableS2').checked;
+            const enS3 = document.getElementById('enableS3').checked;
+            
+            const enP4 = document.getElementById('enableP4').checked;
+            const enP5 = document.getElementById('enableP5').checked;
+            const enP6 = document.getElementById('enableP6').checked;
+
+            const q1 = (img) => (a === 0) ? (img >= A ? Infinity : 0) : (img <= A ? (A - img) / (2 * a) : 0);
+            const q2 = (img) => (b === 0) ? (img >= B ? Infinity : 0) : (img <= B ? (B - img) / (2 * b) : 0);
+            const q3 = (img) => (c === 0) ? (img >= C ? Infinity : 0) : (img <= C ? (C - img) / (2 * c) : 0);
+            
+            const Q_demand = (img) => (enS1 ? Math.max(0, q1(img)) : 0) + (enS2 ? Math.max(0, q2(img)) : 0) + (enS3 ? Math.max(0, q3(img)) : 0);
+
+            const q4 = (cmg) => (d === 0) ? (cmg >= D ? Infinity : 0) : (cmg >= D ? (cmg - D) / (2 * d) : 0);
+            const q5 = (cmg) => (f === 0) ? (cmg >= F ? Infinity : 0) : (cmg >= F ? (cmg - F) / (2 * f) : 0);
+            const q6 = (cmg) => (g === 0) ? (cmg >= G ? Infinity : 0) : (cmg >= G ? (cmg - G) / (2 * g) : 0);
+
+            const Q_supply = (cmg) => (enP4 ? Math.max(0, q4(cmg)) : 0) + (enP5 ? Math.max(0, q5(cmg)) : 0) + (enP6 ? Math.max(0, q6(cmg)) : 0);
+
+            let maxDem = 0;
+            if (enS1) maxDem = Math.max(maxDem, A);
+            if (enS2) maxDem = Math.max(maxDem, B);
+            if (enS3) maxDem = Math.max(maxDem, C);
+            
+            let minSup = Infinity;
+            if (enP4) minSup = Math.min(minSup, D);
+            if (enP5) minSup = Math.min(minSup, F);
+            if (enP6) minSup = Math.min(minSup, G);
+
+            const isFixedQ = document.getElementById('modeFixedQ').checked;
+            let Q_fixed = 0;
+            let P_fixed = 0;
+            if (isFixedQ) {
+                Q_fixed = parseFraction(document.getElementById('Q_fixed').value);
+                P_fixed = parseFraction(document.getElementById('P_fixed').value);
+            }
+
+            let n_hat = 0;
+            let Q_opt = 0;
+
+            if (!isFixedQ) {
+                let y_low = 0;
+                let y_high = maxDem;
+
+                if (Q_demand(y_low) <= Q_supply(y_low)) {
+                    n_hat = 0;
+                    Q_opt = 0;
+                } else {
+                    for (let i = 0; i < 100; i++) {
+                        let mid = (y_low + y_high) / 2;
+                        if (Q_demand(mid) > Q_supply(mid)) y_low = mid;
+                        else y_high = mid;
+                    }
+                    n_hat = (y_low + y_high) / 2;
+                    Q_opt = Q_demand(n_hat);
+                }
+            } else {
+                Q_opt = Q_fixed;
+                if (Q_fixed <= 0) {
+                    n_hat = minSup === Infinity ? 0 : minSup;
+                } else {
+                    let y_low = minSup === Infinity ? 0 : minSup;
+                    let y_high = Math.max(10, y_low * 2);
+                    while(Q_supply(y_high) < Q_fixed && y_high < 1000000) {
+                        if(y_high === 0) y_high = 10;
+                        y_high *= 2;
+                    }
+                    for (let i = 0; i < 100; i++) {
+                        let mid = (y_low + y_high) / 2;
+                        if (Q_supply(mid) < Q_fixed) y_low = mid;
+                        else y_high = mid;
+                    }
+                    n_hat = (y_low + y_high) / 2;
+                }
+            }
+
+            const q1_opt = (!isFixedQ && enS1) ? q1(n_hat) : 0;
+            const q2_opt = (!isFixedQ && enS2) ? q2(n_hat) : 0;
+            const q3_opt = (!isFixedQ && enS3) ? q3(n_hat) : 0;
+
+            const p1_opt = (!isFixedQ && enS1) ? (A - a * (q1_opt===Infinity?0:q1_opt)) : 0;
+            const p2_opt = (!isFixedQ && enS2) ? (B - b * (q2_opt===Infinity?0:q2_opt)) : 0;
+            const p3_opt = (!isFixedQ && enS3) ? (C - c * (q3_opt===Infinity?0:q3_opt)) : 0;
+
+            let q4_opt = enP4 ? q4(n_hat) : 0;
+            let q5_opt = enP5 ? q5(n_hat) : 0;
+            let q6_opt = enP6 ? q6(n_hat) : 0;
+
+            let q_strict = 0;
+            if (q4_opt !== Infinity) q_strict += q4_opt;
+            if (q5_opt !== Infinity) q_strict += q5_opt;
+            if (q6_opt !== Infinity) q_strict += q6_opt;
+
+            let q_remaining = Math.max(0, Q_opt - q_strict);
+            let num_constant = (q4_opt === Infinity ? 1 : 0) + (q5_opt === Infinity ? 1 : 0) + (q6_opt === Infinity ? 1 : 0);
+
+            if (q4_opt === Infinity) q4_opt = q_remaining / num_constant;
+            if (q5_opt === Infinity) q5_opt = q_remaining / num_constant;
+            if (q6_opt === Infinity) q6_opt = q_remaining / num_constant;
+
+            const IT1 = p1_opt * q1_opt;
+            const IT2 = p2_opt * q2_opt;
+            const IT3 = p3_opt * q3_opt;
+            const IT_total = isFixedQ ? (P_fixed * Q_fixed) : (IT1 + IT2 + IT3);
+
+            const CT4 = enP4 ? (D * q4_opt + d * Math.pow(q4_opt, 2) + CF4) : 0;
+            const CT5 = enP5 ? (F * q5_opt + f * Math.pow(q5_opt, 2) + CF5) : 0;
+            const CT6 = enP6 ? (G * q6_opt + g * Math.pow(q6_opt, 2) + CF6) : 0;
+            const CT_total = CT4 + CT5 + CT6;
+
+            const Beneficio = IT_total - CT_total;
+
+            const resHtml = `
+                <div class="result-card highlight" style="margin-bottom: 1rem;">
+                    <h4>Cantidad Total (Q^T)</h4>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: white;">${Q_opt.toFixed(2)}</div>
+                </div>
+                <div class="result-card highlight" style="margin-bottom: 1rem;">
+                    <h4>${isFixedQ ? 'Cmg Óptimo (Cmg^*)' : 'Punto Óptimo (Ñ = Img = Cmg)'}</h4>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: white;">${n_hat.toFixed(2)}</div>
+                </div>
+
+                <div class="glass" style="padding: 1.5rem; grid-column: 1 / -1; margin-bottom: 1rem;">
+                    <h4 style="color: #cbd5e1; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">Detalle Consumo (Segmentos)</h4>
+                    ${(!isFixedQ && enS1) ? `<div>S1: q1 = ${q1_opt.toFixed(2)} | p1 = ${p1_opt.toFixed(2)} | IT1 = $${IT1.toFixed(2)}</div>` : ''}
+                    ${(!isFixedQ && enS2) ? `<div>S2: q2 = ${q2_opt.toFixed(2)} | p2 = ${p2_opt.toFixed(2)} | IT2 = $${IT2.toFixed(2)}</div>` : ''}
+                    ${(!isFixedQ && enS3) ? `<div>S3: q3 = ${q3_opt.toFixed(2)} | p3 = ${p3_opt.toFixed(2)} | IT3 = $${IT3.toFixed(2)}</div>` : ''}
+                    <div style="margin-top: 0.5rem; color: #00f2fe;">Ingreso Total (ΣIT) = $${IT_total.toFixed(2)}</div>
+                </div>
+                
+                <div class="glass" style="padding: 1.5rem; grid-column: 1 / -1; margin-bottom: 1rem;">
+                    <h4 style="color: #cbd5e1; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">Detalle Producción (Plantas)</h4>
+                    ${enP4 ? `<div>P4: q4 = ${q4_opt.toFixed(4)} | CT4 = $${CT4.toFixed(4)}</div>` : ''}
+                    ${enP5 ? `<div>P5: q5 = ${q5_opt.toFixed(4)} | CT5 = $${CT5.toFixed(4)}</div>` : ''}
+                    ${enP6 ? `<div>P6: q6 = ${q6_opt.toFixed(4)} | CT6 = $${CT6.toFixed(4)}</div>` : ''}
+                    <div style="margin-top: 0.5rem; color: #f5576c;">Costo Total (ΣCT) = $${CT_total.toFixed(4)}</div>
+                </div>
+
+                <div class="result-card highlight" style="grid-column: 1 / -1; border-color: ${Beneficio >= 0 ? '#AEBFDB' : '#E08A8A'};">
+                    <h4>${isFixedQ ? 'Beneficio Total (IT Fijo - ΣCT)' : 'Beneficio Total Monopolista (ΣIT - ΣCT)'}</h4>
+                    <div style="font-size: 1.8rem; font-weight: bold; color: ${Beneficio >= 0 ? '#AEBFDB' : '#E08A8A'};">$${Beneficio.toFixed(4)}</div>
+                </div>
+            `;
+            document.getElementById('resultsContent3').innerHTML = resHtml;
+            document.getElementById('result3').classList.remove('hidden');
+
+            generateChart3(maxDem, minSup, Q_demand, Q_supply, n_hat, Q_opt, isFixedQ);
+        }
+
+        function generateChart3(maxDem, minSup, Q_demand, Q_supply, n_hat, Q_opt, isFixedQ) {
+            const ctx = document.getElementById('mainChart3').getContext('2d');
+            const imgData = [];
+            let maxVal = (!isFixedQ) ? (maxDem * 1.1 || 100) : Math.max(n_hat * 1.5, 100);
+            const step = maxVal / 100;
+            
+            for (let y = maxVal; y >= 0; y -= step) imgData.push({ x: Q_demand(y), y: y });
+
+            const cmgData = [];
+            const minVal = minSup === Infinity ? 0 : minSup;
+            for (let y = minVal; y <= maxVal; y += step) {
+                let q = Q_supply(y);
+                if (q === Infinity) { cmgData.push({ x: (Q_demand(0) * 1.2 || 100), y: y }); break; }
+                if (q > 0 || y === minVal) cmgData.push({ x: q, y: y });
+            }
+
+            if (chart3Instance) chart3Instance.destroy();
+            
+            Chart.defaults.color = '#9AA2B5';
+            Chart.defaults.font.family = "'Instrument Sans', sans-serif";
+            
+            let datasets = [];
+            if (!isFixedQ) {
+                datasets.push({
+                    label: 'Img Agregado', data: imgData, borderColor: '#7D9CCF',
+                    backgroundColor: 'rgba(125,156,207,0.1)', borderWidth: 2, fill: false, pointRadius: 0, tension: 0
+                });
+            }
+            datasets.push({
+                label: 'Cmg Agregado', data: cmgData, borderColor: '#F3F1EB',
+                backgroundColor: 'rgba(243,241,235,0.1)', borderWidth: 2, fill: false, pointRadius: 0, tension: 0
+            });
+            datasets.push({
+                label: isFixedQ ? 'Requerido (Q_fijo, Cmg*)' : 'Óptimo (Q^T, Ñ)',
+                data: [{ x: Q_opt, y: n_hat }], backgroundColor: '#AEBFDB', borderColor: '#AEBFDB',
+                pointRadius: 6, pointHoverRadius: 8, showLine: false
+            });
+
+            chart3Instance = new Chart(ctx, {
+                type: 'line', data: { datasets: datasets },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { type: 'linear', title: { display: true, text: 'Cantidad (Q)', color: '#F3F1EB' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        y: { title: { display: true, text: 'Precio / Costo', color: '#F3F1EB' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+                    },
+                    plugins: { legend: { labels: { color: '#F3F1EB' } } }
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

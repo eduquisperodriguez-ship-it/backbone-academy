@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Quantum Economics & Analytics — Tutorías especializadas en Matemática Económica, Microeconomía y Macroeconomía. Resolución de exámenes y laboratorios. Trujillo, Perú.">
+  <meta name="robots" content="noindex">
+  <title>Quantum Economics & Analytics — Tutorías en Ciencias Económicas</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- QR Code library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+  <style>
+    /* ─── Reset & Base ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:       #071525;
+      --navy-light: #0d2040;
+      --navy-card:  #0f2a4a;
+      --blue:       #1d6ff5;
+      --blue-mid:   #2563eb;
+      --teal:       #00d4aa;
+      --teal-dark:  #00a882;
+      --green:      #10b981;
+      --orange:     #f97316;
+      --white:      #ffffff;
+      --gray-100:   #e2e8f0;
+      --gray-400:   #94a3b8;
+      --gray-600:   #475569;
+      --grad-main:  linear-gradient(135deg, #1d6ff5 0%, #00d4aa 100%);
+      --grad-card:  linear-gradient(145deg, #0d2040 0%, #0f2a4a 100%);
+      --shadow-glow: 0 0 30px rgba(0,212,170,0.15);
+      --shadow-card: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    h1,h2,h3,h4,h5 { font-family: 'Poppins', sans-serif; line-height: 1.2; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+
+    /* ─── Canvas Background ─────────────────────────── */
+    #bg-canvas {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none;
+      opacity: 0.07;
+    }
+
+    /* ─── Utility ─────────────────────────────────── */
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+    .section { position: relative; z-index: 1; padding: 90px 0; }
+    .section-tag {
+      display: inline-block; font-family: 'Poppins', sans-serif;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--teal);
+      background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.25);
+      padding: 5px 14px; border-radius: 100px; margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700;
+      color: var(--white); margin-bottom: 16px;
+    }
+    .section-title span { color: var(--teal); }
+    .section-sub {
+      font-size: 1.05rem; color: var(--gray-400); max-width: 580px;
+      line-height: 1.7;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 10px;
+      font-family: 'Poppins', sans-serif; font-weight: 600;
+      font-size: 0.95rem; cursor: pointer; transition: all 0.25s ease;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--grad-main); color: var(--white);
+      box-shadow: 0 4px 20px rgba(29,111,245,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,212,170,0.4);
+    }
+    .btn-outline {
+      background: transparent; color: var(--teal);
+      border: 2px solid var(--teal);
+    }
+    .btn-outline:hover {
+      background: var(--teal); color: var(--navy);
+      transform: translateY(-2px);
+    }
+    .btn-wa {
+      background: #25d366; color: #fff;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+    }
+    .btn-wa:hover {
+      background: #20b859;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(37,211,102,0.5);
+    }
+    .gradient-text {
+      background: var(--grad-main);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ─── Navbar ──────────────────────────────────── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 12px 0;
+      transition: all 0.3s ease;
+    }
+    .nav.scrolled {
+      background: rgba(7,21,37,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,212,170,0.15);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo img {
+      width: 42px; height: 42px; border-radius: 8px; object-fit: cover;
+    }
+    .nav-logo-text {
+      font-family: 'Poppins', sans-serif; font-weight: 700;
+      font-size: 1.1rem; letter-spacing: 0.02em;
+    }
+    .nav-logo-text span { color: var(--teal); }
+    .nav-links {
+      display: flex; align-items: center; gap: 32px; list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.9rem; font-weight: 500; color: var(--gray-100);
+      transition: color 0.2s; position: relative; padding-bottom: 2px;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 2px; background: var(--teal);
+      transition: width 0.25s ease;
+    }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cta { display: flex; align-items: center; gap: 12px; }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; padding: 6px; cursor: pointer;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--white); border-radius: 2px;
+      transition: all 0.3s;
+    }
+    .nav-mobile {
+      display: none; flex-direction: column;
+      background: rgba(7,21,37,0.98); backdrop-filter: blur(12px);
+      padding: 16px 20px; border-top: 1px solid rgba(0,212,170,0.15);
+    }
+    .nav-mobile a {
+      padding: 12px 0; font-size: 1rem; font-weight: 500;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: color 0.2s;
+    }
+    .nav-mobile a:hover { color: var(--teal); }
+    .nav-mobile a:last-child { border: none; }
+    .nav-mobile.open { display: flex; }
+
+    /* ─── Hero ──────────────────────────────────────── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding-top: 90px; position: relative; overflow: hidden;
+    }
+    .hero-bg-grid {
+      position: absolute; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(0,212,170,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,170,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-glow {
+      position: absolute; top: 20%; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(29,111,245,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.2);
+      padding: 6px 14px; border-radius: 100px; margin-bottom: 20px;
+    }
+    .hero-badge-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--teal); animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.5; transform:scale(1.4); }
+    }
+    .hero-badge span { font-size: 0.78rem; font-weight: 600; color: var(--teal); letter-spacing:0.05em; }
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800; margin-bottom: 10px; line-height: 1.1;
+    }
+    .hero-rotate-wrap {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .hero-rotate-prefix {
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      font-weight: 600; color: var(--gray-100);
+    }
+    .hero-rotate-box {
+      background: var(--grad-main); border-radius: 8px;
+      padding: 4px 14px; overflow: hidden; min-width: 200px;
+      height: 44px; display: flex; align-items: center;
+    }
+    .hero-rotate-text {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-weight: 700;
+      color: var(--white); white-space: nowrap;
+      animation: slideRotate 0.4s ease;
+    }
+    @keyframes slideRotate {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .slideOut {
+      animation: slideOut 0.4s ease forwards !important;
+    }
+    @keyframes slideOut {
+      from { transform: translateY(0);     opacity: 1; }
+      to   { transform: translateY(-120%); opacity: 0; }
+    }
+    .hero-desc {
+      font-size: 1.05rem; color: var(--gray-400); margin-bottom: 32px;
+      line-height: 1.7; max-width: 480px;
+    }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 16px;
+      margin-top: 40px;
+    }
+    .hero-stat {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 16px; text-align: center;
+      transition: all 0.25s;
+    }
+    .hero-stat:hover {
+      border-color: rgba(0,212,170,0.3); background: rgba(0,212,170,0.05);
+    }
+    .hero-stat-num {
+      font-family: 'Poppins', sans-serif; font-size: 1.6rem; font-weight: 800;
+      background: var(--grad-main); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-stat-label { font-size: 0.75rem; color: var(--gray-400); margin-top: 2px; }
+
+    /* Hero Visual */
+    .hero-visual {
+      position: relative; display: flex; justify-content: center;
+      align-items: center;
+    }
+    .hero-card {
+      background: var(--grad-card);
+      border: 1px solid rgba(0,212,170,0.18);
+      border-radius: 20px; padding: 28px;
+      box-shadow: var(--shadow-glow), var(--shadow-card);
+      width: 100%; max-width: 400px;
+      will-change: transform;
+      transform: translateZ(0);
+    }
+    .chart-bars {
+      display: flex; align-items: flex-end; gap: 10px;
+      height: 130px; margin-bottom: 16px;
+    }
+    .chart-bar {
+      flex: 1; border-radius: 6px 6px 0 0;
+      background: var(--grad-main); opacity: 0.85;
+      animation: growBar 1.5s ease-out forwards;
+      transform-origin: bottom;
+    }
+    @keyframes growBar {
+      from { transform: scaleY(0); }
+      to   { transform: scaleY(1); }
+    }
+    .chart-bar:nth-child(1){ height:45%; animation-delay:0.1s; }
+    .chart-bar:nth-child(2){ height:65%; animation-delay:0.2s; }
+    .chart-bar:nth-child(3){ height:80%; animation-delay:0.3s; }
+    .chart-bar:nth-child(4){ height:55%; animation-delay:0.4s; }
+    .chart-bar:nth-child(5){ height:90%; animation-delay:0.5s; }
+    .chart-bar:nth-child(6){ height:70%; animation-delay:0.6s; }
+    .chart-bar:nth-child(7){ height:100%; animation-delay:0.7s; background: linear-gradient(135deg,#00d4aa,#10b981); }
+    .chart-label { font-size: 0.75rem; color: var(--gray-400); margin-bottom: 12px; }
+    .chart-line-wrap { position: relative; }
+    .chart-line-svg { width: 100%; height: 60px; }
+    .chart-line-path {
+      fill: none; stroke: var(--teal); stroke-width: 2.5;
+      stroke-dasharray: 400; stroke-dashoffset: 400;
+      animation: drawLine 2s ease forwards 0.8s;
+    }
+    @keyframes drawLine {
+      to { stroke-dashoffset: 0; }
+    }
+    .chart-area-path {
+      fill: url(#areaGrad); opacity: 0.3;
+      stroke: none;
+      clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 0);
+    }
+    .hero-card-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 16px; padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .hero-card-tag {
+      font-family: 'Poppins', sans-serif; font-size: 0.8rem;
+      font-weight: 600; color: var(--teal);
+    }
+    .hero-card-price {
+      font-family: 'Poppins', sans-serif; font-size: 1.1rem;
+      font-weight: 700; color: var(--white);
+    }
+    .hero-card-price span { font-size: 0.75rem; color: var(--gray-400); font-weight: 400; }
+
+    /* Floating badges */
+    .float-badge {
+      position: absolute; background: var(--navy-card);
+      border: 1px solid rgba(0,212,170,0.2); border-radius: 12px;
+      padding: 10px 16px; box-shadow: var(--shadow-card);
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Poppins', sans-serif; font-size: 0.8rem; font-weight: 600;
+      z-index: 2;
+    }
+    .float-badge-1 { top: -18px; right: 16px; }
+    .float-badge-2 { bottom: -18px; left: 16px; }
+    .float-badge svg { width:18px; height:18px; }
+
+    /* ─── Stats Strip ─────────────────────────────── */
+    .stats-strip {
+      position: relative; z-index: 1;
+      background: linear-gradient(90deg, rgba(29,111,245,0.12) 0%, rgba(0,212,170,0.12) 100%);
+      border-top: 1px solid rgba(0,212,170,0.15);
+      border-bottom: 1px solid rgba(0,212,170,0.15);
+      padding: 40px 0;
+    }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 20px;
+      text-align: center;
+    }
+    .stat-item { padding: 10px; }
+    .stat-num {
+      font-family: 'Poppins', sans-serif; font-size: 2.4rem; font-weight: 800;
+      background: var(--grad-main); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-label { font-size: 0.9rem; color: var(--gray-400); margin-top: 4px; }
+
+    /* ─── Courses ─────────────────────────────────── */
+    .courses-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+      margin-top: 48px;
+    }
+    .course-card {
+      background: var(--grad-card);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
+      padding: 32px 28px; position: relative; overflow: hidden;
+      transition: all 0.3s ease; cursor: pointer;
+    }
+    .course-card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:3px;
+      background: var(--grad-main); opacity:0;
+      transition: opacity 0.3s;
+    }
+    .course-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(0,212,170,0.3);
+      box-shadow: var(--shadow-glow), var(--shadow-card);
+    }
+    .course-card:hover::before { opacity:1; }
+    .course-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .course-icon svg { width: 28px; height: 28px; }
+    .course-tag {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 3px 10px; border-radius: 100px;
+      margin-bottom: 14px; display: inline-block;
+    }
+    .course-name { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; }
+    .course-desc { font-size: 0.88rem; color: var(--gray-400); line-height: 1.6; margin-bottom: 20px; }
+    .course-topics {
+      display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px;
+    }
+    .course-topic {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.83rem; color: var(--gray-100);
+    }
+    .course-topic svg { width:14px; height:14px; flex-shrink:0; color: var(--teal); }
+    .course-divider {
+      height: 1px; background: rgba(255,255,255,0.07); margin: 20px 0;
+    }
+    .course-price-row {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .course-price {
+      font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 800;
+      color: var(--teal);
+    }
+    .course-price sup {
+      font-size: 1rem; vertical-align: super; font-weight: 600;
+    }
+    .course-price-label {
+      font-size: 0.75rem; color: var(--gray-400); margin-top: 2px;
+    }
+    .course-cta {
+      background: rgba(0,212,170,0.1); color: var(--teal);
+      border: 1px solid rgba(0,212,170,0.25); padding: 10px 18px;
+      border-radius: 10px; font-family:'Poppins',sans-serif;
+      font-size: 0.85rem; font-weight: 600;
+      transition: all 0.25s; cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .course-cta:hover {
+      background: var(--teal); color: var(--navy);
+      transform: scale(1.03);
+    }
+    .course-cta svg { width: 16px; height: 16px; }
+    /* color variants */
+    .c1 .course-icon { background: rgba(29,111,245,0.15); color: #6da8ff; }
+    .c1 .course-tag  { background: rgba(29,111,245,0.12); color: #6da8ff; }
+    .c2 .course-icon { background: rgba(0,212,170,0.12); color: var(--teal); }
+    .c2 .course-tag  { background: rgba(0,212,170,0.1); color: var(--teal); }
+    .c3 .course-icon { background: rgba(16,185,129,0.12); color: #34d399; }
+    .c3 .course-tag  { background: rgba(16,185,129,0.1); color: #34d399; }
+
+    /* ─── Exams Section ───────────────────────────── */
+    .exams-section {
+      background: linear-gradient(180deg, transparent, rgba(13,32,64,0.6), transparent);
+    }
+    .exams-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+      align-items: center; margin-top: 48px;
+    }
+    .exams-feature-list { display: flex; flex-direction: column; gap: 18px; }
+    .exams-feature {
+      display: flex; gap: 16px; align-items: flex-start;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px; padding: 18px 20px;
+      transition: all 0.25s;
+    }
+    .exams-feature:hover {
+      border-color: rgba(0,212,170,0.25);
+      background: rgba(0,212,170,0.04);
+    }
+    .exams-feature-icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: rgba(0,212,170,0.1); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--teal);
+    }
+    .exams-feature-icon svg { width: 22px; height: 22px; }
+    .exams-feature-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+    .exams-feature-desc { font-size: 0.83rem; color: var(--gray-400); line-height: 1.5; }
+    .exams-price-card {
+      background: var(--grad-card);
+      border: 1px solid rgba(0,212,170,0.2); border-radius: 24px;
+      padding: 36px; box-shadow: var(--shadow-glow), var(--shadow-card);
+      position: relative; overflow: hidden;
+    }
+    .exams-price-card::after {
+      content: ''; position: absolute; top: -50%; right: -50%;
+      width: 200%; height: 200%; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(0,212,170,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .price-from-label {
+      font-size: 0.8rem; color: var(--gray-400); letter-spacing: 0.05em;
+      text-transform: uppercase; font-weight: 600; margin-bottom: 4px;
+    }
+    .price-from-value {
+      font-family: 'Poppins', sans-serif; font-size: 3.5rem; font-weight: 900;
+      background: var(--grad-main); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+      line-height: 1; margin-bottom: 4px;
+    }
+    .price-from-unit { font-size: 0.9rem; color: var(--gray-400); margin-bottom: 24px; }
+    .price-factors { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .price-factor {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.88rem; color: var(--gray-100);
+    }
+    .price-factor-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .price-note {
+      background: rgba(249,115,22,0.08); border: 1px solid rgba(249,115,22,0.2);
+      border-radius: 10px; padding: 12px 16px;
+      font-size: 0.82rem; color: #fb923c; line-height: 1.5;
+    }
+
+    /* ─── Why Quantum ─────────────────────────────── */
+    .why-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+      margin-top: 48px;
+    }
+    .why-card {
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 28px 24px;
+      transition: all 0.3s;
+    }
+    .why-card:hover {
+      background: rgba(0,212,170,0.04);
+      border-color: rgba(0,212,170,0.25);
+      transform: translateY(-4px);
+    }
+    .why-icon {
+      width: 50px; height: 50px; border-radius: 12px;
+      background: linear-gradient(135deg, rgba(29,111,245,0.15), rgba(0,212,170,0.15));
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px; color: var(--teal);
+    }
+    .why-icon svg { width: 24px; height: 24px; }
+    .why-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+    .why-desc { font-size: 0.85rem; color: var(--gray-400); line-height: 1.6; }
+
+    /* ─── QR Section ──────────────────────────────── */
+    .qr-section {
+      background: linear-gradient(135deg, rgba(29,111,245,0.08) 0%, rgba(0,212,170,0.08) 100%);
+      border-top: 1px solid rgba(0,212,170,0.1);
+      border-bottom: 1px solid rgba(0,212,170,0.1);
+    }
+    .qr-inner {
+      display: grid; grid-template-columns: 1fr auto 1fr; gap: 60px;
+      align-items: center; max-width: 900px; margin: 0 auto;
+    }
+    .qr-text .section-sub { color: var(--gray-100); }
+    .qr-box {
+      background: #fff; border-radius: 20px; padding: 20px;
+      box-shadow: var(--shadow-glow), 0 20px 60px rgba(0,0,0,0.5);
+      display: flex; flex-direction: column; align-items: center;
+      gap: 12px;
+    }
+    #qr-canvas { border-radius: 8px; }
+    .qr-box-label {
+      font-family: 'Poppins', sans-serif; font-size: 0.75rem; font-weight: 700;
+      color: #0d2040; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .qr-print-btn {
+      background: var(--grad-main); color: var(--white);
+      border: none; border-radius: 10px; padding: 10px 20px;
+      font-family: 'Poppins', sans-serif; font-size: 0.83rem; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: 8px;
+      transition: all 0.25s; margin-top: 4px;
+    }
+    .qr-print-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,212,170,0.4); }
+    .qr-print-btn svg { width: 16px; height: 16px; }
+    .qr-wa-info {
+      background: rgba(37,211,102,0.08); border: 1px solid rgba(37,211,102,0.2);
+      border-radius: 12px; padding: 16px 20px;
+      display: flex; align-items: center; gap: 12px; margin-top: 16px;
+    }
+    .qr-wa-info svg { width: 24px; height: 24px; color: #25d366; flex-shrink: 0; }
+    .qr-wa-number {
+      font-family: 'Poppins', sans-serif; font-size: 1.1rem; font-weight: 700;
+    }
+    .qr-wa-label { font-size: 0.78rem; color: var(--gray-400); }
+    .qr-divider {
+      width: 1px; height: 180px;
+      background: linear-gradient(180deg, transparent, rgba(0,212,170,0.3), transparent);
+    }
+
+    /* ─── CTA Banner ─────────────────────────────── */
+    .cta-banner {
+      background: linear-gradient(135deg, #0d2040 0%, #071525 100%);
+      border: 1px solid rgba(0,212,170,0.2); border-radius: 24px;
+      padding: 60px 48px; text-align: center; position: relative; overflow: hidden;
+      margin: 0 20px;
+    }
+    .cta-banner::before {
+      content:''; position:absolute; top:-100px; left:50%; transform:translateX(-50%);
+      width:500px; height:500px; border-radius:50%;
+      background:radial-gradient(ellipse, rgba(29,111,245,0.15) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    .cta-banner h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 14px;
+    }
+    .cta-banner p {
+      font-size: 1.05rem; color: var(--gray-400); margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto;
+    }
+    .cta-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* ─── Footer ──────────────────────────────────── */
+    .footer {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 48px 0 24px; position: relative; z-index: 1;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+      margin-bottom: 40px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .footer-logo img {
+      width: 38px; height: 38px; border-radius: 8px; object-fit: cover;
+    }
+    .footer-logo-text {
+      font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1rem;
+    }
+    .footer-logo-text span { color: var(--teal); }
+    .footer-desc { font-size: 0.85rem; color: var(--gray-400); line-height: 1.7; }
+    .footer-col h4 {
+      font-size: 0.85rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--gray-100); margin-bottom: 14px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .footer-col ul a {
+      font-size: 0.85rem; color: var(--gray-400);
+      transition: color 0.2s;
+    }
+    .footer-col ul a:hover { color: var(--teal); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.07);
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-bottom p { font-size: 0.8rem; color: var(--gray-600); }
+    .footer-wa {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(37,211,102,0.1); border: 1px solid rgba(37,211,102,0.2);
+      padding: 8px 14px; border-radius: 8px;
+      font-size: 0.82rem; color: #4ade80; font-weight: 600;
+      transition: all 0.25s;
+    }
+    .footer-wa:hover { background: rgba(37,211,102,0.2); }
+    .footer-wa svg { width: 16px; height: 16px; }
+
+    /* ─── Print Styles ────────────────────────────── */
+    @media print {
+      body * { visibility: hidden; }
+      .print-area, .print-area * { visibility: visible; }
+      .print-area {
+        position: fixed; inset: 0;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        background: #fff; z-index: 9999;
+        padding: 40px;
+      }
+      .print-area h2 { color: #0d2040; font-size: 1.5rem; margin-bottom: 8px; }
+      .print-area p { color: #475569; font-size: 0.9rem; margin-bottom: 20px; }
+      #qr-canvas { image-rendering: pixelated; }
+    }
+
+    /* ─── Scroll reveal ───────────────────────────── */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ─── Responsive ──────────────────────────────── */
+    @media (max-width: 1024px) {
+      .courses-grid { grid-template-columns: repeat(2,1fr); }
+      .why-grid { grid-template-columns: repeat(2,1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .section { padding: 60px 0; }
+      .hero-content { grid-template-columns: 1fr; gap: 40px; }
+      .hero-visual { order: -1; }
+      .hero-card { max-width: 340px; margin: 0 auto; }
+      .hero-stats { grid-template-columns: repeat(3,1fr); }
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .courses-grid { grid-template-columns: 1fr; }
+      .exams-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
+      .qr-inner { grid-template-columns: 1fr; gap: 32px; text-align: center; }
+      .qr-divider { display: none; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .cta-banner { padding: 40px 24px; }
+      .float-badge-1, .float-badge-2 { display: none; }
+    }
+    @media (max-width: 480px) {
+      .hero-stats { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+    /* ─── Scrollbar ───────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: rgba(0,212,170,0.3); border-radius: 3px; }
+  </style>
+</head>
+<body>
+<div style="position:relative;z-index:9999;background:#0D1220;color:#C9CEDA;font:500 14px/1.4 'Instrument Sans',Arial,sans-serif;padding:10px 20px;text-align:center;border-bottom:1px solid rgba(243,241,235,.12)">
+  Estás viendo el archivo de Quantum, la marca anterior a BackBone Academy. <a href="../../" style="color:#AEBFDB;font-weight:600">Volver al portafolio</a>
+</div>
+
+
+<!-- ── Canvas BG ────────────────────────────────────── -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- ── Navbar ───────────────────────────────────────── -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">
+      <img src="assets/logo.jpg" alt="Quantum Economics">
+      <span class="nav-logo-text">QUANTUM <span>ECONOMICS</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#cursos">Cursos</a></li>
+      <li><a href="#examenes">Exámenes</a></li>
+      <li><a href="#nosotros">¿Por qué nosotros?</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://wa.me/51967077156" target="_blank" rel="noopener" class="btn btn-wa" style="padding:10px 20px; font-size:0.85rem;">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="#cursos">Cursos</a>
+    <a href="#examenes">Exámenes & Laboratorios</a>
+    <a href="#nosotros">¿Por qué nosotros?</a>
+    <a href="#contacto">Contacto</a>
+    <a href="https://wa.me/51967077156" target="_blank" rel="noopener" style="color:#25d366; font-weight:700;">WhatsApp: 967 077 156</a>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────── -->
+<section class="hero" id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="container hero-content">
+
+    <div class="hero-left">
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        <span>Tutorías Especializadas · Trujillo</span>
+      </div>
+      <h1 class="hero-title">
+        Domina las<br>
+        <span class="gradient-text">Ciencias Económicas</span>
+      </h1>
+      <div class="hero-rotate-wrap">
+        <span class="hero-rotate-prefix">Aprende</span>
+        <div class="hero-rotate-box">
+          <span class="hero-rotate-text" id="rotate-text">Microeconomía</span>
+        </div>
+        <span class="hero-rotate-prefix">con expertos</span>
+      </div>
+      <p class="hero-desc">
+        Somos especialistas en Ciencias Económicas. Te guiamos con metodología clara,
+        casos reales y ejercicios prácticos para que domines cada concepto y superes
+        tus evaluaciones con confianza.
+      </p>
+      <div class="hero-btns">
+        <a href="#cursos" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          Ver Cursos
+        </a>
+        <a href="https://wa.me/51967077156?text=Hola%2C%20quiero%20información%20sobre%20las%20tutorías%20de%20Quantum%20Economics" target="_blank" rel="noopener" class="btn btn-wa">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Consultar Ahora
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num" data-count="200" data-suffix="+">0+</div>
+          <div class="hero-stat-label">Estudiantes</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" data-count="95" data-suffix="%">0%</div>
+          <div class="hero-stat-label">Tasa de aprobación</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" data-count="3" data-suffix=" cursos">0</div>
+          <div class="hero-stat-label">Áreas clave</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-card-float" style="position:relative; width:100%; max-width:400px; padding: 24px 0;">
+      <div class="float-badge float-badge-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        <span>+24% rendimiento</span>
+      </div>
+      <div class="float-badge float-badge-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1d6ff5" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Clases flexibles</span>
+      </div>
+      <div class="hero-card">
+        <div class="chart-label">Rendimiento académico · Quantum Students</div>
+        <div class="chart-bars">
+          <div class="chart-bar"></div>
+          <div class="chart-bar"></div>
+          <div class="chart-bar"></div>
+          <div class="chart-bar"></div>
+          <div class="chart-bar"></div>
+          <div class="chart-bar"></div>
+          <div class="chart-bar"></div>
+        </div>
+        <div class="chart-line-wrap">
+          <svg class="chart-line-svg" viewBox="0 0 320 60" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#00d4aa" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#00d4aa" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path class="chart-area-path" d="M0,50 C40,40 60,20 100,18 S160,30 200,22 S260,8 320,12 L320,60 L0,60 Z"/>
+            <path class="chart-line-path" d="M0,50 C40,40 60,20 100,18 S160,30 200,22 S260,8 320,12"/>
+          </svg>
+        </div>
+        <div class="hero-card-footer">
+          <span class="hero-card-tag">Quantum Economics</span>
+          <div>
+            <div class="hero-card-price"><sup>$</sup>7 <span>/ hora</span></div>
+          </div>
+        </div>
+      </div><!-- /.hero-card -->
+      </div><!-- /.hero-card-float -->
+    </div><!-- /.hero-visual -->
+
+  </div>
+</section>
+
+<!-- ── Stats Strip ───────────────────────────────────── -->
+<div class="stats-strip">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-num" data-count="200" data-suffix="+">200+</div>
+        <div class="stat-label">Estudiantes asesorados</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-1">
+        <div class="stat-num" data-count="500" data-suffix="+">500+</div>
+        <div class="stat-label">Horas de tutoría</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-2">
+        <div class="stat-num" data-count="95" data-suffix="%">95%</div>
+        <div class="stat-label">Tasa de aprobación</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <div class="stat-num" data-count="150" data-suffix="+">100+</div>
+        <div class="stat-label">Exámenes resueltos</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Courses ───────────────────────────────────────── -->
+<section class="section" id="cursos">
+  <div class="container">
+    <div style="text-align:center; max-width:600px; margin:0 auto 48px;">
+      <div class="section-tag reveal">Nuestros Cursos</div>
+      <h2 class="section-title reveal reveal-delay-1">
+        Tutorías en los cursos más<br><span>demandados</span>
+      </h2>
+      <p class="section-sub reveal reveal-delay-2" style="margin:0 auto;">
+        Cobertura completa de los cursos clave en Ciencias Económicas, con docentes especializados
+        y metodología orientada a resultados reales.
+      </p>
+    </div>
+
+    <div class="courses-grid">
+
+      <!-- Matemática Económica -->
+      <div class="course-card c1 reveal">
+        <div class="course-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M2 12h20M12 2v20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93"/>
+          </svg>
+        </div>
+        <span class="course-tag">Matemática</span>
+        <h3 class="course-name">Matemática para Económicas</h3>
+        <p class="course-desc">Fundamentos matemáticos indispensables aplicados al análisis económico. Desde cálculo hasta optimización.</p>
+        <div class="course-topics">
+          <div class="course-topic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Cálculo diferencial e integral
+          </div>
+          <div class="course-topic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Álgebra lineal y matrices
+          </div>
+          <div class="course-topic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Ecuaciones diferenciales
+          </div>
+          <div class="course-topic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Cálculo Varacional y Control Óptimo
+          </div>
+        </div>
+        <div class="course-divider"></div>
+        <div class="course-price-row">
+          <div>
+            <div class="course-price"><sup>$</sup>7</div>
+            <div class="course-price-label">por hora</div>
+          </div>
+          <a href="https://wa.me/51967077156?text=Hola%2C%20quiero%20tutoría%20de%20Matemática%20para%20Económicas" target="_blank" rel="noopener" class="course-cta">
+            Consultar
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Microeconomía -->
+      <div class="course-card c2 reveal reveal-delay-1">
+        <div class="course-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 6-6"/>
+          </svg>
+        </div>
+        <span class="course-tag">Microeconomía</span>
+        <h3 class="course-name">Microeconomía</h3>
+        <p class="course-desc">Analiza el comportamiento de consumidores y empresas. Teoría del mercado, precios y equilibrio general.</p>
+        <div class="course-topics">
+          <div class="course-topic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Teoría del consumidor y utilidad
+          </div>
+          <div class="course-topic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Teoría de la empresa y producción
+          </div>
+          <div class="course-topic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Estructuras de mercado
+          </div>
+          <div class="course-topic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Equilibrio general y externalidades
+          </div>
+        </div>
+        <div class="course-divider"></div>
+        <div class="course-price-row">
+          <div>
+            <div class="course-price"><sup>$</sup>7</div>
+            <div class="course-price-label">por hora</div>
+          </div>
+          <a href="https://wa.me/51967077156?text=Hola%2C%20quiero%20tutoría%20de%20Microeconomía" target="_blank" rel="noopener" class="course-cta">
+            Consultar
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Macroeconomía -->
+      <div class="course-card c3 reveal reveal-delay-2">
+        <div class="course-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+          </svg>
+        </div>
+        <span class="course-tag">Macroeconomía</span>
+        <h3 class="course-name">Macroeconomía</h3>
+        <p class="course-desc">Comprende la economía a gran escala: PBI, inflación, políticas fiscal y monetaria, modelos macroeconómicos.</p>
+        <div class="course-topics">
+          <div class="course-topic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Modelo IS-LM y demanda agregada
+          </div>
+          <div class="course-topic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Inflación, desempleo y Curva de Phillips
+          </div>
+          <div class="course-topic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Política fiscal y monetaria
+          </div>
+          <div class="course-topic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Crecimiento económico y modelos
+          </div>
+        </div>
+        <div class="course-divider"></div>
+        <div class="course-price-row">
+          <div>
+            <div class="course-price"><sup>$</sup>7</div>
+            <div class="course-price-label">por hora</div>
+          </div>
+          <a href="https://wa.me/51967077156?text=Hola%2C%20quiero%20tutoría%20de%20Macroeconomía" target="_blank" rel="noopener" class="course-cta">
+            Consultar
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Exams & Labs ───────────────────────────────────── -->
+<section class="section exams-section" id="examenes">
+  <div class="container">
+    <div class="section-tag reveal">Servicio Extra</div>
+    <h2 class="section-title reveal reveal-delay-1">
+      Resolución de <span>Exámenes</span><br>y Laboratorios
+    </h2>
+    <p class="section-sub reveal reveal-delay-2">
+      ¿Tienes un examen próximo o un laboratorio de tu profesor? Lo resolvemos por ti
+      con precisión y calidad garantizada. El precio varía según la dificultad y el tiempo requerido.
+    </p>
+
+    <div class="exams-grid">
+      <div class="exams-feature-list">
+        <div class="exams-feature reveal">
+          <div class="exams-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+          <div>
+            <div class="exams-feature-title">Exámenes de cualquier profesor</div>
+            <div class="exams-feature-desc">Resolvemos exámenes escritos, de desarrollo y de opción múltiple de tus cursos económicos.</div>
+          </div>
+        </div>
+        <div class="exams-feature reveal reveal-delay-1">
+          <div class="exams-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+            </svg>
+          </div>
+          <div>
+            <div class="exams-feature-title">Laboratorios y prácticas computacionales</div>
+            <div class="exams-feature-desc">EViews, Excel económico, Stata, R. Trabajos estadísticos y econométricos con entrega precisa.</div>
+          </div>
+        </div>
+        <div class="exams-feature reveal reveal-delay-2">
+          <div class="exams-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div>
+            <div class="exams-feature-title">Entrega puntual garantizada</div>
+            <div class="exams-feature-desc">Nos comprometemos con tus plazos. Coordinamos tiempos desde el primer mensaje.</div>
+          </div>
+        </div>
+        <div class="exams-feature reveal reveal-delay-3">
+          <div class="exams-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="exams-feature-title">Confidencialidad total</div>
+            <div class="exams-feature-desc">Tu información y materiales se tratan con absoluta discreción. Nadie más tiene acceso.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="exams-price-card reveal reveal-delay-1">
+        <div class="price-from-label">Precio desde</div>
+        <div class="price-from-value">$6</div>
+        <div class="price-from-unit">El precio final varía según dificultad y tiempo</div>
+        <div class="price-factors">
+          <div class="price-factor">
+            <div class="price-factor-dot" style="background:#1d6ff5;"></div>
+            Complejidad del examen o laboratorio
+          </div>
+          <div class="price-factor">
+            <div class="price-factor-dot" style="background:#00d4aa;"></div>
+            Tiempo disponible para la entrega
+          </div>
+          <div class="price-factor">
+            <div class="price-factor-dot" style="background:#10b981;"></div>
+            Cantidad de preguntas o ejercicios
+          </div>
+          <div class="price-factor">
+            <div class="price-factor-dot" style="background:#f97316;"></div>
+            Uso de software especializado
+          </div>
+        </div>
+        <div class="price-note">
+          <strong>¿No sabes cuánto costará?</strong> Escríbenos con tu material y te damos una cotización sin compromiso en minutos.
+        </div>
+        <a href="https://wa.me/51967077156?text=Hola%2C%20quiero%20cotizar%20la%20resolución%20de%20un%20examen%2Flaboratorio" target="_blank" rel="noopener" class="btn btn-wa" style="margin-top:24px; width:100%; justify-content:center;">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Cotizar mi examen / laboratorio
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Why Quantum ───────────────────────────────────── -->
+<section class="section" id="nosotros">
+  <div class="container">
+    <div style="text-align:center; max-width:600px; margin:0 auto 48px;">
+      <div class="section-tag reveal">¿Por qué nosotros?</div>
+      <h2 class="section-title reveal reveal-delay-1">
+        Especialistas que <span>dominan</span><br>cada área
+      </h2>
+      <p class="section-sub reveal reveal-delay-2" style="margin:0 auto;">
+        No somos genéricos. Somos Quantum Economics: formados en Ciencias Económicas,
+        con experiencia real en los cursos que más preocupan a los estudiantes.
+      </p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+        </div>
+        <h3 class="why-title">Especialización real</h3>
+        <p class="why-desc">Formación sólida en Ciencias Económicas. Cada tutor maneja con profundidad los temas del curso, no solo lo básico.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-1">
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <h3 class="why-title">Método orientado a resultados</h3>
+        <p class="why-desc">No solo explicamos, te hacemos entender. Ejercicios guiados, resolución en tiempo real y repaso de conceptos clave.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-2">
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.82 19.79 19.79 0 01.92 4.18 2 2 0 012.92 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+        </div>
+        <h3 class="why-title">Atención rápida y directa</h3>
+        <p class="why-desc">Respuesta inmediata por WhatsApp. Coordinamos horarios flexibles adaptados a tu agenda y necesidades.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <h3 class="why-title">Clases presenciales o virtuales</h3>
+        <p class="why-desc">Nos adaptamos a tu modalidad preferida. Online o en persona en Trujillo, con la misma calidad de enseñanza.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-1">
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </div>
+        <h3 class="why-title">Precio accesible</h3>
+        <p class="why-desc">Tutorías desde $7 por hora y resolución de exámenes desde $6. Calidad profesional a un costo pensado para estudiantes.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-2">
+        <div class="why-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        </div>
+        <h3 class="why-title">Resultados comprobados</h3>
+        <p class="why-desc">Más de 200 estudiantes asesorados con 95% de tasa de aprobación. Nuestros números hablan por sí solos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── QR Section ────────────────────────────────────── -->
+<section class="section qr-section" id="contacto">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:48px;">
+      <div class="section-tag reveal">Contáctanos</div>
+      <h2 class="section-title reveal reveal-delay-1">Escaneá y <span>escríbenos</span></h2>
+      <p class="section-sub reveal reveal-delay-2" style="margin:0 auto;">
+        Escanea el código QR con tu celular para abrir WhatsApp directamente y consultar sin demoras.
+      </p>
+    </div>
+
+    <div class="qr-inner">
+      <div>
+        <h3 style="font-size:1.4rem; font-weight:700; margin-bottom:12px;">
+          ¿Listo para <span class="gradient-text">mejorar tus notas</span>?
+        </h3>
+        <p style="font-size:0.9rem; color:var(--gray-400); line-height:1.7; margin-bottom:20px;">
+          Escaneá el QR o escríbenos directamente. En minutos te orientamos sobre qué servicio
+          se ajusta mejor a lo que necesitas.
+        </p>
+        <div class="qr-wa-info">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          <div>
+            <div class="qr-wa-number">967 077 156</div>
+            <div class="qr-wa-label">WhatsApp · Quantum Economics</div>
+          </div>
+        </div>
+        <a href="https://wa.me/51967077156?text=Hola%2C%20quiero%20información%20sobre%20las%20tutorías%20de%20Quantum%20Economics" target="_blank" rel="noopener" class="btn btn-wa" style="margin-top:20px;">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Abrir WhatsApp
+        </a>
+      </div>
+
+      <div class="qr-divider"></div>
+
+      <div style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+        <div class="qr-box" id="print-area">
+          <div class="qr-box-label">Quantum Economics</div>
+          <canvas id="qr-canvas"></canvas>
+          <div style="font-size:0.7rem; color:#475569; font-family:'Poppins',sans-serif; font-weight:600; letter-spacing:0.05em;">
+            wa.me/51967077156
+          </div>
+        </div>
+        <button class="qr-print-btn" onclick="printQR()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Imprimir QR
+        </button>
+        <p style="font-size:0.75rem; color:var(--gray-400); text-align:center;">
+          Imprime este QR y colócalo físicamente para captar más estudiantes
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA Banner ────────────────────────────────────── -->
+<section class="section" style="padding:60px 0;">
+  <div class="container">
+    <div class="cta-banner reveal">
+      <div class="section-tag" style="display:inline-block; margin-bottom:16px;">Empieza hoy</div>
+      <h2>¿Listo para aprobar con <span class="gradient-text">confianza</span>?</h2>
+      <p>Primera sesión sin compromiso. Cuéntanos tu situación y diseñamos un plan personalizado para ti.</p>
+      <div class="cta-buttons">
+        <a href="https://wa.me/51967077156?text=Hola%2C%20quiero%20información%20sobre%20las%20tutorías%20de%20Quantum%20Economics" target="_blank" rel="noopener" class="btn btn-wa">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Escribirnos por WhatsApp
+        </a>
+        <a href="#cursos" class="btn btn-outline">Ver todos los cursos</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">
+          <img src="assets/logo.jpg" alt="Quantum Economics">
+          <div class="footer-logo-text">QUANTUM <span>ECONOMICS</span></div>
+        </div>
+        <p class="footer-desc">
+          Tutorías especializadas en Ciencias Económicas. Matemática Económica,
+          Microeconomía y Macroeconomía. Resolución de exámenes y laboratorios.
+          Trujillo, Perú.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4>Cursos</h4>
+        <ul>
+          <li><a href="#cursos">Matemática Económica</a></li>
+          <li><a href="#cursos">Microeconomía</a></li>
+          <li><a href="#cursos">Macroeconomía</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Servicios</h4>
+        <ul>
+          <li><a href="#examenes">Resolución de Exámenes</a></li>
+          <li><a href="#examenes">Laboratorios</a></li>
+          <li><a href="#examenes">Trabajos Computacionales</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <ul>
+          <li>
+            <a href="https://wa.me/51967077156" target="_blank" rel="noopener" class="footer-wa">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              967 077 156
+            </a>
+          </li>
+          <li><a href="#contacto">Código QR</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Quantum Economics & Analytics · Trujillo, Perú</p>
+      <p style="color:var(--gray-600);">Tutorías · Ciencias Económicas</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ── Hidden Print Area ─────────────────────────────── -->
+<div class="print-area" id="print-only" style="display:none;">
+  <h2 style="font-family:'Poppins',sans-serif; font-size:1.8rem; font-weight:800; color:#071525;">
+    QUANTUM ECONOMICS
+  </h2>
+  <p style="color:#475569; font-family:'Open Sans',sans-serif;">
+    Tutorías en Ciencias Económicas · Trujillo, Perú
+  </p>
+  <canvas id="qr-canvas-print"></canvas>
+  <p style="font-family:'Poppins',sans-serif; font-size:1rem; font-weight:700; color:#0d2040; margin-top:8px;">
+    WhatsApp: 967 077 156
+  </p>
+  <p style="font-size:0.8rem; color:#475569;">
+    Matemática Económica · Microeconomía · Macroeconomía
+  </p>
+</div>
+
+<script>
+/* ── Animated Canvas Background ─────────────────────── */
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let animFrame;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Create chart-line particles
+  function createParticles() {
+    particles = [];
+    const count = Math.floor(window.innerWidth / 80);
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        size: Math.random() * 2 + 1,
+        type: Math.random() > 0.5 ? 'dot' : 'bar',
+        barHeight: Math.random() * 30 + 10,
+        color: Math.random() > 0.5 ? '#1d6ff5' : '#00d4aa',
+        alpha: Math.random() * 0.5 + 0.2
+      });
+    }
+  }
+  createParticles();
+
+  function drawGrid() {
+    ctx.strokeStyle = 'rgba(0,212,170,0.03)';
+    ctx.lineWidth = 1;
+    const step = 60;
+    for (let x = 0; x < canvas.width; x += step) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+    }
+    for (let y = 0; y < canvas.height; y += step) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawGrid();
+
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
+
+      ctx.globalAlpha = p.alpha;
+      ctx.fillStyle = p.color;
+      if (p.type === 'dot') {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillRect(p.x, p.y, 4, p.barHeight);
+      }
+      ctx.globalAlpha = 1;
+    });
+
+    animFrame = requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+/* ── Text Rotate ─────────────────────────────────────── */
+(function() {
+  const texts = [
+    'Microeconomía',
+    'Macroeconomía',
+    'Matemática Economistas',
+    'Desarrollo Lógico',
+    'Cálculo Diferencial'
+  ];
+  let idx = 0;
+  const el = document.getElementById('rotate-text');
+
+  function rotate() {
+    el.classList.add('slideOut');
+    setTimeout(() => {
+      idx = (idx + 1) % texts.length;
+      el.textContent = texts[idx];
+      el.classList.remove('slideOut');
+    }, 380);
+  }
+  setInterval(rotate, 2400);
+})();
+
+/* ── Navbar scroll ───────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 30);
+});
+
+/* ── Hamburger ───────────────────────────────────────── */
+document.getElementById('hamburger').addEventListener('click', function() {
+  const mobile = document.getElementById('nav-mobile');
+  mobile.classList.toggle('open');
+});
+document.querySelectorAll('#nav-mobile a').forEach(a => {
+  a.addEventListener('click', () => document.getElementById('nav-mobile').classList.remove('open'));
+});
+
+/* ── Scroll Reveal ───────────────────────────────────── */
+(function() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+})();
+
+/* ── Counter Animation ───────────────────────────────── */
+(function() {
+  function animateCount(el) {
+    const target = parseInt(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    let start = 0;
+    const duration = 1800;
+    const step = duration / target;
+    const timer = setInterval(() => {
+      start += Math.ceil(target / 60);
+      if (start >= target) { start = target; clearInterval(timer); }
+      el.textContent = start + suffix;
+    }, step);
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        animateCount(e.target);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-count]').forEach(el => observer.observe(el));
+})();
+
+/* ── QR Code Generation ──────────────────────────────── */
+(function() {
+  const waUrl = 'https://wa.me/51967077156?text=Hola%2C%20quiero%20información%20sobre%20las%20tutorías%20de%20Quantum%20Economics';
+
+  QRCode.toCanvas(document.getElementById('qr-canvas'), waUrl, {
+    width: 200,
+    margin: 2,
+    color: { dark: '#071525', light: '#ffffff' },
+    errorCorrectionLevel: 'H'
+  }, function(err) { if (err) console.error(err); });
+
+  // Also generate larger version for print
+  QRCode.toCanvas(document.getElementById('qr-canvas-print'), waUrl, {
+    width: 300,
+    margin: 3,
+    color: { dark: '#071525', light: '#ffffff' },
+    errorCorrectionLevel: 'H'
+  }, function(err) { if (err) console.error(err); });
+})();
+
+/* ── Print QR ────────────────────────────────────────── */
+function printQR() {
+  const printWin = window.open('', '_blank', 'width=600,height=700');
+  const canvas = document.getElementById('qr-canvas-print');
+  const dataUrl = canvas.toDataURL('image/png');
+  printWin.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>QR - Quantum Economics</title>
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+      <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+          font-family: 'Poppins', sans-serif;
+          display: flex; align-items: center; justify-content: center;
+          min-height: 100vh; background: #fff;
+        }
+        .card {
+          border: 3px solid #0d2040; border-radius: 20px;
+          padding: 40px 48px; text-align: center;
+          max-width: 420px; width: 100%;
+          box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        .brand { font-size: 1.6rem; font-weight: 800; color: #071525; margin-bottom: 4px; }
+        .sub { font-size: 0.8rem; color: #475569; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 24px; font-weight: 600; }
+        img { border-radius: 10px; margin-bottom: 16px; }
+        .number { font-size: 1.4rem; font-weight: 800; color: #071525; margin-bottom: 4px; }
+        .detail { font-size: 0.75rem; color: #64748b; margin-bottom: 20px; font-family: 'Open Sans', sans-serif; }
+        .subjects { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .pill { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; padding: 4px 12px; border-radius: 100px; font-size: 0.7rem; font-weight: 600; }
+        .price { margin-top: 16px; font-size: 0.8rem; color: #475569; }
+        .price strong { color: #071525; }
+        @media print { body { margin: 0; } }
+      </style>
+    </head>
+    <body>
+      <div class="card">
+        <div class="brand">QUANTUM ECONOMICS</div>
+        <div class="sub">Tutorías en Ciencias Económicas · Trujillo</div>
+        <img src="${dataUrl}" width="240" height="240" alt="QR WhatsApp">
+        <div class="number">WhatsApp: 967 077 156</div>
+        <div class="detail">Escanea para escribirnos directamente</div>
+        <div class="subjects">
+          <span class="pill">Matemática Económica</span>
+          <span class="pill">Microeconomía</span>
+          <span class="pill">Macroeconomía</span>
+        </div>
+        <div class="price">Tutorías desde <strong>$7/hora</strong> · Exámenes desde <strong>$6</strong></div>
+      </div>
+      <script>window.onload = function(){ window.print(); }<\/script>
+    </html>
+  `);
+  printWin.document.close();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Quantum Economics & Analytics — Tutorías especializadas en Matemática Económica, Microeconomía y Macroeconomía. Resolución de exámenes y laboratorios. Trujillo, Perú.">
+  <meta name="robots" content="noindex">
+  <title>Quantum Economics & Analytics — Tutorías en Ciencias Económicas</title>
+
+  <!-- Tipografía: Newsreader (serif de libro de texto, también para las fórmulas) + Schibsted Grotesk (texto) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- QR Code library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+
+  <style>
+    /* ─── Tokens ─────────────────────────────────────
+       Azul y verde salen del logo; el verde se reserva para acciones.
+       avoid-ai-design-ignore-file: SD8 */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --tinta:    #0C1824;   /* fondo, el mismo del logo */
+      --pizarra:  #132536;   /* superficies */
+      --tiza:     #E8EDF2;   /* texto principal */
+      --gris:     #9DAEC0;   /* texto secundario */
+      --azul:     #3A8FE0;   /* curvas, enlaces */
+      --verde:    #52D68A;   /* acciones */
+      --papel:    #EDF1F4;   /* sección biblioteca */
+      --tinta-2:  #34475B;   /* texto secundario sobre papel */
+      --linea:    rgba(232,237,242,0.12);
+
+      --f-serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+      --f-sans:  'Schibsted Grotesk', 'Helvetica Neue', Arial, sans-serif;
+
+      --wrap: 1120px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--f-sans);
+      font-size: 1.0625rem;
+      background: var(--tinta);
+      color: var(--tiza);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    h1, h2, h3 {
+      font-family: var(--f-serif);
+      font-weight: 500;
+      line-height: 1.12;
+      letter-spacing: -0.01em;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    em.var { font-family: var(--f-serif); font-style: italic; }
+
+    :focus-visible { outline: 2px solid var(--verde); outline-offset: 3px; border-radius: 2px; }
+
+    .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
+    .section { padding: 112px 0; }
+    .section-head { max-width: 640px; margin-bottom: 56px; }
+    .section-head h2 { font-size: clamp(2rem, 4.2vw, 3rem); margin-bottom: 16px; }
+    .section-head p { color: var(--gris); max-width: 56ch; }
+
+    /* ─── Botones ─────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 22px; border-radius: 6px;
+      font-weight: 600; font-size: 1rem;
+      transition: background-color .2s, color .2s, border-color .2s;
+    }
+    .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .btn-accion { background: var(--verde); color: var(--tinta); }
+    .btn-accion:hover { background: #6FE3A0; }
+    .btn-linea { border: 1px solid var(--linea); color: var(--tiza); }
+    .btn-linea:hover { border-color: var(--tiza); }
+
+    /* ─── Navegación ──────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 50;
+      background: var(--tinta);
+      border-bottom: 1px solid transparent;
+      transition: border-color .2s;
+    }
+    .nav.scrolled { border-bottom-color: var(--linea); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .nav-logo { display: flex; align-items: center; gap: 12px; }
+    .nav-logo img { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; }
+    .nav-logo-text { font-weight: 700; font-size: 1.05rem; line-height: 1.15; }
+    .nav-logo-text small { display: block; font-weight: 400; font-size: .78rem; color: var(--gris); }
+    .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a { font-size: .95rem; color: var(--gris); transition: color .2s; }
+    .nav-links a:hover { color: var(--tiza); }
+    .nav-links .btn { color: var(--tinta); padding: 10px 16px; font-size: .92rem; }
+    .nav-links .btn:hover { color: var(--tinta); }
+    .hamburger { display: none; padding: 8px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--tiza); margin: 5px 0; }
+    .nav-mobile { display: none; flex-direction: column; padding: 8px 24px 20px; border-top: 1px solid var(--linea); }
+    .nav-mobile a { padding: 12px 0; border-bottom: 1px solid var(--linea); }
+    .nav-mobile a:last-child { border: none; color: var(--verde); font-weight: 600; }
+    .nav-mobile.open { display: flex; }
+
+    /* ─── Hero ────────────────────────────────────── */
+    .hero { padding: 72px 0 96px; }
+    .hero-grid {
+      display: grid; grid-template-columns: 1fr 1.05fr;
+      gap: 64px; align-items: center;
+    }
+    .hero-lugar { color: var(--gris); font-size: .95rem; margin-bottom: 20px; }
+    .hero h1 { font-size: clamp(2.7rem, 6vw, 4.6rem); margin-bottom: 24px; }
+    .hero-desc { color: var(--gris); font-size: 1.125rem; max-width: 46ch; margin-bottom: 36px; }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-precio { margin-top: 28px; font-size: .95rem; color: var(--gris); }
+    .hero-precio strong { color: var(--tiza); font-weight: 600; }
+
+    /* Gráfico de equilibrio (detalle firma) */
+    .fig {
+      background: var(--pizarra);
+      border: 1px solid var(--linea);
+      border-radius: 4px;
+      padding: 20px 20px 18px;
+    }
+    .fig svg { width: 100%; height: auto; display: block; }
+    .fig .eje { stroke: var(--tiza); stroke-width: 1.5; }
+    .fig .guia { stroke: var(--gris); stroke-width: 1; stroke-dasharray: 4 4; }
+    .fig .curva { fill: none; stroke-width: 3; stroke-linecap: round; }
+    .fig .oferta { stroke: var(--verde); }
+    .fig .demanda { stroke: var(--azul); }
+    .fig .etq { font-family: var(--f-serif); font-style: italic; font-size: 20px; fill: var(--tiza); }
+    .fig .etq-s { fill: var(--verde); }
+    .fig .etq-d { fill: var(--azul); }
+    .fig .etq-p { font-size: 17px; fill: var(--gris); }
+    .fig .punto { fill: var(--tiza); }
+    .dibuja { stroke-dasharray: 600; stroke-dashoffset: 600; animation: trazo 1.2s cubic-bezier(.3,.7,.2,1) forwards; }
+    .dibuja.d2 { animation-delay: .35s; }
+    .aparece { opacity: 0; animation: aparece .4s ease forwards 1.3s; }
+    @keyframes trazo { to { stroke-dashoffset: 0; } }
+    @keyframes aparece { to { opacity: 1; } }
+
+    .fig-control { display: grid; grid-template-columns: 1fr auto; gap: 8px 20px; align-items: center; margin-top: 14px; }
+    .fig-control label { font-size: .9rem; color: var(--gris); }
+    .fig-control input[type=range] { grid-column: 1 / -1; width: 100%; accent-color: var(--azul); }
+    .fig-lectura { font-family: var(--f-serif); font-size: 1.05rem; text-align: right; }
+    .fig figcaption {
+      margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--linea);
+      font-size: .9rem; color: var(--gris);
+    }
+    .fig figcaption strong { color: var(--tiza); font-weight: 600; }
+
+    /* ─── Cifras ──────────────────────────────────── */
+    .cifras { border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+    .cifras-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+    .cifra { padding: 28px 24px; border-left: 1px solid var(--linea); }
+    .cifra:first-child { border-left: none; padding-left: 0; }
+    .cifra-num { font-family: var(--f-serif); font-size: 2.4rem; line-height: 1; margin-bottom: 8px; }
+    .cifra-txt { font-size: .92rem; color: var(--gris); }
+
+    /* ─── Cursos (temario) ────────────────────────── */
+    .temario-head {
+      display: flex; justify-content: space-between; align-items: end;
+      gap: 24px; flex-wrap: wrap; margin-bottom: 8px;
+    }
+    .temario-head .section-head { margin-bottom: 0; }
+    .tarifa { text-align: right; }
+    .tarifa-num { font-family: var(--f-serif); font-size: 3rem; line-height: 1; }
+    .tarifa-txt { color: var(--gris); font-size: .95rem; }
+    .curso {
+      display: grid; grid-template-columns: 1.1fr 1.4fr auto;
+      gap: 40px; padding: 40px 0; border-top: 1px solid var(--linea);
+      align-items: start;
+    }
+    .curso:last-child { border-bottom: 1px solid var(--linea); }
+    .curso h3 { font-size: 1.9rem; margin-bottom: 10px; }
+    .curso p { color: var(--gris); font-size: .98rem; max-width: 40ch; }
+    .curso ul { list-style: none; columns: 2; column-gap: 32px; }
+    .curso li { padding: 6px 0 6px 18px; position: relative; font-size: .98rem; break-inside: avoid; }
+    .curso li::before {
+      content: ''; position: absolute; left: 0; top: 16px;
+      width: 8px; height: 1px; background: var(--azul);
+    }
+    .curso-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--verde); font-weight: 600; font-size: .95rem;
+      border-bottom: 1px solid currentColor; padding-bottom: 2px; white-space: nowrap;
+    }
+    .curso-link:hover { color: #6FE3A0; }
+
+    /* ─── Exámenes y laboratorios ─────────────────── */
+    .examenes { background: var(--pizarra); }
+    .ex-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 72px; align-items: start; }
+    .ex-lista { display: grid; grid-template-columns: 1fr 1fr; gap: 36px 40px; }
+    .ex-lista dt { font-weight: 600; margin-bottom: 6px; }
+    .ex-lista dd { color: var(--gris); font-size: .96rem; }
+    .ex-precio { border-left: 1px solid var(--linea); padding-left: 48px; }
+    .ex-precio-desde { color: var(--gris); font-size: .95rem; }
+    .ex-precio-num { font-family: var(--f-serif); font-size: 5rem; line-height: 1; margin: 4px 0 12px; }
+    .ex-precio > p { color: var(--gris); font-size: .96rem; margin-bottom: 20px; }
+    .ex-factores { list-style: none; margin-bottom: 28px; }
+    .ex-factores li { padding: 10px 0; border-top: 1px solid var(--linea); font-size: .96rem; }
+    .ex-factores li:last-child { border-bottom: 1px solid var(--linea); }
+    .ex-nota { font-size: .92rem; color: var(--gris); margin-top: 14px; }
+
+    /* ─── Biblioteca ──────────────────────────────── */
+    .biblioteca { background: var(--papel); color: var(--tinta); }
+    .biblioteca .section-head p { color: var(--tinta-2); }
+    .estante {
+      --lw: 176px;
+      display: flex; gap: 32px; align-items: flex-start;
+      overflow-x: auto; padding: 24px 4px 8px;
+      scroll-snap-type: x proximity;
+      /* repisa: una tabla justo debajo de las portadas */
+      background: linear-gradient(#C9D3DC, #C9D3DC) 0 calc(24px + var(--lw) * 1.5) / 100% 14px no-repeat;
+      background-attachment: local;
+    }
+    .libro { flex: 0 0 var(--lw); min-width: 0; scroll-snap-align: start; }
+    .libro a { display: block; }
+    .portada {
+      aspect-ratio: 2 / 3; width: 100%;
+      border-radius: 2px 5px 5px 2px;
+      position: relative; overflow: hidden;
+      box-shadow: 0 1px 0 rgba(12,24,36,.2), 6px 6px 14px -6px rgba(12,24,36,.45);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .portada::after {   /* lomo */
+      content: ''; position: absolute; inset: 0 auto 0 0; width: 10px;
+      background: linear-gradient(90deg, rgba(0,0,0,.28), rgba(255,255,255,.08) 60%, transparent);
+    }
+    .portada img { width: 100%; height: 100%; object-fit: cover; }
+    .libro a:hover .portada, .libro a:focus-visible .portada {
+      transform: translateY(-10px);
+      box-shadow: 0 1px 0 rgba(12,24,36,.2), 10px 16px 24px -10px rgba(12,24,36,.55);
+    }
+    /* Portada generada cuando todavía no hay imagen */
+    .portada-gen {
+      height: 100%; padding: 22px 16px 18px 24px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      color: #fff;
+    }
+    .portada-gen .pg-titulo { font-family: var(--f-serif); font-size: 1.25rem; line-height: 1.12; overflow-wrap: anywhere; hyphens: auto; }
+    .portada-gen .pg-autor { font-size: .8rem; opacity: .85; }
+    .portada-gen .pg-marca { display: block; width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.7); }
+    .libro-info { padding-top: 22px; }
+    .libro-titulo { font-weight: 600; font-size: .98rem; line-height: 1.3; }
+    .libro-autor { font-size: .88rem; color: var(--tinta-2); margin-top: 2px; }
+    .libro-pedir { display: inline-block; margin-top: 8px; font-size: .88rem; font-weight: 600; color: #1C6A40; border-bottom: 1px solid currentColor; }
+    .biblioteca .libro-info { min-height: 96px; }
+
+    /* ─── Por qué Quantum ─────────────────────────── */
+    .razones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 48px; }
+    .razon { padding: 28px 0; border-top: 1px solid var(--linea); }
+    .razon h3 { font-family: var(--f-sans); font-weight: 600; font-size: 1.08rem; letter-spacing: 0; margin-bottom: 8px; }
+    .razon p { color: var(--gris); font-size: .96rem; }
+
+    /* ─── Contacto ────────────────────────────────── */
+    .contacto { background: var(--pizarra); }
+    .contacto-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 72px; align-items: center; }
+    .contacto h2 { font-size: clamp(2rem, 4.2vw, 3rem); margin-bottom: 16px; }
+    .contacto p { color: var(--gris); max-width: 48ch; margin-bottom: 28px; }
+    .tel { font-family: var(--f-serif); font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1; margin-bottom: 28px; display: inline-block; }
+    .tel:hover { color: var(--verde); }
+    .qr { justify-self: end; text-align: center; }
+    .qr-box { background: #fff; padding: 16px; border-radius: 4px; display: inline-block; }
+    #qr-canvas { display: block; }
+    .qr-pie { font-size: .9rem; color: var(--gris); margin: 14px 0 12px; max-width: 30ch; }
+    .qr .btn { padding: 10px 16px; font-size: .92rem; }
+
+    /* ─── Footer ──────────────────────────────────── */
+    .footer { padding: 40px 0; border-top: 1px solid var(--linea); }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+    .footer p { font-size: .9rem; color: var(--gris); }
+    .footer nav { display: flex; gap: 24px; flex-wrap: wrap; font-size: .9rem; color: var(--gris); }
+    .footer nav a:hover { color: var(--tiza); }
+
+    /* ─── Responsive ──────────────────────────────── */
+    @media (max-width: 960px) {
+      .hero-grid, .ex-grid, .contacto-grid { grid-template-columns: 1fr; gap: 48px; }
+      .curso { grid-template-columns: 1fr; gap: 20px; }
+      .razones { grid-template-columns: 1fr 1fr; }
+      .ex-precio { border-left: none; padding-left: 0; border-top: 1px solid var(--linea); padding-top: 32px; }
+      .qr { justify-self: start; text-align: left; }
+    }
+    @media (max-width: 720px) {
+      .section { padding: 80px 0; }
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+      .cifras-grid { grid-template-columns: 1fr 1fr; }
+      .cifra { border-left: none; padding-left: 0; }
+      .cifra:nth-child(-n+2) { border-bottom: 1px solid var(--linea); }
+      .ex-lista, .razones { grid-template-columns: 1fr; }
+      .curso ul { columns: 1; }
+      .tarifa { text-align: left; }
+      .estante { --lw: 148px; gap: 24px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .dibuja { stroke-dashoffset: 0; }
+      .aparece { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+<div style="position:relative;z-index:9999;background:#0D1220;color:#C9CEDA;font:500 14px/1.4 'Instrument Sans',Arial,sans-serif;padding:10px 20px;text-align:center;border-bottom:1px solid rgba(243,241,235,.12)">
+  Estás viendo el archivo de Quantum, la marca anterior a BackBone Academy. <a href="../../" style="color:#AEBFDB;font-weight:600">Volver al portafolio</a>
+</div>
+
+
+<!-- Ícono de WhatsApp reutilizable -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></symbol>
+</svg>
+
+<!-- ── Navegación ───────────────────────────────────── -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-logo" aria-label="Quantum Economics & Analytics, inicio">
+      <img src="assets/logo.jpg" alt="">
+      <span class="nav-logo-text">Quantum<small>Economics &amp; Analytics</small></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#cursos">Cursos</a></li>
+      <li><a href="#examenes">Exámenes</a></li>
+      <li><a href="#libros">Libros</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+      <li>
+        <a href="https://wa.me/51967077156" target="_blank" rel="noopener" class="btn btn-accion">
+          <svg><use href="#i-wa"/></svg>967 077 156
+        </a>
+      </li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-mobile">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <nav class="nav-mobile" id="nav-mobile" aria-label="Menú móvil">
+    <a href="#cursos">Cursos</a>
+    <a href="#examenes">Exámenes y laboratorios</a>
+    <a href="#libros">Libros</a>
+    <a href="#nosotros">Por qué Quantum</a>
+    <a href="#contacto">Contacto</a>
+    <a href="https://wa.me/51967077156" target="_blank" rel="noopener">WhatsApp: 967 077 156</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ── Hero ─────────────────────────────────────────── -->
+<section class="hero" id="hero">
+  <div class="wrap hero-grid">
+
+    <div>
+      <p class="hero-lugar">Trujillo, Perú. Clases presenciales y virtuales.</p>
+      <h1>Tutorías en Ciencias Económicas</h1>
+      <p class="hero-desc">
+        Matemática para Económicas, Microeconomía y Macroeconomía, explicadas con
+        metodología clara, casos reales y ejercicios prácticos, para que entiendas
+        cada concepto y llegues seguro a tus evaluaciones.
+      </p>
+      <div class="hero-btns">
+        <a href="https://wa.me/51967077156?text=Hola%2C%20quiero%20información%20sobre%20las%20tutorías%20de%20Quantum%20Economics" target="_blank" rel="noopener" class="btn btn-accion">
+          <svg><use href="#i-wa"/></svg>Escríbenos por WhatsApp
+        </a>
+        <a href="#cursos" class="btn btn-linea">Ver los cursos</a>
+      </div>
+      <p class="hero-precio">Tutorías a <strong>$7 la hora</strong>. Exámenes y laboratorios desde <strong>$6</strong>.</p>
+    </div>
+
+    <figure class="fig" aria-labelledby="fig-cap">
+      <svg viewBox="0 0 420 330" role="img" aria-label="Gráfico de oferta y demanda con el punto de equilibrio">
+        <defs>
+          <pattern id="cuadricula" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M20 0H0V20" fill="none" stroke="rgba(232,237,242,0.07)" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect x="50" y="20" width="350" height="260" fill="url(#cuadricula)"/>
+        <!-- ejes -->
+        <line class="eje" x1="50" y1="280" x2="50" y2="20"/>
+        <line class="eje" x1="50" y1="280" x2="400" y2="280"/>
+        <text class="etq" x="28" y="32">P</text>
+        <text class="etq" x="392" y="306">Q</text>
+        <!-- curvas -->
+        <line id="curva-s" class="curva oferta dibuja" x1="50" y1="255" x2="380" y2="55"/>
+        <line id="curva-d" class="curva demanda dibuja d2" x1="50" y1="67.5" x2="380" y2="270"/>
+        <text id="etq-s" class="etq etq-s aparece" x="384" y="52">S</text>
+        <text id="etq-d" class="etq etq-d aparece" x="384" y="266">D</text>
+        <!-- equilibrio -->
+        <g class="aparece">
+          <line id="guia-h" class="guia" x1="50" y1="0" x2="0" y2="0"/>
+          <line id="guia-v" class="guia" x1="0" y1="280" x2="0" y2="0"/>
+          <circle id="punto-e" class="punto" r="6" cx="0" cy="0"/>
+          <text id="etq-e" class="etq" x="0" y="0">E</text>
+          <text id="etq-p" class="etq etq-p" x="10" y="0">P*</text>
+          <text id="etq-q" class="etq etq-p" x="0" y="302">Q*</text>
+        </g>
+      </svg>
+      <div class="fig-control">
+        <label for="ingreso">Sube el ingreso de los consumidores y mira qué pasa con el equilibrio</label>
+        <input type="range" id="ingreso" min="6" max="11" step="0.1" value="8.5">
+        <output class="fig-lectura" id="lectura" for="ingreso"></output>
+      </div>
+      <figcaption id="fig-cap"><strong>Fig. 1.</strong> Equilibrio de mercado. Uno de los primeros temas de Microeconomía, y de los que más se preguntan en examen.</figcaption>
+    </figure>
+
+  </div>
+</section>
+
+<!-- ── Cifras ───────────────────────────────────────── -->
+<section class="cifras" aria-label="Quantum en cifras">
+  <div class="wrap cifras-grid">
+    <div class="cifra"><div class="cifra-num">200+</div><div class="cifra-txt">estudiantes asesorados</div></div>
+    <div class="cifra"><div class="cifra-num">500+</div><div class="cifra-txt">horas de tutoría</div></div>
+    <div class="cifra"><div class="cifra-num">95%</div><div class="cifra-txt">de nuestros alumnos aprueban</div></div>
+    <div class="cifra"><div class="cifra-num">150+</div><div class="cifra-txt">exámenes resueltos</div></div>
+  </div>
+</section>
+
+<!-- ── Cursos ───────────────────────────────────────── -->
+<section class="section" id="cursos">
+  <div class="wrap">
+    <div class="temario-head">
+      <div class="section-head">
+        <h2>Cursos</h2>
+        <p>Los tres cursos que más cuestan en Ciencias Económicas, con tutores formados en la carrera.</p>
+      </div>
+      <div class="tarifa">
+        <div class="tarifa-num">$7</div>
+        <div class="tarifa-txt">por hora, en cualquier curso</div>
+      </div>
+    </div>
+
+    <article class="curso">
+      <div>
+        <h3>Matemática para Económicas</h3>
+        <p>Los fundamentos matemáticos que usa el análisis económico, desde cálculo hasta optimización.</p>
+      </div>
+      <ul>
+        <li>Cálculo diferencial e integral</li>
+        <li>Álgebra lineal y matrices</li>
+        <li>Ecuaciones diferenciales</li>
+        <li>Cálculo variacional y control óptimo</li>
+      </ul>
+      <a class="curso-link" href="https://wa.me/51967077156?text=Hola%2C%20quiero%20tutoría%20de%20Matemática%20para%20Económicas" target="_blank" rel="noopener">
+        Consultar por este curso
+      </a>
+    </article>
+
+    <article class="curso">
+      <div>
+        <h3>Microeconomía</h3>
+        <p>El comportamiento de consumidores y empresas: mercados, precios y equilibrio general.</p>
+      </div>
+      <ul>
+        <li>Teoría del consumidor y utilidad</li>
+        <li>Teoría de la empresa y producción</li>
+        <li>Estructuras de mercado</li>
+        <li>Equilibrio general y externalidades</li>
+      </ul>
+      <a class="curso-link" href="https://wa.me/51967077156?text=Hola%2C%20quiero%20tutoría%20de%20Microeconomía" target="_blank" rel="noopener">
+        Consultar por este curso
+      </a>
+    </article>
+
+    <article class="curso">
+      <div>
+        <h3>Macroeconomía</h3>
+        <p>La economía a gran escala: PBI, inflación, política fiscal y monetaria, y los modelos que las explican.</p>
+      </div>
+      <ul>
+        <li>Modelo IS-LM y demanda agregada</li>
+        <li>Inflación, desempleo y curva de Phillips</li>
+        <li>Política fiscal y monetaria</li>
+        <li>Crecimiento económico</li>
+      </ul>
+      <a class="curso-link" href="https://wa.me/51967077156?text=Hola%2C%20quiero%20tutoría%20de%20Macroeconomía" target="_blank" rel="noopener">
+        Consultar por este curso
+      </a>
+    </article>
+  </div>
+</section>
+
+<!-- ── Exámenes y laboratorios ──────────────────────── -->
+<section class="section examenes" id="examenes">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Resolución de exámenes y laboratorios</h2>
+      <p>¿Tienes un examen próximo o un laboratorio de tu profesor? Lo resolvemos con precisión. El precio depende de la dificultad y del tiempo que necesite.</p>
+    </div>
+
+    <div class="ex-grid">
+      <dl class="ex-lista">
+        <div>
+          <dt>Exámenes de cualquier profesor</dt>
+          <dd>Escritos, de desarrollo o de opción múltiple, de tus cursos de economía.</dd>
+        </div>
+        <div>
+          <dt>Laboratorios en software</dt>
+          <dd>EViews, Excel, Stata y R. Trabajos estadísticos y econométricos.</dd>
+        </div>
+        <div>
+          <dt>Entrega en el plazo acordado</dt>
+          <dd>Coordinamos los tiempos desde el primer mensaje.</dd>
+        </div>
+        <div>
+          <dt>Confidencialidad</dt>
+          <dd>Tu información y tus materiales no se comparten con nadie.</dd>
+        </div>
+      </dl>
+
+      <div class="ex-precio">
+        <div class="ex-precio-desde">Desde</div>
+        <div class="ex-precio-num">$6</div>
+        <p>El precio final depende de:</p>
+        <ul class="ex-factores">
+          <li>La complejidad del examen o laboratorio</li>
+          <li>El tiempo disponible para la entrega</li>
+          <li>La cantidad de preguntas o ejercicios</li>
+          <li>Si requiere software especializado</li>
+        </ul>
+        <a href="https://wa.me/51967077156?text=Hola%2C%20quiero%20cotizar%20la%20resolución%20de%20un%20examen%2Flaboratorio" target="_blank" rel="noopener" class="btn btn-accion">
+          <svg><use href="#i-wa"/></svg>Cotizar mi examen o laboratorio
+        </a>
+        <p class="ex-nota">Envíanos tu material y te pasamos el precio en minutos, sin compromiso.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Biblioteca ───────────────────────────────────── -->
+<section class="section biblioteca" id="libros">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Biblioteca</h2>
+      <p>Los libros con los que trabajamos. Pregúntanos por cualquiera de ellos.</p>
+    </div>
+    <!-- Los libros se generan desde la lista LIBROS en el script del final de la página -->
+    <div class="estante" id="estante"></div>
+  </div>
+</section>
+
+<!-- ── Por qué Quantum ──────────────────────────────── -->
+<section class="section" id="nosotros">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Por qué estudiar con Quantum</h2>
+      <p>Somos de Ciencias Económicas y conocemos por experiencia los cursos que más preocupan a los estudiantes.</p>
+    </div>
+    <div class="razones">
+      <div class="razon">
+        <h3>Especialización real</h3>
+        <p>Cada tutor maneja a fondo los temas de su curso, no solo lo básico.</p>
+      </div>
+      <div class="razon">
+        <h3>Ejercicios, no solo teoría</h3>
+        <p>Ejercicios guiados, resolución en vivo y repaso de los conceptos que entran en examen.</p>
+      </div>
+      <div class="razon">
+        <h3>Respuesta por WhatsApp</h3>
+        <p>Coordinamos horarios flexibles según tu agenda.</p>
+      </div>
+      <div class="razon">
+        <h3>Presencial o virtual</h3>
+        <p>Online o en persona en Trujillo, con la misma calidad.</p>
+      </div>
+      <div class="razon">
+        <h3>Precio para estudiantes</h3>
+        <p>Tutorías a $7 la hora y resolución de exámenes desde $6.</p>
+      </div>
+      <div class="razon">
+        <h3>Resultados</h3>
+        <p>Más de 200 estudiantes asesorados, con un 95% de aprobación.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Contacto ─────────────────────────────────────── -->
+<section class="section contacto" id="contacto">
+  <div class="wrap contacto-grid">
+    <div>
+      <h2>Cuéntanos qué curso te preocupa</h2>
+      <p>La primera sesión es sin compromiso. Nos cuentas tu situación y armamos un plan para ti.</p>
+      <a class="tel" href="https://wa.me/51967077156" target="_blank" rel="noopener">967 077 156</a>
+      <div>
+        <a href="https://wa.me/51967077156?text=Hola%2C%20quiero%20información%20sobre%20las%20tutorías%20de%20Quantum%20Economics" target="_blank" rel="noopener" class="btn btn-accion">
+          <svg><use href="#i-wa"/></svg>Abrir WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <div class="qr">
+      <div class="qr-box"><canvas id="qr-canvas" aria-label="Código QR para escribir por WhatsApp"></canvas></div>
+      <p class="qr-pie">Escanéalo con la cámara del celular para abrir el chat.</p>
+      <button class="btn btn-linea" onclick="printQR()">Imprimir el QR</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ── Footer ───────────────────────────────────────── -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <p>&copy; 2026 Quantum Economics &amp; Analytics. Trujillo, Perú.</p>
+    <nav aria-label="Pie de página">
+      <a href="#cursos">Cursos</a>
+      <a href="#examenes">Exámenes y laboratorios</a>
+      <a href="#libros">Libros</a>
+      <a href="https://wa.me/51967077156" target="_blank" rel="noopener">WhatsApp 967 077 156</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- QR grande, solo para la hoja de impresión -->
+<canvas id="qr-canvas-print" hidden></canvas>
+
+<script>
+/* ── Biblioteca ────────────────────────────────────────
+   Para poner la portada real de un libro:
+   1. Guarda la imagen en assets/libros/ (proporción 2:3, p. ej. 600×900 px).
+   2. Escribe la ruta en "portada", por ejemplo 'assets/libros/micro.jpg'.
+   Si "portada" está vacía se dibuja una portada provisional con el título.
+   Agrega o quita libros copiando un bloque { ... }. */
+const LIBROS = [
+  { titulo: 'Matemática para economistas', autor: '', portada: '', color: '#1E5FA8' },
+  { titulo: 'Microeconomía intermedia',    autor: '', portada: '', color: '#1F7A55' },
+  { titulo: 'Macroeconomía',               autor: '', portada: '', color: '#233A56' },
+  { titulo: 'Econometría',                 autor: '', portada: '', color: '#7A3E2E' },
+  { titulo: 'Estadística para economistas',autor: '', portada: '', color: '#5A4A7A' },
+];
+
+(function () {
+  const estante = document.getElementById('estante');
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  estante.innerHTML = LIBROS.map(l => {
+    const msg = encodeURIComponent(`Hola, quiero información sobre el libro «${l.titulo}»`);
+    const portada = l.portada
+      ? `<img src="${esc(l.portada)}" alt="Portada de ${esc(l.titulo)}" loading="lazy">`
+      : `<div class="portada-gen" style="background:${esc(l.color)}">
+           <span class="pg-titulo">${esc(l.titulo)}</span>
+           <span>${l.autor ? `<span class="pg-autor">${esc(l.autor)}</span>` : '<span class="pg-marca"></span>'}</span>
+         </div>`;
+    return `<div class="libro">
+      <a href="https://wa.me/51967077156?text=${msg}" target="_blank" rel="noopener">
+        <div class="portada">${portada}</div>
+      </a>
+      <div class="libro-info">
+        <div class="libro-titulo">${esc(l.titulo)}</div>
+        ${l.autor ? `<div class="libro-autor">${esc(l.autor)}</div>` : ''}
+        <a class="libro-pedir" href="https://wa.me/51967077156?text=${msg}" target="_blank" rel="noopener">Preguntar por este libro</a>
+      </div>
+    </div>`;
+  }).join('');
+})();
+
+/* ── Gráfico de equilibrio ─────────────────────────────
+   Unidades del modelo: P y Q de 0 a 10.
+   Oferta:  P = 1 + 0.8·Q      Demanda: P = A − 0.9·Q  (A la mueve el control) */
+(function () {
+  const X0 = 50, Y0 = 280, UX = 33, UY = 25;
+  const sx = q => X0 + q * UX, sy = p => Y0 - p * UY;
+  const $ = id => document.getElementById(id);
+  const slider = $('ingreso'), lectura = $('lectura');
+  const fmt = n => n.toFixed(2).replace('.', ',');
+
+  function dibujar() {
+    const A = parseFloat(slider.value);
+    const qMax = Math.min(10, A / 0.9);
+    const d = $('curva-d');
+    d.setAttribute('x1', sx(0));    d.setAttribute('y1', sy(A));
+    d.setAttribute('x2', sx(qMax)); d.setAttribute('y2', sy(A - 0.9 * qMax));
+    $('etq-d').setAttribute('x', sx(qMax) + 4);
+    $('etq-d').setAttribute('y', Math.min(sy(A - 0.9 * qMax) - 4, 272));
+
+    const q = (A - 1) / 1.7, p = 1 + 0.8 * q;
+    const ex = sx(q), ey = sy(p);
+    $('punto-e').setAttribute('cx', ex); $('punto-e').setAttribute('cy', ey);
+    $('etq-e').setAttribute('x', ex + 10); $('etq-e').setAttribute('y', ey - 10);
+    $('guia-h').setAttribute('x2', ex); $('guia-h').setAttribute('y1', ey); $('guia-h').setAttribute('y2', ey);
+    $('guia-v').setAttribute('x1', ex); $('guia-v').setAttribute('x2', ex); $('guia-v').setAttribute('y2', ey);
+    $('etq-p').setAttribute('x', 16); $('etq-p').setAttribute('y', ey + 5);
+    $('etq-q').setAttribute('x', ex - 10);
+    lectura.innerHTML = `<em>P*</em> = ${fmt(p)}&nbsp;&nbsp; <em>Q*</em> = ${fmt(q)}`;
+  }
+  slider.addEventListener('input', () => {
+    // tras el primer movimiento la curva ya no debe animarse con el trazo inicial
+    $('curva-d').classList.remove('dibuja');
+    dibujar();
+  });
+  dibujar();
+})();
+
+/* ── Navegación ──────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
+}, { passive: true });
+
+(function () {
+  const btn = document.getElementById('hamburger');
+  const menu = document.getElementById('nav-mobile');
+  btn.addEventListener('click', () => {
+    const abierto = menu.classList.toggle('open');
+    btn.setAttribute('aria-expanded', abierto);
+  });
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    menu.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  }));
+})();
+
+/* ── Código QR ───────────────────────────────────────── */
+(function () {
+  const waUrl = 'https://wa.me/51967077156?text=Hola%2C%20quiero%20información%20sobre%20las%20tutorías%20de%20Quantum%20Economics';
+  const opts = { color: { dark: '#0C1824', light: '#ffffff' }, errorCorrectionLevel: 'H' };
+  QRCode.toCanvas(document.getElementById('qr-canvas'), waUrl, { ...opts, width: 184, margin: 1 },
+    err => { if (err) console.error(err); });
+  QRCode.toCanvas(document.getElementById('qr-canvas-print'), waUrl, { ...opts, width: 300, margin: 3 },
+    err => { if (err) console.error(err); });
+})();
+
+/* ── Imprimir QR ─────────────────────────────────────── */
+function printQR() {
+  const printWin = window.open('', '_blank', 'width=600,height=760');
+  const dataUrl = document.getElementById('qr-canvas-print').toDataURL('image/png');
+  printWin.document.write(`<!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <title>QR - Quantum Economics</title>
+      <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500&family=Schibsted+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+      <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Schibsted Grotesk', Arial, sans-serif; color: #0C1824;
+               display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .hoja { border: 2px solid #0C1824; padding: 40px 48px; text-align: center; max-width: 420px; }
+        h1 { font-family: 'Newsreader', Georgia, serif; font-weight: 500; font-size: 2rem; }
+        .sub { color: #34475B; margin: 4px 0 24px; }
+        img { margin: 0 auto 16px; }
+        .num { font-family: 'Newsreader', Georgia, serif; font-size: 1.8rem; }
+        .det { color: #34475B; font-size: .9rem; margin-top: 4px; }
+        .cursos { margin-top: 20px; padding-top: 16px; border-top: 1px solid #C9D3DC; font-size: .9rem; }
+      </style>
+    </head>
+    <body>
+      <div class="hoja">
+        <h1>Quantum Economics</h1>
+        <p class="sub">Tutorías en Ciencias Económicas, Trujillo</p>
+        <img src="${dataUrl}" width="240" height="240" alt="QR de WhatsApp">
+        <div class="num">967 077 156</div>
+        <p class="det">Escanea el código para escribirnos por WhatsApp</p>
+        <p class="cursos">Matemática para Económicas, Microeconomía y Macroeconomía.<br>
+          Tutorías a <strong>$7 la hora</strong>. Exámenes desde <strong>$6</strong>.</p>
+      </div>
+      <script>window.onload = function(){ window.print(); }<\/script>
+    </body>
+    </html>`);
+  printWin.document.close();
+}
+</script>
+</body>
+</html>
