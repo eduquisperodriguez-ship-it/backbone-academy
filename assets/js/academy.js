@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════
    BackBone Academy · comportamiento de la página
    1. Menú del celular        4. Buscador
-   2. Programas (pestañas)    5. Gráfico del programa
-   3. Botón Explorar
-   Los gráficos están en graficos.js.
+   2. Programas (pestañas)    5. Gráfico del programa (3D y 2D)
+   3. Botón Explorar          6. Portada que se inclina
+   Los gráficos están en graficos.js (2D) y graficos3d.js (3D).
    ═══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -128,26 +128,67 @@
   $('#buscar-ir').addEventListener('click', irAlPrimero);
   document.addEventListener('click', function (e) { if (!e.target.closest('.buscador')) cerrarResultados(); });
 
-  /* ── 5. Gráfico del programa ─────────────────────────────── */
+  /* ── 5. Gráfico del programa ────────────────────────────────
+     Dos vistas: 3D (graficos3d.js, si el navegador puede) y 2D
+     (graficos.js). Los valores de abajo siempre salen de graficos.js,
+     así las dos vistas muestran los mismos números. */
   var Graficos = window.BackBoneGraficos;
   var caja = $('#grafico'), control = $('#control');
+  var lienzo2d = $('#grafico-lienzo'), caja3d = $('#grafico-3d'), vistas = $('.vistas');
+  var vista = '3d';
+  function tres() {
+    var t = window.BackBone3D;
+    return vista === '3d' && t && t.disponible && t.hay(programaActual) ? t : null;
+  }
   function pintar() {
-    var r = Graficos.dibujar(programaActual, parseFloat(control.value));
-    $('#grafico-lienzo').innerHTML = r.svg;
+    var valor = parseFloat(control.value), r = Graficos.dibujar(programaActual, valor), t = tres();
+    if (t) t.mover(valor); else lienzo2d.innerHTML = r.svg;
     $('#lectura').innerHTML = r.lectura.map(function (d) { return '<span>' + d[0] + ' = <b>' + d[1] + '</b></span>'; }).join('');
   }
-  function cargarGrafico(id) {
+  function cargarGrafico(id, mantenerValor) {
     var hay = !!(Graficos && Graficos.hay(id));
     caja.hidden = !hay;
     if (!hay) return;
-    var d = Graficos.datos(id), c = d.control;
+    var d = Graficos.datos(id), c = d.control, t = tres();
+    var valor = mantenerValor ? parseFloat(control.value) : c.valor;
     $('#grafico-titulo').textContent = d.titulo;
     $('#control-texto').textContent = c.texto;
-    $('#explica').innerHTML = d.explica;
-    control.min = c.min; control.max = c.max; control.step = c.paso; control.value = c.valor;
+    control.min = c.min; control.max = c.max; control.step = c.paso; control.value = valor;
+    lienzo2d.hidden = !!t;
+    caja3d.hidden = !t;
+    $('#explica').innerHTML = t ? t.explica(id) : d.explica;
+    if (t) t.cargar(id, parseFloat(control.value));
     pintar();
   }
+  function elegirVista(v) {
+    vista = v;
+    $$('.vista').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.vista === v ? 'true' : 'false'); });
+    cargarGrafico(programaActual, true);
+  }
+  $$('.vista').forEach(function (b) { b.addEventListener('click', function () { elegirVista(b.dataset.vista); }); });
+  $('#repetir').addEventListener('click', function () { if (window.BackBone3D) window.BackBone3D.repetir(); });
+  // graficos3d.js carga después; cuando avisa, la vista 3D pasa a ser la principal
+  function con3D() {
+    if (!window.BackBone3D || !window.BackBone3D.disponible) return;
+    vistas.hidden = false;
+    cargarGrafico(programaActual, true);
+  }
+  document.addEventListener('backbone3d:listo', con3D);
+  document.addEventListener('backbone3d:falla', function () { vistas.hidden = true; vista = '2d'; cargarGrafico(programaActual, true); });
   control.addEventListener('input', pintar);
-  alCambiarPrograma.push(cargarGrafico);
+  alCambiarPrograma.push(function (id) { cargarGrafico(id); });
   if (programaActual) cargarGrafico(programaActual);
+  con3D();
+
+  /* ── 6. Portada que se inclina con el mouse ────────────────── */
+  var arte = $('.portada-arte'), portada = $('.portada');
+  var conMovimiento = !window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(pointer: fine)').matches;
+  if (arte && conMovimiento) {
+    portada.addEventListener('pointermove', function (e) {
+      var r = arte.getBoundingClientRect();
+      var dx = (e.clientX - (r.left + r.width / 2)) / r.width, dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+      arte.style.transform = 'perspective(1000px) rotateY(' + (dx * 12).toFixed(2) + 'deg) rotateX(' + (-dy * 9).toFixed(2) + 'deg)';
+    });
+    portada.addEventListener('pointerleave', function () { arte.style.transform = ''; });
+  }
 })();

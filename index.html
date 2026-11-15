@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="assets/css/academy.css">
+<script type="importmap">{ "imports": { "three": "./assets/vendor/three/three.module.min.js" } }</script>
 </head>
 
 <body>
@@ -91,7 +92,7 @@
     </div>
 
     <div class="portada-arte" aria-hidden="true">
-      <div class="arte-circulo"></div>
+      <div class="arte-circulo"><div class="arte-orbita"></div></div>
       <div class="arte-arco"></div>
       <div class="arte-tarjeta arte-grafico">
         <svg viewBox="0 0 300 170" fill="none" stroke-linecap="round" stroke-width="3">
@@ -129,7 +130,7 @@
        2. su ficha     <article class="programa">
      Para añadir un programa, copia las dos partes con un nombre
      nuevo. Si además quieres su gráfico, añádelo con ese mismo
-     nombre en assets/js/graficos.js. -->
+     nombre en assets/js/graficos.js (2D) y graficos3d.js (3D). -->
 <section class="seccion" id="programas">
   <div class="envoltura">
     <div class="titulo-seccion">
@@ -237,8 +238,18 @@
         </div>
 
         <div class="grafico" id="grafico">
-          <div class="grafico-cabeza"><small>Pruébalo tú</small><b id="grafico-titulo"></b></div>
+          <div class="grafico-cabeza">
+            <div><small>Pruébalo tú</small><b id="grafico-titulo"></b></div>
+            <div class="vistas" role="group" aria-label="Vista del gráfico" hidden>
+              <button class="vista" type="button" data-vista="3d" aria-pressed="true">3D</button>
+              <button class="vista" type="button" data-vista="2d" aria-pressed="false">2D</button>
+            </div>
+          </div>
           <div class="grafico-lienzo" id="grafico-lienzo"></div>
+          <div class="grafico-3d" id="grafico-3d" hidden>
+            <div class="grafico-3d-lienzo" id="grafico-3d-lienzo"></div>
+            <div class="grafico-3d-barra"><span>Arrastra para girar</span><button type="button" id="repetir">Ver cómo se arma</button></div>
+          </div>
           <div class="grafico-pie">
             <div class="grafico-control">
               <label for="control" id="control-texto">Mueve el control</label>
@@ -485,5 +496,6 @@
 
 <script src="assets/js/graficos.js"></script>
 <script src="assets/js/academy.js"></script>
+<script type="module" src="assets/js/graficos3d.js"></script>
 </body>
 </html>

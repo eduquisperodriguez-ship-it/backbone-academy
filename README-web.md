@@ -1,6 +1,6 @@
 # Web de BackBone Academy
 
-Página principal de la academia, estilo plataforma de cursos. Es HTML, CSS y JavaScript sin dependencias ni paso de compilación: se abre con doble clic y se publica tal cual en GitHub Pages.
+Página principal de la academia, estilo plataforma de cursos. Es HTML, CSS y JavaScript sin paso de compilación y se publica tal cual en GitHub Pages. La vista 3D usa la copia de Three.js que ya está en `assets/vendor/three`. Para probarla en tu computadora, ábrela con un servidor local (por ejemplo `python -m http.server`): con doble clic el navegador bloquea el 3D y la página muestra la vista 2D.
 
 ## Archivos
 
@@ -8,7 +8,8 @@ Página principal de la academia, estilo plataforma de cursos. Es HTML, CSS y Ja
 index.html                 La página: todo el contenido está aquí
 assets/css/academy.css     Colores, tipografía y diseño
 assets/js/academy.js       Menú, programas, botón Explorar y buscador
-assets/js/graficos.js      Los gráficos interactivos de cada programa
+assets/js/graficos.js      Los gráficos de cada programa, vista 2D
+assets/js/graficos3d.js    La vista 3D animada (usa assets/vendor/three)
 assets/img/logo-academy.svg     Logo
 assets/img/favicon-academy.svg  Ícono de la pestaña
 ```
@@ -23,7 +24,7 @@ assets/img/favicon-academy.svg  Ícono de la pestaña
 
 Cada sección de `index.html` empieza con un comentario que explica qué copiar.
 
-- **Un programa:** copia una tarjeta `<button class="tarjeta pestana">` y una ficha `<article class="programa">`, con el mismo nombre corto en `data-programa` y en el `id`. Para su gráfico, añade una entrada con ese nombre en `assets/js/graficos.js`.
+- **Un programa:** copia una tarjeta `<button class="tarjeta pestana">` y una ficha `<article class="programa">`, con el mismo nombre corto en `data-programa` y en el `id`. Para su gráfico, añade una entrada con ese nombre en `assets/js/graficos.js` (2D) y, si quieres la vista 3D, otra en `assets/js/graficos3d.js`. Cada gráfico 3D empieza plano, igual al 2D, y se levanta girando.
 - **Una calculadora o un simulador:** copia un `<li class="tarjeta">` dentro de la sección `#practica`.
 - **Una publicación:** copia un `<li class="tarjeta">` dentro de `#publicaciones`.
 - **Una foto en la portada:** reemplaza el `<div class="portada-arte">` por un `<img>`.
