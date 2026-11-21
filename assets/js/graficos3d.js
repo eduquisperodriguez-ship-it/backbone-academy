@@ -25,7 +25,7 @@ const caja = document.getElementById('grafico-3d-lienzo');
 const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const COLOR = {
-  blanco: 0xFFFFFF, acento: 0x5B9BF5, vivo: 0x8DBBFA, celeste: 0xB8D4FC,
+  blanco: 0xFFFFFF, acento: 0x6E78E0, vivo: 0x8F98F0, celeste: 0xC6CBF8,
   eje: 0xA9B4CC, piso: 0x1A3268
 };
 const DURACION = 2.4;      // segundos que tarda en levantarse
@@ -206,7 +206,7 @@ function crearVisor() {
   const camara = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
   escena.add(new THREE.HemisphereLight(0xDFE9FF, 0x0C1B3D, 1.8));
   const sol = new THREE.DirectionalLight(0xFFFFFF, 2.2); sol.position.set(4, 8, 6); escena.add(sol);
-  const contra = new THREE.DirectionalLight(0x5B9BF5, 1.6); contra.position.set(-6, 3, -5); escena.add(contra);
+  const contra = new THREE.DirectionalLight(0x6E78E0, 1.6); contra.position.set(-6, 3, -5); escena.add(contra);
   const frontal = new THREE.DirectionalLight(0xFFFFFF, 0.8); frontal.position.set(0.3, 0.5, 1);
   camara.add(frontal); escena.add(camara);
 

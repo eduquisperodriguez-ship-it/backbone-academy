@@ -19,13 +19,13 @@
 :root {
   --fondo: #FFFFFF;
   --fondo-alt: #F4F6FA;
-  --tinte: #EAF2FE;
+  --tinte: #ECEEFC;
   --tarjeta: #FFFFFF;
   --texto: #0C1B3D;
   --texto-2: #55607A;
   --linea: #D5DCE8;
-  --enfasis: #1663D6;
-  --boton: #1663D6;
+  --enfasis: #2B35AF;
+  --boton: #2B35AF;
   --boton-texto: #FFFFFF;
   --sombra: 0 10px 28px rgba(12, 27, 61, .13);
   color-scheme: light;
@@ -48,8 +48,8 @@
     --texto: #F1F3F7;
     --texto-2: #A4ACBC;
     --linea: #2D3442;
-    --enfasis: #7FB0F7;
-    --boton: #1663D6;
+    --enfasis: #8F98F0;
+    --boton: #2B35AF;
     --boton-texto: #FFFFFF;
     --sombra: 0 10px 28px rgba(0, 0, 0, .5);
     color-scheme: dark;
@@ -63,15 +63,15 @@
   --texto: #F1F3F7;
   --texto-2: #A4ACBC;
   --linea: #2D3442;
-  --enfasis: #7FB0F7;
-  --boton: #1663D6;
+  --enfasis: #8F98F0;
+  --boton: #2B35AF;
   --boton-texto: #FFFFFF;
   --sombra: 0 10px 28px rgba(0, 0, 0, .5);
   color-scheme: dark;
 }
 /* Siempre en azul vivo: la franja de contacto */
 .viva {
-  --fondo: #1663D6;
+  --fondo: #2B35AF;
   --texto: #FFFFFF;
   --texto-2: rgba(255, 255, 255, .92);
   --linea: rgba(255, 255, 255, .5);
@@ -138,7 +138,7 @@ p { text-wrap: pretty; }
 
 .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
 .logo svg { width: 24px; height: auto; flex-shrink: 0; }
-.logo-arcos { fill: #1663D6; }
+.logo-columna { fill: var(--enfasis); }
 .logo-texto { display: flex; flex-direction: column; line-height: 1; }
 .logo-nombre { font-weight: 700; font-size: 1.42rem; letter-spacing: -0.02em; }
 .logo-academy { font-weight: 600; font-size: .6rem; letter-spacing: .42em; margin-top: 3px; color: var(--texto-2); }
@@ -194,6 +194,16 @@ p { text-wrap: pretty; }
 .menu > a:not(.boton) { text-decoration: none; font-weight: 600; white-space: nowrap; }
 .menu > a:not(.boton):hover { color: var(--enfasis); }
 .menu .boton { min-height: 44px; padding: 8px 20px; white-space: nowrap; }
+.tema-boton { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; flex-shrink: 0; border: 1px solid var(--linea); border-radius: 50%; background: transparent; color: var(--texto); cursor: pointer; }
+.tema-boton:hover { border-color: var(--enfasis); color: var(--enfasis); }
+.tema-boton svg { width: 19px; height: 19px; }
+.tema-boton .icono-sol { display: none; }
+:root[data-theme="dark"] .tema-boton .icono-sol { display: block; }
+:root[data-theme="dark"] .tema-boton .icono-luna { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tema-boton .icono-sol { display: block; }
+  :root:not([data-theme="light"]) .tema-boton .icono-luna { display: none; }
+}
 .abrir-menu { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; margin-left: auto; }
 .abrir-menu span { display: block; width: 22px; height: 2px; background: var(--texto); box-shadow: 0 7px 0 var(--texto), 0 -7px 0 var(--texto); }
 .menu-movil { display: none; flex-direction: column; padding: 0 var(--margen) 16px; border-top: 1px solid var(--linea); }
@@ -214,11 +224,11 @@ p { text-wrap: pretty; }
 .portada-arte { position: relative; aspect-ratio: 1 / .86; max-width: 540px; width: 100%; margin: 0 auto; transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2, .7, .2, 1); }
 /* Una órbita punteada que gira despacio alrededor del círculo */
 .arte-orbita { position: absolute; inset: -8%; border-radius: 50%; border: 1.5px dashed rgba(12, 27, 61, .3); animation: girar 48s linear infinite; }
-.arte-orbita::after { content: ""; position: absolute; top: 50%; left: -7px; width: 13px; height: 13px; margin-top: -6.5px; border-radius: 50%; background: #1663D6; box-shadow: 0 0 0 6px rgba(22, 99, 214, .18); }
+.arte-orbita::after { content: ""; position: absolute; top: 50%; left: -7px; width: 13px; height: 13px; margin-top: -6.5px; border-radius: 50%; background: #2B35AF; box-shadow: 0 0 0 6px rgba(43, 53, 175, .18); }
 @keyframes girar { to { transform: rotate(360deg); } }
 /* Las tarjetas flotan a distinta profundidad: con el mouse se ve el relieve */
 @keyframes flotar { 0%, 100% { transform: translateZ(var(--z, 0)) translateY(0); } 50% { transform: translateZ(var(--z, 0)) translateY(-10px); } }
-.arte-circulo { position: absolute; right: 2%; top: 4%; width: 78%; aspect-ratio: 1; border-radius: 50%; background: #1663D6; }
+.arte-circulo { position: absolute; right: 2%; top: 4%; width: 78%; aspect-ratio: 1; border-radius: 50%; background: #2B35AF; }
 .arte-arco { position: absolute; left: 0; bottom: 0; width: 34%; aspect-ratio: 1; border-radius: 0 100% 0 0; background: #0C1B3D; }
 .arte-tarjeta { position: absolute; background: #FFFFFF; color: #0C1B3D; border-radius: 14px; box-shadow: 0 16px 40px rgba(12, 27, 61, .22); animation: flotar 7s ease-in-out infinite; }
 .arte-grafico { --z: 30px; left: 12%; top: 16%; width: 66%; padding: 16px 18px 14px; }
@@ -227,7 +237,7 @@ p { text-wrap: pretty; }
 .arte-grafico span { font-size: .86rem; color: #55607A; }
 .arte-chip { display: flex; align-items: center; gap: 10px; padding: 12px 16px; font-weight: 700; font-size: .95rem; line-height: 1.2; }
 .arte-chip small { display: block; font-weight: 400; font-size: .82rem; color: #55607A; }
-.arte-chip i { flex-shrink: 0; width: 34px; height: 34px; border-radius: 9px; background: #EAF2FE; color: #1663D6; display: inline-flex; align-items: center; justify-content: center; font-style: normal; font-weight: 700; }
+.arte-chip i { flex-shrink: 0; width: 34px; height: 34px; border-radius: 9px; background: #ECEEFC; color: #2B35AF; display: inline-flex; align-items: center; justify-content: center; font-style: normal; font-weight: 700; }
 .arte-chip-1 { --z: 70px; right: 0; top: 8%; animation-delay: -2.3s; }
 .arte-chip-2 { --z: 55px; right: 3%; bottom: 7%; animation-delay: -4.6s; }
 
@@ -380,7 +390,8 @@ html:not(.js) .programas-rejilla { grid-template-columns: minmax(0, 1fr); }
 @media (max-width: 900px) {
   :root { --alto-cabecera: 64px; }
   .explorar, .menu { display: none; }
-  .abrir-menu { display: inline-flex; }
+  .abrir-menu { display: inline-flex; margin-left: 0; }
+  .tema-boton { margin-left: auto; }
   .cabecera-fila { flex-wrap: wrap; height: auto; padding-top: 10px; padding-bottom: 12px; row-gap: 10px; }
   .buscador { order: 3; flex-basis: 100%; max-width: none; }
   .portada-rejilla, .programas-rejilla, .academia-rejilla { grid-template-columns: minmax(0, 1fr); }
