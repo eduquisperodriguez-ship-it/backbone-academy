@@ -82,7 +82,7 @@
     });
   });
   $$('#practica .tarjeta').forEach(function (c) {
-    INDICE.push({ tipo: 'Calculadora', titulo: $('h3', c).textContent, detalle: $('.tarjeta-texto', c).textContent, url: $('a', c).href });
+    INDICE.push({ tipo: c.getAttribute('data-tipo') || 'Calculadora', titulo: $('h3', c).textContent, detalle: $('.tarjeta-texto', c).textContent, url: $('a', c).href });
   });
   $$('#publicaciones .tarjeta').forEach(function (c) {
     INDICE.push({ tipo: 'Publicación', titulo: $('h3', c).textContent, detalle: $('.tarjeta-texto', c).textContent, ancla: '#publicaciones' });
